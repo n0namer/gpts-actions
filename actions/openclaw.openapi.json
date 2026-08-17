@@ -129,6 +129,39 @@
           }
         }
       }
+    },
+    "/v1/responses": {
+      "post": {
+        "operationId": "openclawResponseSync",
+        "summary": "Wait for an OpenClaw Responses reply",
+        "description": "Synchronous OpenResponses turn. Supports user and previous_response_id continuity without custom headers.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["input"],
+                "properties": {
+                  "model": {"type": "string", "default": "openclaw/default", "description": "Agent target alias."},
+                  "input": {"type": "string", "minLength": 1, "description": "Current user task or message."},
+                  "instructions": {"type": "string", "description": "Additional instructions merged into the system prompt."},
+                  "user": {"type": "string", "maxLength": 256, "description": "Stable conversation id used for session routing."},
+                  "previous_response_id": {"type": "string", "description": "Previous response id for session continuity."},
+                  "stream": {"type": "boolean", "enum": [false], "default": false, "description": "Must remain false for GPT Actions."}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Final OpenClaw response", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}},
+          "400": {"description": "Invalid request or endpoint not enabled"},
+          "401": {"description": "Invalid or missing bearer token"}
+        }
+      }
     }
   },
   "components": {
