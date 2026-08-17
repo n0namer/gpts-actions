@@ -1,0 +1,253 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Hermes Agent Action",
+    "description": "Restricted GPT Action contract for health checks, capability discovery and asynchronous Hermes agent runs.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://hermes.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "hermesHealth",
+        "summary": "Check Hermes liveness",
+        "description": "Returns the inexpensive Hermes API Server liveness result.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Liveness result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/capabilities": {
+      "get": {
+        "operationId": "hermesGetCapabilities",
+        "summary": "Get Hermes API capabilities",
+        "description": "Returns the machine-readable API Server capabilities supported by the running Hermes version.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Capabilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          }
+        }
+      }
+    },
+    "/v1/models": {
+      "get": {
+        "operationId": "hermesListModels",
+        "summary": "List Hermes advertised models",
+        "description": "Returns the OpenAI-compatible model aliases advertised by Hermes.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Model list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          }
+        }
+      }
+    },
+    "/v1/runs": {
+      "post": {
+        "operationId": "hermesStartRun",
+        "summary": "Start an asynchronous Hermes run",
+        "description": "Starts an agent run and returns a run_id immediately. Use hermesGetRun to poll until the run reaches a terminal state.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "input"
+                ],
+                "properties": {
+                  "input": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Task or instruction for the Hermes agent."
+                  },
+                  "session_id": {
+                    "type": "string",
+                    "description": "Optional external session identifier for correlating the run."
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "description": "Optional additional instructions layered on top of Hermes core instructions."
+                  },
+                  "model": {
+                    "type": "string",
+                    "description": "Optional Hermes model id for this run."
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Optional Hermes provider slug used with the requested model."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Run started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "run_id",
+                    "status"
+                  ],
+                  "properties": {
+                    "run_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid run request"
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          },
+          "429": {
+            "description": "Hermes concurrent-run limit reached"
+          }
+        }
+      }
+    },
+    "/v1/runs/{run_id}": {
+      "get": {
+        "operationId": "hermesGetRun",
+        "summary": "Get Hermes run status",
+        "description": "Polls an asynchronous Hermes run and returns status, output and usage when available.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "description": "Run identifier returned by hermesStartRun.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          },
+          "404": {
+            "description": "Run not found"
+          }
+        }
+      }
+    },
+    "/v1/runs/{run_id}/stop": {
+      "post": {
+        "operationId": "hermesStopRun",
+        "summary": "Stop a Hermes run",
+        "description": "Requests interruption of a running Hermes agent turn. Use only when the user explicitly asks to stop that run.",
+        "x-openai-isConsequential": true,
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "description": "Run identifier to stop.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Stop accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          },
+          "404": {
+            "description": "Run not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Configure the GPT Action with the Hermes API_SERVER_KEY bearer token. This key grants access to the agent toolset."
+      }
+    }
+  }
+}
