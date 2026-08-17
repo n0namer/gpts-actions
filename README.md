@@ -16,8 +16,24 @@ Runtime/service repositories remain the implementation source of truth for code,
 |---|---|
 | VPS Terminal | `actions/vps-terminal.openapi.json` |
 | GitHub File Patch API | `actions/github-file-patch.openapi.json` |
-| OpenClaw Agent | `actions/openclaw.openapi.json` |
-| Hermes Agent | `actions/hermes.openapi.json` |
+| OpenClaw Agent (sync) | `actions/openclaw.openapi.json` |
+| OpenClaw Async Hook | `actions/openclaw-hooks.openapi.json` |
+| Hermes Agent (sync + async) | `actions/hermes.openapi.json` |
+
+## Sync and async behavior
+
+- OpenClaw sync uses `/v1/chat/completions` or `/v1/responses` and waits for the final response in the same HTTPS request.
+- OpenClaw async hook uses `/hooks/agent` and returns after runner admission; it does not provide pollable completion by itself.
+- Hermes sync uses `/v1/chat/completions` or `/v1/responses` and waits for the final response in the same HTTPS request.
+- Hermes async uses `/v1/runs` plus `/v1/runs/{run_id}` for polling and `/v1/runs/{run_id}/stop` for cancellation.
+
+## Bearer mapping
+
+- OpenClaw sync: runtime `OPENCLAW_GATEWAY_TOKEN` value.
+- OpenClaw async hook: dedicated OpenClaw `hooks.token` value; do not reuse the Gateway token.
+- Hermes sync + async: runtime `API_SERVER_KEY` value.
+
+Store only the secret value in the GPT Builder Bearer/API Key field. Never commit bearer values to this repository.
 
 ## Publication rules
 
