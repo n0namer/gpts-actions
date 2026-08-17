@@ -16,6 +16,8 @@ Runtime/service repositories remain the implementation source of truth for code,
 |---|---|
 | VPS Terminal | `actions/vps-terminal.openapi.json` |
 | GitHub File Patch API | `actions/github-file-patch.openapi.json` |
+| OpenClaw Agent | `actions/openclaw.openapi.json` |
+| Hermes Agent | `actions/hermes.openapi.json` |
 
 ## Publication rules
 
