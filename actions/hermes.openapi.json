@@ -85,6 +85,71 @@
         }
       }
     },
+    "/v1/chat/completions": {
+      "post": {
+        "operationId": "hermesChatSync",
+        "summary": "Wait for a Hermes chat reply",
+        "description": "Synchronous non-streaming agent turn. Use only when the task is expected to finish inside the GPT Actions 45-second limit.",
+        "x-openai-isConsequential": true,
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {
+          "type": "object", "additionalProperties": false, "required": ["model", "messages"],
+          "properties": {
+            "model": {"type": "string", "default": "hermes-agent", "description": "Hermes model alias."},
+            "messages": {"type": "array", "minItems": 1, "description": "Full conversation messages for this stateless Chat Completions turn.", "items": {
+              "type": "object", "additionalProperties": false, "required": ["role", "content"],
+              "properties": {"role": {"type": "string", "enum": ["system", "developer", "user", "assistant"]}, "content": {"type": "string"}}
+            }},
+            "provider": {"type": "string", "description": "Optional provider override."},
+            "stream": {"type": "boolean", "enum": [false], "default": false, "description": "Must remain false for GPT Actions."}
+          }
+        }}}},
+        "responses": {
+          "200": {"description": "Final Hermes reply", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}},
+          "400": {"description": "Invalid request"},
+          "401": {"description": "Invalid bearer token"}
+        }
+      }
+    },
+    "/v1/responses": {
+      "post": {
+        "operationId": "hermesResponseSync",
+        "summary": "Wait for a stateful Hermes reply",
+        "description": "Synchronous Responses turn with conversation or previous_response_id continuity. Prefer this for multi-turn GPT Action chats under 45 seconds.",
+        "x-openai-isConsequential": true,
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {
+          "type": "object", "additionalProperties": false, "required": ["input"],
+          "properties": {
+            "model": {"type": "string", "default": "hermes-agent"},
+            "input": {"type": "string", "minLength": 1, "description": "Current user task or message."},
+            "instructions": {"type": "string", "description": "Additional instructions layered on Hermes core instructions."},
+            "conversation": {"type": "string", "description": "Stable conversation name for server-side continuity."},
+            "previous_response_id": {"type": "string", "description": "Previous Hermes response id for chained continuity."},
+            "provider": {"type": "string", "description": "Optional provider override."},
+            "store": {"type": "boolean", "default": true},
+            "stream": {"type": "boolean", "enum": [false], "default": false, "description": "Must remain false for GPT Actions."}
+          }
+        }}}},
+        "responses": {
+          "200": {"description": "Final Hermes response", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}},
+          "400": {"description": "Invalid request"},
+          "401": {"description": "Invalid bearer token"}
+        }
+      }
+    },
+    "/v1/responses/{response_id}": {
+      "get": {
+        "operationId": "hermesGetResponse",
+        "summary": "Get a stored Hermes response",
+        "description": "Retrieves a stored response object by id.",
+        "x-openai-isConsequential": false,
+        "parameters": [{"name": "response_id", "in": "path", "required": true, "schema": {"type": "string"}, "description": "Stored response id."}],
+        "responses": {
+          "200": {"description": "Stored response", "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}},
+          "401": {"description": "Invalid bearer token"},
+          "404": {"description": "Response not found"}
+        }
+      }
+    },
     "/v1/runs": {
       "post": {
         "operationId": "hermesStartRun",
