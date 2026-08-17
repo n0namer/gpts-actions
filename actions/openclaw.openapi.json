@@ -1,0 +1,143 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenClaw Agent Action",
+    "description": "Restricted GPT Action contract for sending agent turns to the OpenClaw Gateway and discovering its advertised model.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://openclaw.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/models": {
+      "get": {
+        "operationId": "openclawListModels",
+        "summary": "List OpenClaw models",
+        "description": "Returns the model aliases exposed by the OpenClaw Gateway HTTP compatibility surface.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Model list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          }
+        }
+      }
+    },
+    "/v1/chat/completions": {
+      "post": {
+        "operationId": "openclawRunAgentTurn",
+        "summary": "Run an OpenClaw agent turn",
+        "description": "Sends one non-streaming Chat Completions request to OpenClaw. The agent may use its configured tools, so this operation is consequential.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "model",
+                  "messages"
+                ],
+                "properties": {
+                  "model": {
+                    "type": "string",
+                    "description": "OpenClaw model alias. Use openclaw/default unless the server advertises another alias.",
+                    "default": "openclaw/default"
+                  },
+                  "messages": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Conversation messages supplied to the OpenClaw agent.",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "role",
+                        "content"
+                      ],
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "system",
+                            "user",
+                            "assistant"
+                          ],
+                          "description": "Message role."
+                        },
+                        "content": {
+                          "type": "string",
+                          "description": "Message text."
+                        }
+                      }
+                    }
+                  },
+                  "user": {
+                    "type": "string",
+                    "maxLength": 256,
+                    "description": "Stable conversation identifier. Reuse it across turns when continuity is required."
+                  },
+                  "stream": {
+                    "type": "boolean",
+                    "enum": [
+                      false
+                    ],
+                    "default": false,
+                    "description": "Must remain false because GPT Actions should use a normal JSON response rather than SSE."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Completed agent turn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or endpoint not enabled"
+          },
+          "401": {
+            "description": "Invalid or missing bearer token"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Configure the GPT Action with the OpenClaw Gateway bearer token. Treat it as an owner/operator secret."
+      }
+    }
+  }
+}
