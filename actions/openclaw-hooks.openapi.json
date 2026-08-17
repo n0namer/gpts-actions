@@ -1,0 +1,129 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenClaw Async Hook Action",
+    "description": "Native OpenClaw asynchronous admission Action. It schedules an agent run and returns after runner admission instead of waiting for completion.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://openclaw.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/hooks/agent": {
+      "post": {
+        "operationId": "openclawStartAsyncHook",
+        "summary": "Start an OpenClaw async hook run",
+        "description": "Schedules an OpenClaw agent run. The HTTP call waits for admission only, not completion. Use a dedicated hooks token, never the Gateway token.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Task for the OpenClaw agent."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Optional run label."
+                  },
+                  "agentId": {
+                    "type": "string",
+                    "description": "Configured agent id. Must be allowed by hooks.allowedAgentIds."
+                  },
+                  "sessionKey": {
+                    "type": "string",
+                    "description": "Optional session key. Requires allowRequestSessionKey and an allowed prefix."
+                  },
+                  "sessionMode": {
+                    "type": "string",
+                    "enum": [
+                      "isolated",
+                      "persistent"
+                    ],
+                    "default": "isolated",
+                    "description": "Isolated is default; persistent requires an approved explicit session key."
+                  },
+                  "deliver": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "If true, final output is delivered to a configured channel destination, not returned to this HTTP call."
+                  },
+                  "thinking": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "minimal",
+                      "low",
+                      "medium",
+                      "high"
+                    ],
+                    "description": "Optional thinking level."
+                  },
+                  "timeoutSeconds": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 3600,
+                    "description": "Optional agent run timeout in seconds."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent runner admitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid hook request"
+          },
+          "401": {
+            "description": "Invalid hooks bearer token"
+          },
+          "409": {
+            "description": "Session admission conflict"
+          },
+          "502": {
+            "description": "Preparation failure"
+          },
+          "503": {
+            "description": "Runner admission timeout"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Use a dedicated OpenClaw hooks.token value. It must be different from OPENCLAW_GATEWAY_TOKEN."
+      }
+    }
+  }
+}
