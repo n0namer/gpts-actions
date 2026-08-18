@@ -63,7 +63,7 @@
     },
     "/v1/models": {
       "get": {
-        "operationId": "hermesListModels",
+        "operationId": "listModels",
         "summary": "List Hermes advertised models",
         "description": "Returns the OpenAI-compatible model aliases advertised by Hermes.",
         "x-openai-isConsequential": false,
