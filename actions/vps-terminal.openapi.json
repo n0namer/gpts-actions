@@ -507,7 +507,7 @@
     },
     "/v1/sessions/{sessionId}/terminate": {
       "post": {
-        "operationId": "terminalSessionTerminate",
+        "operationId": "terminateSession",
         "summary": "Terminate a managed terminal session",
         "parameters": [
           {
