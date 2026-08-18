@@ -18,7 +18,7 @@
   "paths": {
     "/hooks/agent": {
       "post": {
-        "operationId": "openclawStartAsyncHook",
+        "operationId": "startAsyncHook",
         "summary": "Start an OpenClaw async hook run",
         "description": "Schedules an OpenClaw agent run. The HTTP call waits for admission only, not completion. Use a dedicated hooks token, never the Gateway token.",
         "x-openai-isConsequential": true,
