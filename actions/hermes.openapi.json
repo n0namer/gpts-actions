@@ -138,7 +138,7 @@
     },
     "/v1/responses/{response_id}": {
       "get": {
-        "operationId": "hermesGetResponse",
+        "operationId": "getResponse",
         "summary": "Get a stored Hermes response",
         "description": "Retrieves a stored response object by id.",
         "x-openai-isConsequential": false,
