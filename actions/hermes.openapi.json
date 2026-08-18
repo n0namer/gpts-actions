@@ -87,7 +87,7 @@
     },
     "/v1/chat/completions": {
       "post": {
-        "operationId": "hermesChatSync",
+        "operationId": "chatSync",
         "summary": "Wait for a Hermes chat reply",
         "description": "Synchronous non-streaming agent turn. Use only when the task is expected to finish inside the GPT Actions 45-second limit.",
         "x-openai-isConsequential": true,
