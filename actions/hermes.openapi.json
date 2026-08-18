@@ -18,7 +18,7 @@
   "paths": {
     "/health": {
       "get": {
-        "operationId": "hermesHealth",
+        "operationId": "health",
         "summary": "Check Hermes liveness",
         "description": "Returns the inexpensive Hermes API Server liveness result.",
         "x-openai-isConsequential": false,
