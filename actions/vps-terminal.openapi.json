@@ -74,7 +74,7 @@
     },
     "/api/v1/version": {
       "get": {
-        "operationId": "vpsTerminalVersion",
+        "operationId": "version",
         "summary": "Read service version information",
         "responses": {
           "200": {
