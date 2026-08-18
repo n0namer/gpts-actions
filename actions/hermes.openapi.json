@@ -240,7 +240,7 @@
             "name": "run_id",
             "in": "path",
             "required": true,
-            "description": "Run identifier returned by hermesStartRun.",
+            "description": "Run identifier returned by startRun.",
             "schema": {
               "type": "string"
             }
