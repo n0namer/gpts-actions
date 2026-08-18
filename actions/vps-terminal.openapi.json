@@ -943,7 +943,7 @@
       }
     },
     "securitySchemes": {
-      "VpsTerminalBearer": {
+      "Bearer": {
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "opaque"
