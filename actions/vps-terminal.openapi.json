@@ -28,7 +28,20 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "required": ["status", "service", "gateway", "upstream"],
+                  "properties": {
+                    "status": {"type": "string"},
+                    "service": {"type": "string"},
+                    "gateway": {"type": "string"},
+                    "upstream": {
+                      "type": "object",
+                      "required": ["service", "version"],
+                      "properties": {
+                        "service": {"type": "string"},
+                        "version": {"type": ["string", "null"]}
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -70,7 +83,19 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "required": ["service", "upstream"],
+                  "properties": {
+                    "service": {"type": "string"},
+                    "upstream": {
+                      "type": "object",
+                      "properties": {
+                        "agentVersion": {"type": "string"},
+                        "protocolName": {"type": "string"},
+                        "protocolVersion": {"type": "string"},
+                        "adapter": {"type": "string"}
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -167,7 +192,10 @@
         "summary": "Read compact redacted container details",
         "parameters": [
           {
-            "$ref": "#/components/parameters/Container"
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
           }
         ],
         "responses": {
@@ -177,7 +205,59 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "additionalProperties": true
+                  "required": ["id", "name", "image", "created", "restart_count", "state", "health", "network_mode", "networks", "mounts"],
+                  "properties": {
+                    "id": {"type": "string"},
+                    "name": {"type": "string"},
+                    "image": {"type": "string"},
+                    "created": {"type": "string"},
+                    "restart_count": {"type": "integer"},
+                    "state": {
+                      "type": "object",
+                      "properties": {
+                        "status": {"type": "string"},
+                        "running": {"type": "boolean"},
+                        "paused": {"type": "boolean"},
+                        "restarting": {"type": "boolean"},
+                        "oom_killed": {"type": "boolean"},
+                        "dead": {"type": "boolean"},
+                        "pid": {"type": "integer"},
+                        "exit_code": {"type": "integer"},
+                        "error": {"type": "string"}
+                      }
+                    },
+                    "health": {
+                      "type": ["object", "null"],
+                      "properties": {
+                        "status": {"type": "string"},
+                        "failing_streak": {"type": "integer"}
+                      }
+                    },
+                    "network_mode": {"type": "string"},
+                    "networks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {"type": "string"},
+                          "ip": {"type": "string"},
+                          "gateway": {"type": "string"}
+                        }
+                      }
+                    },
+                    "mounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {"type": "string"},
+                          "destination": {"type": "string"},
+                          "rw": {"type": "boolean"},
+                          "volume_name": {"type": "string"}
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -285,7 +365,10 @@
         "summary": "Read managed terminal session state",
         "parameters": [
           {
-            "$ref": "#/components/parameters/SessionId"
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
           }
         ],
         "responses": {
@@ -317,7 +400,10 @@
         "summary": "Read bounded stdout/stderr chunks from a managed session",
         "parameters": [
           {
-            "$ref": "#/components/parameters/SessionId"
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
           },
           {
             "name": "after_seq",
@@ -371,7 +457,10 @@
         "summary": "Write stdin to a running managed session",
         "parameters": [
           {
-            "$ref": "#/components/parameters/SessionId"
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
           }
         ],
         "requestBody": {
@@ -422,7 +511,10 @@
         "summary": "Terminate a managed terminal session",
         "parameters": [
           {
-            "$ref": "#/components/parameters/SessionId"
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
           }
         ],
         "responses": {
