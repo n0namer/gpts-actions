@@ -42,7 +42,7 @@
     },
     "/v1/chat/completions": {
       "post": {
-        "operationId": "openclawChatSync",
+        "operationId": "chatSync",
         "summary": "Wait for an OpenClaw chat reply",
         "description": "Synchronous non-streaming agent turn. Use when the work is expected to finish inside the GPT Actions 45-second limit.",
         "x-openai-isConsequential": true,
