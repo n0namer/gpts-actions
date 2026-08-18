@@ -361,7 +361,7 @@
     },
     "/v1/sessions/{sessionId}": {
       "get": {
-        "operationId": "terminalSessionGet",
+        "operationId": "getSession",
         "summary": "Read managed terminal session state",
         "parameters": [
           {
