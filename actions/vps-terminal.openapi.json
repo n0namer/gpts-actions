@@ -52,7 +52,7 @@
 
     "/ready": {
       "get": {
-        "operationId": "vpsTerminalReady",
+        "operationId": "ready",
         "security": [],
         "summary": "Check VPS Terminal and Docker readiness",
         "responses": {
