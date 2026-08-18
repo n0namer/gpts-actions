@@ -39,7 +39,7 @@
     },
     "/v1/capabilities": {
       "get": {
-        "operationId": "hermesGetCapabilities",
+        "operationId": "getCapabilities",
         "summary": "Get Hermes API capabilities",
         "description": "Returns the machine-readable API Server capabilities supported by the running Hermes version.",
         "x-openai-isConsequential": false,
