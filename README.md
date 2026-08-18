@@ -12,13 +12,15 @@ Runtime/service repositories remain the implementation source of truth for code,
 
 ## Current Action contracts
 
-| Action | Public contract |
-|---|---|
-| VPS Terminal | `actions/vps-terminal.openapi.json` |
-| GitHub File Patch API | `actions/github-file-patch.openapi.json` |
-| OpenClaw Agent (sync) | `actions/openclaw.openapi.json` |
-| OpenClaw Async Hook | `actions/openclaw-hooks.openapi.json` |
-| Hermes Agent (sync + async) | `actions/hermes.openapi.json` |
+| Action | Version | Public contract |
+|---|---:|---|
+| VPS Terminal | `0.3.0` | `actions/vps-terminal.openapi.json` |
+| GitHub File Patch API | — | `actions/github-file-patch.openapi.json` |
+| OpenClaw Agent (sync) | — | `actions/openclaw.openapi.json` |
+| OpenClaw Async Hook | — | `actions/openclaw-hooks.openapi.json` |
+| Hermes Agent (sync + async) | — | `actions/hermes.openapi.json` |
+
+VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
 ## Sync and async behavior
 
