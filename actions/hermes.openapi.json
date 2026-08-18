@@ -112,7 +112,7 @@
     },
     "/v1/responses": {
       "post": {
-        "operationId": "hermesResponseSync",
+        "operationId": "responseSync",
         "summary": "Wait for a stateful Hermes reply",
         "description": "Synchronous Responses turn with conversation or previous_response_id continuity. Prefer this for multi-turn GPT Action chats under 45 seconds.",
         "x-openai-isConsequential": true,
