@@ -132,7 +132,7 @@
     },
     "/v1/responses": {
       "post": {
-        "operationId": "openclawResponseSync",
+        "operationId": "responseSync",
         "summary": "Wait for an OpenClaw Responses reply",
         "description": "Synchronous OpenResponses turn. Supports user and previous_response_id continuity without custom headers.",
         "x-openai-isConsequential": true,
