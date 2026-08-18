@@ -12,7 +12,7 @@
   ],
   "security": [
     {
-      "VpsTerminalBearer": []
+      "Bearer": []
     }
   ],
   "paths": {
