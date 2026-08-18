@@ -111,7 +111,7 @@
     },
     "/v1/containers": {
       "get": {
-        "operationId": "dockerListContainers",
+        "operationId": "listContainers",
         "summary": "List running containers with bounded cursor pagination",
         "description": "Read-only operational inventory. Terminal execution cannot target these arbitrary container identifiers.",
         "parameters": [
