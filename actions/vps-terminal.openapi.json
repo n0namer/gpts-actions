@@ -396,7 +396,7 @@
     },
     "/v1/sessions/{sessionId}/output": {
       "get": {
-        "operationId": "terminalSessionRead",
+        "operationId": "readSession",
         "summary": "Read bounded stdout/stderr chunks from a managed session",
         "parameters": [
           {
