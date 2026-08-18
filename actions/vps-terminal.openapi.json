@@ -453,7 +453,7 @@
     },
     "/v1/sessions/{sessionId}/input": {
       "post": {
-        "operationId": "terminalSessionWrite",
+        "operationId": "writeSession",
         "summary": "Write stdin to a running managed session",
         "parameters": [
           {
