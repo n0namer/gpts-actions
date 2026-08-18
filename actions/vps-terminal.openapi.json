@@ -1,1 +1,838 @@
-{"openapi":"3.1.0","info":{"title":"VPS Terminal","version":"0.2.0","description":"Bounded VPS terminal API for GPT Actions."},"servers":[{"url":"https://vps-terminal.srv1904412.hstgr.cloud"}],"security":[{"VpsTerminalBearer":[]}],"paths":{"/health":{"get":{"operationId":"vpsTerminalHealth","security":[],"summary":"Check VPS Terminal liveness","responses":{"200":{"description":"Live","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}}}}},"/ready":{"get":{"operationId":"vpsTerminalReady","security":[],"summary":"Check service readiness","responses":{"200":{"description":"Ready state","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}}}}},"/api/v1/version":{"get":{"operationId":"vpsTerminalVersion","summary":"Read service version information","responses":{"200":{"description":"Version","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}}}}},"/v1/containers":{"get":{"operationId":"dockerListContainers","summary":"List running containers using bounded cursor pagination","description":"Returns compact summaries for running containers. Follow page.next_cursor until page.has_more is false.","parameters":[{"name":"limit","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":50,"default":12}},{"name":"cursor","in":"query","required":false,"description":"Opaque continuation cursor from the previous page.","schema":{"type":"string"}},{"name":"status","in":"query","required":false,"description":"Optional comma-separated Docker status filters.","schema":{"type":"string"}},{"name":"name","in":"query","required":false,"schema":{"type":"string"}},{"name":"label","in":"query","required":false,"description":"Optional label filter.","schema":{"type":"string"}}],"responses":{"200":{"description":"Bounded page","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ContainerPage"}}}},"400":{"$ref":"#/components/responses/Error"},"409":{"$ref":"#/components/responses/Error"}}}},"/v1/containers/{container}":{"get":{"operationId":"dockerInspectContainer","summary":"Read compact redacted container details","description":"Returns compact redacted container details. Sensitive runtime configuration and raw inspect data are omitted.","parameters":[{"$ref":"#/components/parameters/Container"}],"responses":{"200":{"description":"Compact container detail","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}}}}},"/v1/containers/{container}/exec":{"post":{"operationId":"dockerCreateExec","summary":"Create a detached non-TTY exec","parameters":[{"$ref":"#/components/parameters/Container"}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":false,"required":["Cmd"],"properties":{"Cmd":{"type":"array","minItems":1,"maxItems":32,"items":{"type":"string","maxLength":2048}},"WorkingDir":{"type":"string","maxLength":512}}}}}},"responses":{"201":{"description":"Exec created","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"string"}}}}}},"400":{"$ref":"#/components/responses/Error"}}}},"/v1/exec/{execId}/start":{"post":{"operationId":"dockerStartExec","summary":"Start an exec in detached non-streaming mode","description":"Exec starts in detached non-streaming mode with TTY disabled.","parameters":[{"$ref":"#/components/parameters/ExecId"}],"requestBody":{"required":false,"content":{"application/json":{"schema":{"type":"object","additionalProperties":false}}}},"responses":{"200":{"description":"Started","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}}}}},"/v1/exec/{execId}":{"get":{"operationId":"dockerInspectExec","summary":"Read compact exec status and exit code","parameters":[{"$ref":"#/components/parameters/ExecId"}],"responses":{"200":{"description":"Exec state","content":{"application/json":{"schema":{"type":"object","properties":{"id":{"type":"string"},"running":{"type":"boolean"},"exit_code":{"type":["integer","null"]},"container_id":{"type":"string"}}}}}}}}}},"components":{"parameters":{"Container":{"name":"container","in":"path","required":true,"schema":{"type":"string"}},"ExecId":{"name":"execId","in":"path","required":true,"schema":{"type":"string"}}},"schemas":{"ContainerPage":{"type":"object","required":["items","page"],"properties":{"items":{"type":"array","maxItems":50,"items":{"type":"object","additionalProperties":true}},"page":{"type":"object","required":["scope","limit","returned","total","has_more","next_cursor"],"properties":{"scope":{"type":"string","enum":["running"]},"limit":{"type":"integer"},"returned":{"type":"integer"},"total":{"type":"integer"},"has_more":{"type":"boolean"},"next_cursor":{"type":["string","null"]}}}}}},"responses":{"Error":{"description":"Bounded error","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}}},"securitySchemes":{"VpsTerminalBearer":{"type":"http","scheme":"bearer","bearerFormat":"opaque"}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VPS Terminal",
+    "version": "0.3.0",
+    "description": "Bounded OpenClaw-targeted terminal API for GPT Actions. Terminal execution is server-side restricted to the single allowed OpenClaw container."
+  },
+  "servers": [
+    {
+      "url": "https://vps-terminal.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "VpsTerminalBearer": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "vpsTerminalHealth",
+        "security": [],
+        "summary": "Check VPS Terminal liveness",
+        "responses": {
+          "200": {
+            "description": "Live",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/ready": {
+      "get": {
+        "operationId": "vpsTerminalReady",
+        "security": [],
+        "summary": "Check VPS Terminal and Docker readiness",
+        "responses": {
+          "200": {
+            "description": "Ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ready"
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/api/v1/version": {
+      "get": {
+        "operationId": "vpsTerminalVersion",
+        "summary": "Read service version information",
+        "responses": {
+          "200": {
+            "description": "Version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/containers": {
+      "get": {
+        "operationId": "dockerListContainers",
+        "summary": "List running containers with bounded cursor pagination",
+        "description": "Read-only operational inventory. Terminal execution cannot target these arbitrary container identifiers.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 12
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque continuation cursor.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bounded page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContainerPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/containers/{container}": {
+      "get": {
+        "operationId": "dockerInspectContainer",
+        "summary": "Read compact redacted container details",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Container"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compact redacted detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/exec/run": {
+      "post": {
+        "operationId": "terminalExecRun",
+        "summary": "Run a bounded command in the allowed OpenClaw container",
+        "description": "The server selects the single allowed OpenClaw target. The caller cannot choose a container. Returns separated stdout and stderr, exit code, duration, timeout state, and truncation state.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecRunResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "operationId": "terminalSessionStart",
+        "summary": "Start a managed terminal session in the allowed OpenClaw container",
+        "description": "Starts a bounded non-TTY session with readable stdout/stderr and writable stdin. The caller cannot choose a container.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionStartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}": {
+      "get": {
+        "operationId": "terminalSessionGet",
+        "summary": "Read managed terminal session state",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/output": {
+      "get": {
+        "operationId": "terminalSessionRead",
+        "summary": "Read bounded stdout/stderr chunks from a managed session",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          },
+          {
+            "name": "after_seq",
+            "in": "query",
+            "required": false,
+            "description": "Return chunks whose seq is greater than this value.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit_bytes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 256,
+              "maximum": 8192,
+              "default": 8192
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOutput"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/input": {
+      "post": {
+        "operationId": "terminalSessionWrite",
+        "summary": "Write stdin to a running managed session",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Input accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionWriteResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/terminate": {
+      "post": {
+        "operationId": "terminalSessionTerminate",
+        "summary": "Terminate a managed terminal session",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Terminated session state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Container": {
+        "name": "container",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "SessionId": {
+        "name": "sessionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "Ready": {
+        "type": "object",
+        "required": [
+          "ready",
+          "service",
+          "docker"
+        ],
+        "properties": {
+          "ready": {
+            "type": "boolean"
+          },
+          "service": {
+            "type": "string"
+          },
+          "docker": {
+            "type": "object",
+            "required": [
+              "connected",
+              "status"
+            ],
+            "properties": {
+              "connected": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ContainerPage": {
+        "type": "object",
+        "required": [
+          "items",
+          "page"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "page": {
+            "type": "object",
+            "required": [
+              "scope",
+              "limit",
+              "returned",
+              "total",
+              "has_more",
+              "next_cursor"
+            ],
+            "properties": {
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "running"
+                ]
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "returned": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "next_cursor": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Command": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
+      "ExecRunRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cmd"
+        ],
+        "properties": {
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 120000,
+            "default": 30000
+          }
+        }
+      },
+      "ExecRunResult": {
+        "type": "object",
+        "required": [
+          "status",
+          "exit_code",
+          "stdout",
+          "stderr",
+          "duration_ms",
+          "timed_out",
+          "truncated"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "timeout"
+            ]
+          },
+          "exit_code": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "stdout": {
+            "type": "string",
+            "description": "Bounded stdout. Use managed sessions for larger or long-running output."
+          },
+          "stderr": {
+            "type": "string",
+            "description": "Bounded stderr."
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "timed_out": {
+            "type": "boolean"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionStartRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cmd"
+        ],
+        "properties": {
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "SessionState": {
+        "type": "object",
+        "required": [
+          "session_id",
+          "status",
+          "running",
+          "exit_code",
+          "created_at",
+          "updated_at",
+          "next_seq",
+          "truncated",
+          "dropped_before_seq"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "running": {
+            "type": "boolean"
+          },
+          "exit_code": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "type": "integer"
+          },
+          "next_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "dropped_before_seq": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "SessionChunk": {
+        "type": "object",
+        "required": [
+          "seq",
+          "stream",
+          "data"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "stream": {
+            "type": "string",
+            "enum": [
+              "stdout",
+              "stderr"
+            ]
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionOutput": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SessionState"
+          },
+          {
+            "type": "object",
+            "required": [
+              "chunks",
+              "has_more"
+            ],
+            "properties": {
+              "chunks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SessionChunk"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "SessionInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Provide exactly one of data or data_base64.",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "UTF-8 stdin bytes."
+          },
+          "data_base64": {
+            "type": "string",
+            "description": "Base64-encoded stdin bytes."
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "data"
+            ]
+          },
+          {
+            "required": [
+              "data_base64"
+            ]
+          }
+        ]
+      },
+      "SessionWriteResult": {
+        "type": "object",
+        "required": [
+          "session_id",
+          "accepted_bytes",
+          "status"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          },
+          "accepted_bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "status",
+          "error"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Bounded error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "VpsTerminalBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque"
+      }
+    }
+  }
+}
