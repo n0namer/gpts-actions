@@ -152,7 +152,7 @@
     },
     "/v1/runs": {
       "post": {
-        "operationId": "hermesStartRun",
+        "operationId": "startRun",
         "summary": "Start an asynchronous Hermes run",
         "description": "Starts an agent run and returns a run_id immediately. Use hermesGetRun to poll until the run reaches a terminal state.",
         "x-openai-isConsequential": true,
