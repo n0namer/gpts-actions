@@ -231,7 +231,7 @@
     },
     "/v1/runs/{run_id}": {
       "get": {
-        "operationId": "hermesGetRun",
+        "operationId": "getRun",
         "summary": "Get Hermes run status",
         "description": "Polls an asynchronous Hermes run and returns status, output and usage when available.",
         "x-openai-isConsequential": false,
