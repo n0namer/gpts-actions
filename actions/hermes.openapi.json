@@ -269,7 +269,7 @@
     },
     "/v1/runs/{run_id}/stop": {
       "post": {
-        "operationId": "hermesStopRun",
+        "operationId": "stopRun",
         "summary": "Stop a Hermes run",
         "description": "Requests interruption of a running Hermes agent turn. Use only when the user explicitly asks to stop that run.",
         "x-openai-isConsequential": true,
