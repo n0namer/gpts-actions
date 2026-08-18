@@ -188,7 +188,7 @@
     },
     "/v1/containers/{container}": {
       "get": {
-        "operationId": "dockerInspectContainer",
+        "operationId": "inspectContainer",
         "summary": "Read compact redacted container details",
         "parameters": [
           {
