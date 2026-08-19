@@ -274,8 +274,8 @@
     "/v1/exec/run": {
       "post": {
         "operationId": "exec",
-        "summary": "Run a bounded command in the allowed OpenClaw container",
-        "description": "The server selects the single allowed OpenClaw target. The caller cannot choose a container. Returns separated stdout and stderr, exit code, duration, timeout state, and truncation state.",
+        "summary": "Run a bounded command in the canonical Workbench",
+        "description": "The server selects the single neutral Workbench target. The caller cannot choose a container. Returns separated stdout and stderr, exit code, duration, timeout state, and truncation state.",
         "requestBody": {
           "required": true,
           "content": {
