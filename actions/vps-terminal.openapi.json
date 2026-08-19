@@ -318,7 +318,7 @@
     "/v1/sessions": {
       "post": {
         "operationId": "startSession",
-        "summary": "Start a managed terminal session in the allowed OpenClaw container",
+        "summary": "Start a managed terminal session in the canonical Workbench",
         "description": "Starts a bounded non-TTY session with readable stdout/stderr and writable stdin. The caller cannot choose a container.",
         "requestBody": {
           "required": true,
