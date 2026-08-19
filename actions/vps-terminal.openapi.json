@@ -3,7 +3,7 @@
   "info": {
     "title": "VPS Terminal",
     "version": "0.3.0",
-    "description": "Bounded OpenClaw-targeted terminal API for GPT Actions. Terminal execution is server-side restricted to the single allowed OpenClaw container."
+    "description": "Bounded generic terminal API for GPT Actions. Terminal execution is server-side restricted to the single neutral Workbench target; callers cannot choose arbitrary containers."
   },
   "servers": [
     {
