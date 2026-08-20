@@ -458,7 +458,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "opaque",
-        "description": "Use ACTION_BEARER_TOKEN in the GPT Action authentication field. Never expose or commit the token value."
+        "description": "Use ACTION_BEARER_SECRET in the GPT Action authentication field. The gateway maps it to its runtime bearer-token environment internally. Never expose or commit the secret value."
       }
     }
   }
