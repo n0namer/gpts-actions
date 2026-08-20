@@ -12,7 +12,7 @@
   ],
   "security": [
     {
-      "ApiKeyAuth": []
+      "BearerAuth": []
     }
   ],
   "paths": {
