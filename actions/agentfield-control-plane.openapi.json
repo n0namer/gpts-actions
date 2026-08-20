@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Universal Solver AgentField Control Plane",
-    "version": "0.1.0",
-    "description": "Bounded authenticated access to the Universal Solver AgentField Control Plane. Discover active agents/reasoners, start asynchronous executions, and poll execution status. Prefer discovery before execution."
+    "version": "0.1.1",
+    "description": "Authenticated bounded access to the Universal Solver AgentField Control Plane. Discover active agents/reasoners, start asynchronous executions, and poll execution state."
   },
   "servers": [
     {
@@ -26,14 +26,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": true
+                  "$ref": "#/components/schemas/HealthResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token"
           }
         }
       }
@@ -81,14 +80,13 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": true
+                  "$ref": "#/components/schemas/CapabilitiesResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token"
           }
         }
       }
@@ -97,7 +95,7 @@
       "post": {
         "operationId": "executeAgentfieldReasonerAsync",
         "summary": "Start an asynchronous AgentField reasoner execution",
-        "description": "Use a reasoner identifier returned by discovery, normally in agent.reasoner form. The request body must follow the discovered input schema.",
+        "description": "Use a reasoner identifier returned by discovery. The input object must follow that reasoner's discovered input schema.",
         "parameters": [
           {
             "name": "reasoner",
@@ -106,7 +104,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Discovered reasoner identifier, for example agent.reasoner."
+            "description": "Discovered reasoner target, for example agent.reasoner."
           }
         ],
         "requestBody": {
@@ -114,8 +112,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "additionalProperties": true
+                "$ref": "#/components/schemas/ExecuteRequest"
               }
             }
           }
@@ -126,8 +123,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": true
+                  "$ref": "#/components/schemas/ExecuteAcceptedResponse"
                 }
               }
             }
@@ -137,8 +133,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": true
+                  "$ref": "#/components/schemas/ExecuteAcceptedResponse"
                 }
               }
             }
@@ -147,7 +142,7 @@
             "description": "Invalid request or input"
           },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token"
           },
           "404": {
             "description": "Reasoner not found or not active"
@@ -171,18 +166,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Execution state/result",
+            "description": "Execution state and result",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": true
+                  "$ref": "#/components/schemas/ExecutionResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token"
           },
           "404": {
             "description": "Execution not found"
@@ -193,33 +187,278 @@
     "/api/v1/executions/active": {
       "get": {
         "operationId": "listActiveAgentfieldExecutions",
-        "sumary": "List currently active AgentField executions",
+        "summary": "List currently active AgentField executions",
         "responses": {
           "200": {
             "description": "Active executions",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "additionalProperties": true
+                  "$ref": "#/components/schemas/ActiveExecutionsResponse"
                 }
               }
             }
           },
           "401": {
-            "description": "Missing or invalid API key"
+            "description": "Missing or invalid bearer token"
           }
         }
       }
     }
   },
   "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Control-plane health status."
+          },
+          "version": {
+            "type": "string",
+            "description": "AgentField version when present."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Server timestamp when present."
+          }
+        },
+        "required": ["status"],
+        "additionalProperties": true
+      },
+      "ReasonerInputSchema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "properties": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "Reasoner": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "input_schema": {
+            "$ref": "#/components/schemas/ReasonerInputSchema"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "Capability": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string"
+          },
+          "agent_name": {
+            "type": "string"
+          },
+          "health_status": {
+            "type": "string"
+          },
+          "invocation_target": {
+            "type": "string"
+          },
+          "reasoners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Reasoner"
+            }
+          }
+        },
+        "additionalProperties": true
+      },
+      "CapabilitiesResponse": {
+        "type": "object",
+        "properties": {
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Capability"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": true
+      },
+      "DynamicInput": {
+        "type": "object",
+        "properties": {},
+        "description": "Reasoner-specific input. Follow the schema returned by discovery.",
+        "additionalProperties": true
+      },
+      "WebhookConfig": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "secret": {
+            "type": "string"
+          },
+          "headers": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "ExecuteRequest": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/DynamicInput"
+          },
+          "webhook": {
+            "$ref": "#/components/schemas/WebhookConfig"
+          }
+        },
+        "required": ["input"],
+        "additionalProperties": false
+      },
+      "ExecuteAcceptedResponse": {
+        "type": "object",
+        "properties": {
+          "execution_id": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "queued_at": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "ExecutionResult": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "output": {}
+        },
+        "additionalProperties": true
+      },
+      "ExecutionResponse": {
+        "type": "object",
+        "properties": {
+          "execution_id": {
+            "type": "string"
+          },
+          "run_id": {
+            "type": "string"
+          },
+          "agent_id": {
+            "type": "string"
+          },
+          "reasoner_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "result": {
+            "$ref": "#/components/schemas/ExecutionResult"
+          },
+          "error": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "completed_at": {
+            "type": "string"
+          },
+          "latest_activity": {
+            "type": "string"
+          },
+          "duration_ms": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": true
+      },
+      "ActiveExecutionsResponse": {
+        "type": "object",
+        "properties": {
+          "active_executions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExecutionResponse"
+            }
+          },
+          "total_executions": {
+            "type": "integer"
+          },
+          "started_at": {
+            "type": "string"
+          },
+          "latest_activity": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      }
+    },
     "securitySchemes": {
       "BearerAuth": {
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "opaque",
-        "description": "Use the ACTION_BEARER_TOKEN stored in the GPT Action authentication field. Never commit or expose the token value."
+        "description": "Use ACTION_BEARER_TOKEN in the GPT Action authentication field. Never expose or commit the token value."
       }
     }
   }
