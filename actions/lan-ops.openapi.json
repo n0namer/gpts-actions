@@ -1,0 +1,515 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LAN Ops Broker",
+    "version": "0.1.0",
+    "description": "Controlled read-only LAN discovery through a dedicated private edge. Responses contain opaque resource identifiers and never expose raw LAN credentials."
+  },
+  "servers": [
+    {
+      "url": "https://lan-ops.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "operationId": "getLanOpsHealth",
+        "summary": "Check LAN Ops broker and edge availability.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Health state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/networks": {
+      "get": {
+        "operationId": "listLanNetworks",
+        "summary": "List sanitized local network handles available on the edge.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Local network handles without raw CIDRs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "networks"
+                  ],
+                  "properties": {
+                    "networks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Network"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/resources": {
+      "get": {
+        "operationId": "listLanResources",
+        "summary": "List previously discovered sanitized LAN resources.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          {
+            "name": "network_id",
+            "in": "query",
+            "required": false,
+            "description": "Optional opaque network handle returned by listLanNetworks.",
+            "schema": {
+              "type": "string",
+              "pattern": "^net_[0-9a-f]{12}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sanitized resources.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "resources"
+                  ],
+                  "properties": {
+                    "resources": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Resource"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leases": {
+      "post": {
+        "operationId": "createLanDiscoveryLease",
+        "summary": "Create a temporary read-only network discovery lease.",
+        "description": "Grants only network.discovery for one opaque local network handle for at most 30 minutes.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LeaseCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Active time-limited lease.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Lease"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/leases/{lease_id}": {
+      "delete": {
+        "operationId": "revokeLanDiscoveryLease",
+        "summary": "Revoke a LAN discovery lease immediately.",
+        "x-openai-isConsequential": true,
+        "parameters": [
+          {
+            "name": "lease_id",
+            "in": "path",
+            "required": true,
+            "description": "Lease identifier returned by createLanDiscoveryLease.",
+            "schema": {
+              "type": "string",
+              "pattern": "^lease_[0-9a-f]{16}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revoked lease.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "lease_id",
+                    "status"
+                  ],
+                  "properties": {
+                    "lease_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "REVOKED"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/discovery": {
+      "post": {
+        "operationId": "startLanDiscovery",
+        "summary": "Start bounded read-only discovery using an active lease.",
+        "description": "Starts asynchronous local discovery. The caller cannot provide a raw CIDR or shell command.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "lease_id"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "lease_id": {
+                    "type": "string",
+                    "pattern": "^lease_[0-9a-f]{16}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Discovery job queued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobAccepted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/jobs/{job_id}": {
+      "get": {
+        "operationId": "getLanStatus",
+        "summary": "Read a LAN discovery job state and safe result count.",
+        "x-openai-isConsequential": false,
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "description": "Job identifier returned by startLanDiscovery.",
+            "schema": {
+              "type": "string",
+              "pattern": "^job_[0-9a-f]{16}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current job state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Job"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Health": {
+        "type": "object",
+        "required": [
+          "status",
+          "trace_id",
+          "edge"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "healthy"
+            ]
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "edge": {
+            "type": "string"
+          }
+        }
+      },
+      "Network": {
+        "type": "object",
+        "required": [
+          "network_id",
+          "interface",
+          "prefix_length",
+          "status"
+        ],
+        "properties": {
+          "network_id": {
+            "type": "string",
+            "pattern": "^net_[0-9a-f]{12}$"
+          },
+          "interface": {
+            "type": "string"
+          },
+          "prefix_length": {
+            "type": "integer",
+            "enum": [
+              24
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available"
+            ]
+          }
+        }
+      },
+      "Resource": {
+        "type": "object",
+        "required": [
+          "resource_id",
+          "network_id",
+          "kind",
+          "vendor",
+          "last_seen_at"
+        ],
+        "properties": {
+          "resource_id": {
+            "type": "string",
+            "pattern": "^res_[0-9a-f]{12}$"
+          },
+          "network_id": {
+            "type": "string",
+            "pattern": "^net_[0-9a-f]{12}$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "host",
+              "router_candidate"
+            ]
+          },
+          "vendor": {
+            "type": "string"
+          },
+          "last_seen_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LeaseCreate": {
+        "type": "object",
+        "required": [
+          "network_id",
+          "ttl_seconds",
+          "capabilities",
+          "reason"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "network_id": {
+            "type": "string",
+            "pattern": "^net_[0-9a-f]{12}$"
+          },
+          "ttl_seconds": {
+            "type": "integer",
+            "minimum": 60,
+            "maximum": 1800,
+            "default": 900
+          },
+          "capabilities": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "network.discovery"
+              ]
+            }
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 300
+          }
+        }
+      },
+      "Lease": {
+        "type": "object",
+        "required": [
+          "lease_id",
+          "network_id",
+          "capabilities",
+          "issued_at",
+          "expires_at",
+          "status",
+          "trace_id"
+        ],
+        "properties": {
+          "lease_id": {
+            "type": "string"
+          },
+          "network_id": {
+            "type": "string"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "issued_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACTIVE"
+            ]
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "JobAccepted": {
+        "type": "object",
+        "required": [
+          "job_id",
+          "trace_id",
+          "status",
+          "network_id"
+        ],
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED"
+            ]
+          },
+          "network_id": {
+            "type": "string"
+          }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "required": [
+          "job_id",
+          "trace_id",
+          "network_id",
+          "status",
+          "resource_count"
+        ],
+        "properties": {
+          "job_id": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "network_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "QUEUED",
+              "RUNNING",
+              "SUCCEEDED",
+              "FAILED"
+            ]
+          },
+          "resource_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}
