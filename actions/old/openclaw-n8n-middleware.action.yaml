@@ -1,0 +1,1391 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenClaw Operator Control API + GWA",
+    "description": "Private API for OpenClaw and Google Workspace Adapter (GWA): Docs, Sheets, Drive search, and Calendar read-only operations through n8n.",
+    "version": "1.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://primary-production-0889.up.railway.app/webhook",
+      "description": "n8n production webhook base URL"
+    }
+  ],
+  "security": [
+    {
+      "OperatorApiKey": []
+    }
+  ],
+  "paths": {
+    "/openclaw/operator/sessions": {
+      "get": {
+        "operationId": "listOpenClawSessions",
+        "summary": "List OpenClaw sessions",
+        "description": "Returns operator sessions from the n8n registry.",
+        "parameters": [
+          {
+            "name": "project_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "PRJ-002"
+            },
+            "description": "Project code."
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "archived",
+                "all"
+              ],
+              "default": "active"
+            },
+            "description": "Session status filter."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListSessionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createOpenClawSession",
+        "summary": "Create OpenClaw session",
+        "description": "Creates a new session key for a new topic.",
+        "x-openai-isConsequential": false,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "title"
+                ],
+                "properties": {
+                  "project_code": {
+                    "type": "string",
+                    "default": "PRJ-002"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "agentId": {
+                    "type": "string",
+                    "default": "main",
+                    "enum": [
+                      "main",
+                      "default",
+                      "seller"
+                    ]
+                  },
+                  "session_key": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/openclaw/operator/sessions/select": {
+      "post": {
+        "operationId": "selectOpenClawSession",
+        "summary": "Select active session",
+        "description": "Sets the active OpenClaw session in n8n.",
+        "x-openai-isConsequential": false,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_key"
+                ],
+                "properties": {
+                  "session_key": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Selected session.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/openclaw/operator/sessions/message": {
+      "post": {
+        "operationId": "sendMessageToOpenClaw",
+        "summary": "Send message to OpenClaw",
+        "description": "Sends a message to a persistent OpenClaw session.",
+        "x-openai-isConsequential": false,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_key",
+                  "message"
+                ],
+                "properties": {
+                  "session_key": {
+                    "type": "string",
+                    "description": "Target OpenClaw session key."
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "agentId": {
+                    "type": "string",
+                    "default": "main",
+                    "enum": [
+                      "main",
+                      "default",
+                      "seller"
+                    ]
+                  },
+                  "model": {
+                    "type": "string",
+                    "default": "deepseek/deepseek-chat"
+                  },
+                  "thinking": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "minimal",
+                      "low",
+                      "medium",
+                      "high"
+                    ],
+                    "default": "medium"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OpenClaw response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenClawMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Blocked"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/openclaw/operator/sessions/compact": {
+      "post": {
+        "operationId": "compactOpenClawSession",
+        "summary": "Compact OpenClaw session",
+        "description": "Sends compact instructions to the same OpenClaw session.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_key"
+                ],
+                "properties": {
+                  "session_key": {
+                    "type": "string",
+                    "description": "Target OpenClaw session key."
+                  },
+                  "agentId": {
+                    "type": "string",
+                    "default": "main",
+                    "enum": [
+                      "main",
+                      "default",
+                      "seller"
+                    ]
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "default": "Сохрани решения, архитектуру, текущие задачи, риски и следующий шаг. Удали болтовню."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Compact result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OpenClawMessageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/openclaw/operator/sessions/reset": {
+      "post": {
+        "operationId": "resetOpenClawSession",
+        "summary": "Reset OpenClaw session",
+        "description": "Soft reset sends reset; hard reset archives and creates a new session.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_key",
+                  "mode"
+                ],
+                "properties": {
+                  "session_key": {
+                    "type": "string",
+                    "description": "Target OpenClaw session key."
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "soft",
+                      "hard"
+                    ],
+                    "default": "hard"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "agentId": {
+                    "type": "string",
+                    "default": "main",
+                    "enum": [
+                      "main",
+                      "default",
+                      "seller"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reset result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetSessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/openclaw/operator/status": {
+      "get": {
+        "operationId": "getOpenClawOperatorStatus",
+        "summary": "Get bridge status",
+        "description": "Checks n8n bridge status and optionally pings OpenClaw.",
+        "parameters": [
+          {
+            "name": "ping_openclaw",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "Whether n8n should ping OpenClaw."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/openclaw/operator/jobs": {
+      "get": {
+        "operationId": "getOpenClawJobStatus",
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Job id returned by n8n."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Job status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/gwa-mcp-operation": {
+      "post": {
+        "operationId": "runGoogleWorkspaceOperation",
+        "summary": "Run Google Workspace operation",
+        "description": "Run high-level GWA operations for Google Docs, Sheets, Drive search, and Calendar read-only through n8n. Supports chunked docs.read, Docs/Sheets guarded writes, Drive search, and Calendar availability/event reads. Uses the same OperatorApiKey bearer as OpenClaw.",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GwaOperationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operation result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GwaOperationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Blocked"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/project-workflow": {
+      "post": {
+        "operationId": "processProjectWorkflowTurn",
+        "summary": "Process one project workflow turn",
+        "description": "Submit one project conversation turn. The workflow, not the model, resolves whether this is planning, replan, execution, status, review, or guard. MVP returns a safe non-writing response or NOT_IMPLEMENTED/BLOCKED for unsupported modes.",
+        "x-openai-isConsequential": false,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectWorkflowTurnRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project workflow response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWorkflowTurnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Blocked"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OperatorApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Use the existing production OperatorApiKey bearer already used by the primary/OpenClaw/GWA Actions contract. Header value format: Bearer <op_...>. Do not expose the token in chat."
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "Blocked": {
+        "description": "Blocked by safety policy.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Session": {
+        "type": "object",
+        "required": [
+          "session_key",
+          "project_code",
+          "title",
+          "agentId",
+          "status",
+          "created_at"
+        ],
+        "properties": {
+          "session_key": {
+            "type": "string"
+          },
+          "project_code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ListSessionsResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "sessions",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "active_session_key": {
+            "type": "string"
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            }
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "session",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "session": {
+            "$ref": "#/components/schemas/Session"
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "OpenClawMessageResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "session_key",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "blocked",
+              "error",
+              "queued"
+            ]
+          },
+          "session_key": {
+            "type": "string"
+          },
+          "agentId": {
+            "type": "string"
+          },
+          "reply": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "job_id": {
+            "type": "string"
+          },
+          "blocked_reason": {
+            "type": "string"
+          }
+        }
+      },
+      "ResetSessionResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "old_session_key",
+          "mode",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "old_session_key": {
+            "type": "string"
+          },
+          "new_session_key": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "soft",
+              "hard"
+            ]
+          },
+          "reply": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "n8n",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded",
+              "error"
+            ]
+          },
+          "n8n": {
+            "type": "string"
+          },
+          "openclaw": {
+            "type": "string"
+          },
+          "active_session_key": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "JobStatusResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "job_id",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "succeeded",
+              "failed",
+              "timed_out",
+              "unknown"
+            ]
+          },
+          "job_id": {
+            "type": "string"
+          },
+          "reply": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "GwaOperationRequest": {
+        "type": "object",
+        "required": [
+          "operation"
+        ],
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "docs",
+              "sheets",
+              "drive",
+              "calendar"
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "enum": [
+              "docs.read",
+              "docs.readChunk",
+              "docs.appendText",
+              "docs.replaceText",
+              "docs.writeBatch",
+              "docs.get",
+              "docs.batchUpdate",
+              "docs.appendAndVerify",
+              "docs.replaceAndVerify",
+              "sheets.read",
+              "sheets.appendRow",
+              "sheets.updateRange",
+              "sheets.readRange",
+              "sheets.appendRowAndVerify",
+              "sheets.updateRangeAndVerify",
+              "drive.find",
+              "drive.search",
+              "workspace.search",
+              "drive.trash",
+              "calendar.availability",
+              "calendar.events.getMany",
+              "calendar.getMany",
+              "calendar.getAll",
+              "calendar.events.get",
+              "calendar.get",
+              "calendar.events.create",
+              "calendar.create",
+              "calendar.events.update",
+              "calendar.update",
+              "calendar.events.delete",
+              "calendar.delete"
+            ]
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Optional advanced object. Prefer top-level fields such as documentId, offset, maxChars, maxRows, fileId, allowHeaderUpdate, query, text, range, valuesJson, requestsJson, calendar, start, end, after, before, eventId, summary, description, location, attendees, or sendUpdates."
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "explicit_approval": {
+            "type": "boolean",
+            "default": false
+          },
+          "confirmed": {
+            "type": "boolean",
+            "default": false
+          },
+          "targetKind": {
+            "type": "string",
+            "enum": [
+              "",
+              "test-doc",
+              "test-sheet",
+              "test-calendar"
+            ],
+            "default": ""
+          },
+          "target": {
+            "type": "string",
+            "description": "Generic target. For docs it can be documentId; for drive.find it can be query; for sheets it can be spreadsheetId."
+          },
+          "dryRun": {
+            "type": "boolean",
+            "default": false
+          },
+          "documentId": {
+            "type": "string",
+            "description": "Google Docs document id. Also accepted through target for docs operations."
+          },
+          "spreadsheetId": {
+            "type": "string",
+            "description": "Google Sheets spreadsheet id. Optional for default test sheet."
+          },
+          "sheetName": {
+            "type": "string",
+            "description": "Sheet/tab name."
+          },
+          "range": {
+            "type": "string",
+            "description": "Sheet range, for example Sheet1!A1:C10."
+          },
+          "text": {
+            "type": "string",
+            "description": "Text to append or insert in Docs operations."
+          },
+          "targetText": {
+            "type": "string",
+            "description": "Text to find for replace operations."
+          },
+          "findText": {
+            "type": "string",
+            "description": "Alias for targetText."
+          },
+          "replacement": {
+            "type": "string",
+            "description": "Replacement text."
+          },
+          "replacementText": {
+            "type": "string",
+            "description": "Alias for replacement."
+          },
+          "query": {
+            "type": "string",
+            "description": "Google Drive search query."
+          },
+          "limit": {
+            "type": "integer",
+            "default": 10,
+            "description": "Maximum Drive search results."
+          },
+          "offset": {
+            "type": "integer",
+            "default": 0,
+            "description": "Start character offset for docs.readChunk/docs.read."
+          },
+          "maxChars": {
+            "type": "integer",
+            "default": 8000,
+            "description": "Maximum characters to return for docs.read or Sheets read."
+          },
+          "valuesJson": {
+            "type": "string",
+            "description": "JSON string for Sheets values when arrays are needed."
+          },
+          "rowsJson": {
+            "type": "string",
+            "description": "JSON string for row objects."
+          },
+          "requestsJson": {
+            "type": "string",
+            "description": "JSON string for Google Docs batchUpdate requests."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Optional timestamp for Sheets rows."
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional message for Sheets rows."
+          },
+          "source": {
+            "type": "string",
+            "description": "Optional source label for Sheets rows."
+          },
+          "maxRows": {
+            "type": "integer",
+            "default": 100,
+            "description": "Maximum rows to return for Sheets read."
+          },
+          "fileId": {
+            "type": "string",
+            "description": "Exact Google Drive file id for drive.trash."
+          },
+          "allowHeaderUpdate": {
+            "type": "boolean",
+            "default": false,
+            "description": "Allow Sheets updateRange to edit header row."
+          },
+          "calendar": {
+            "type": "string",
+            "description": "Google Calendar id/email for read-only calendar operations. Example: primary calendar email."
+          },
+          "calendarId": {
+            "type": "string",
+            "description": "Alias for calendar."
+          },
+          "start": {
+            "type": "string",
+            "description": "Calendar read window start time, ISO 8601."
+          },
+          "end": {
+            "type": "string",
+            "description": "Calendar read window end time, ISO 8601."
+          },
+          "after": {
+            "type": "string",
+            "description": "Alias for Calendar timeMin / events after this time, ISO 8601."
+          },
+          "before": {
+            "type": "string",
+            "description": "Alias for Calendar timeMax / events before this time, ISO 8601."
+          },
+          "eventId": {
+            "type": "string",
+            "description": "Google Calendar event id for event lookup, update, or delete."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Calendar event title/summary for create or update."
+          },
+          "title": {
+            "type": "string",
+            "description": "Alias for summary."
+          },
+          "description": {
+            "type": "string",
+            "description": "Calendar event description for create or update."
+          },
+          "location": {
+            "type": "string",
+            "description": "Calendar event location for create or update."
+          },
+          "attendees": {
+            "type": "string",
+            "description": "Comma-separated attendee emails for create."
+          },
+          "attendeesCsv": {
+            "type": "string",
+            "description": "Alias for attendees."
+          },
+          "sendUpdates": {
+            "type": "string",
+            "enum": [
+              "all",
+              "externalOnly",
+              "none"
+            ],
+            "default": "none",
+            "description": "Whether Google Calendar should send guest update notifications."
+          }
+        }
+      },
+      "GwaOperationResponse": {
+        "type": "object",
+        "required": [
+          "ok",
+          "operation",
+          "traceId",
+          "status"
+        ],
+        "properties": {
+          "ok": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          },
+          "service": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "traceId": {
+            "type": "string"
+          },
+          "operationId": {
+            "type": "string"
+          },
+          "executionId": {
+            "type": "string"
+          },
+          "stage": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "error",
+              "blocked",
+              "completed",
+              "failed"
+            ]
+          },
+          "safeToRetry": {
+            "type": "string",
+            "enum": [
+              "true",
+              "false"
+            ]
+          },
+          "resultSummary": {
+            "type": "string"
+          },
+          "resultCount": {
+            "type": "string"
+          },
+          "dataCount": {
+            "type": "number"
+          },
+          "content": {
+            "type": "string"
+          },
+          "substepEvidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "recoveryHint": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "error",
+          "trace_id"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "error",
+              "blocked"
+            ]
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "trace_id": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectWorkflowTurnRequest": {
+        "type": "object",
+        "required": [
+          "project_prefix",
+          "message"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "project_prefix": {
+            "type": "string",
+            "enum": [
+              "PRJ-014_CALMDOWN"
+            ],
+            "description": "Single project identifier. MVP supports PRJ-014_CALMDOWN only. Later this will be used to locate the project registry, spreadsheet, pipeline sheet, events sheet, and current stage."
+          },
+          "message": {
+            "type": "string",
+            "description": "The user message or instruction from the current chat turn."
+          },
+          "turn_type": {
+            "type": "string",
+            "enum": [
+              "user_message",
+              "continue",
+              "status_check",
+              "review_last_result"
+            ],
+            "default": "user_message",
+            "description": "Type of input signal. This is not a process command; the workflow resolves the internal mode itself."
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "stub",
+              "deepseek"
+            ],
+            "default": "stub",
+            "description": "Planning Brain provider for controlled preview tests. Use stub for cheap deterministic smoke. Use deepseek only for explicit no-write planning quality tests."
+          },
+          "conversation_summary": {
+            "type": "string",
+            "description": "Optional compact summary of previous conversation context."
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "Optional client trace id for correlation."
+          },
+          "request_id": {
+            "type": "string",
+            "description": "Optional client request id for idempotency/debug."
+          },
+          "dry_run": {
+            "type": "boolean",
+            "default": true,
+            "description": "Must remain true for GPT-facing MVP."
+          },
+          "allow_sheet_writes": {
+            "type": "boolean",
+            "default": false,
+            "description": "Must remain false for GPT-facing MVP."
+          },
+          "allow_external_execution": {
+            "type": "boolean",
+            "default": false,
+            "description": "Must remain false until execution route is explicitly approved."
+          },
+          "max_rows": {
+            "type": "integer",
+            "default": 5,
+            "minimum": 1,
+            "maximum": 50,
+            "description": "Optional bounded read/snapshot limit for internal planning preview."
+          }
+        }
+      },
+      "ProjectWorkflowTurnResponse": {
+        "type": "object",
+        "required": [
+          "service",
+          "status",
+          "project_prefix",
+          "resolved_mode",
+          "sheet_writes",
+          "assistant_instruction",
+          "evidence"
+        ],
+        "properties": {
+          "service": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ACCEPT",
+              "BLOCKED",
+              "NOT_IMPLEMENTED",
+              "ERROR"
+            ]
+          },
+          "reason_code": {
+            "type": "string"
+          },
+          "project_prefix": {
+            "type": "string"
+          },
+          "turn_type": {
+            "type": "string"
+          },
+          "resolved_mode": {
+            "type": "string",
+            "enum": [
+              "planning",
+              "replan",
+              "execution",
+              "status",
+              "review",
+              "guard",
+              "stub"
+            ]
+          },
+          "resolved_action": {
+            "type": "string"
+          },
+          "sheet_writes": {
+            "type": "string",
+            "enum": [
+              "none",
+              "blocked",
+              "unknown"
+            ]
+          },
+          "safe_to_retry": {
+            "type": "boolean"
+          },
+          "assistant_instruction": {
+            "$ref": "#/components/schemas/ProjectWorkflowAssistantInstruction"
+          },
+          "system_state": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "planning_brain": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "evidence": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectWorkflowAssistantInstruction": {
+        "type": "object",
+        "properties": {
+          "summary_for_user": {
+            "type": "string"
+          },
+          "say_to_user": {
+            "type": "string"
+          },
+          "questions_to_ask": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_safe_action": {
+            "type": "string"
+          },
+          "forbidden_claims": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
