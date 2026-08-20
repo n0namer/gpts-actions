@@ -42,6 +42,7 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 | Action | Version | Public contract |
 |---|---:|---|
 | VPS Terminal | `0.3.0` | `actions/vps-terminal.openapi.json` |
+| GPT Coding Station | `0.4.0-wave4` | `actions/gpt-coding-station.openapi.json` |
 | GitHub File Patch API | — | `actions/github-file-patch.openapi.json` |
 | OpenClaw Agent (sync) | — | `actions/openclaw.openapi.json` |
 | OpenClaw Async Hook | — | `actions/openclaw-hooks.openapi.json` |
