@@ -1,0 +1,226 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Universal Solver AgentField Control Plane",
+    "version": "0.1.0",
+    "description": "Bounded authenticated access to the Universal Solver AgentField Control Plane. Discover active agents/reasoners, start asynchronous executions, and poll execution status. Prefer discovery before execution."
+  },
+  "servers": [
+    {
+      "url": "https://agentfield-actions.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "agentfieldHealth",
+        "summary": "Check AgentField gateway and control-plane health",
+        "responses": {
+          "200": {
+            "description": "Healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          }
+        }
+      }
+    },
+    "/api/v1/discovery/capabilities": {
+      "get": {
+        "operationId": "discoverAgentfieldCapabilities",
+        "summary": "Discover currently active AgentField agents and reasoners",
+        "description": "Call this before execution. Set include_input_schema=true to obtain reasoner input schemas.",
+        "parameters": [
+          {
+            "name": "include_input_schema",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current capabilities",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          }
+        }
+      }
+    },
+    "/api/v1/execute/async/{reasoner}": {
+      "post": {
+        "operationId": "executeAgentfieldReasonerAsync",
+        "summary": "Start an asynchronous AgentField reasoner execution",
+        "description": "Use a reasoner identifier returned by discovery, normally in agent.reasoner form. The request body must follow the discovered input schema.",
+        "parameters": [
+          {
+            "name": "reasoner",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Discovered reasoner identifier, for example agent.reasoner."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Execution accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Execution accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or input"
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          },
+          "404": {
+            "description": "Reasoner not found or not active"
+          }
+        }
+      }
+    },
+    "/api/v1/executions/{execution_id}": {
+      "get": {
+        "operationId": "getAgentfieldExecution",
+        "summary": "Read AgentField execution status and result",
+        "parameters": [
+          {
+            "name": "execution_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Execution state/result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          },
+          "404": {
+            "description": "Execution not found"
+          }
+        }
+      }
+    },
+    "/api/v1/executions/active": {
+      "get": {
+        "operationId": "listActiveAgentfieldExecutions",
+        "sumary": "List currently active AgentField executions",
+        "responses": {
+          "200": {
+            "description": "Active executions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "AgentField Action gateway API key. Store only in the GPT Action authentication field."
+      }
+    }
+  }
+}
