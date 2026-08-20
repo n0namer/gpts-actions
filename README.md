@@ -46,7 +46,9 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 | OpenClaw Agent (sync) | — | `actions/openclaw.openapi.json` |
 | OpenClaw Async Hook | — | `actions/openclaw-hooks.openapi.json` |
 | Hermes Agent (sync + async) | — | `actions/hermes.openapi.json` |
-| LAN Ops Broker | `0.1.0` | `actions/lan-ops.openapi.json` |
+| LAN Ops Broker | `0.1.0` (transitional discovery-only) | `actions/lan-ops.openapi.json` |
+
+LAN Ops `0.1.0` is **not** the final operator surface. The accepted target product is a terminal-like operator plane over the authenticated Broker -> WireGuard -> Edge -> Runner path. A later LAN Ops Action revision must add bounded one-shot execution plus managed session start/read/write/terminate after those endpoints exist and pass runtime acceptance. Do not publish speculative operations before the implementation is callable.
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
