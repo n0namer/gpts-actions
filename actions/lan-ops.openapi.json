@@ -490,7 +490,7 @@
             "items": {"type": "string", "maxLength": 2048}
           },
           "working_dir": {"type": "string", "maxLength": 512},
-          "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000, "default": 30000}
+          "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 1800000, "default": 300000}
         }
       },
       "ExecResult": {
