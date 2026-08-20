@@ -460,6 +460,108 @@
       }
     },
     "schemas": {
+      "ExecRequest": {
+        "type": "object",
+        "required": ["cmd"],
+        "additionalProperties": false,
+        "properties": {
+          "cmd": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "description": "Command argv. The first item is the executable; no implicit shell is added.",
+            "items": {"type": "string", "maxLength": 2048}
+          },
+          "working_dir": {"type": "string", "maxLength": 512},
+          "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000, "default": 30000}
+        }
+      },
+      "ExecResult": {
+        "type": "object",
+        "required": ["status", "stdout", "stderr", "duration_ms", "timed_out", "truncated"],
+        "properties": {
+          "status": {"type": "string", "enum": ["completed", "timeout"]},
+          "exit_code": {"type": ["integer", "null"]},
+          "stdout": {"type": "string"},
+          "stderr": {"type": "string"},
+          "duration_ms": {"type": "integer", "minimum": 0},
+          "timed_out": {"type": "boolean"},
+          "truncated": {"type": "boolean"}
+        }
+      },
+      "SessionStart": {
+        "type": "object",
+        "required": ["cmd"],
+        "additionalProperties": false,
+        "properties": {
+          "cmd": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {"type": "string", "maxLength": 2048}
+          },
+          "working_dir": {"type": "string", "maxLength": 512}
+        }
+      },
+      "SessionState": {
+        "type": "object",
+        "required": ["session_id", "status", "running", "created_at", "updated_at", "next_seq", "truncated", "dropped_before_seq"],
+        "properties": {
+          "session_id": {"type": "string", "pattern": "^sess_[A-Za-z0-9]{8,64}$"},
+          "status": {"type": "string", "enum": ["running", "completed", "terminated"]},
+          "running": {"type": "boolean"},
+          "exit_code": {"type": ["integer", "null"]},
+          "created_at": {"type": "integer"},
+          "updated_at": {"type": "integer"},
+          "next_seq": {"type": "integer", "minimum": 0},
+          "truncated": {"type": "boolean"},
+          "dropped_before_seq": {"type": "integer", "minimum": 0}
+        }
+      },
+      "SessionChunk": {
+        "type": "object",
+        "required": ["seq", "stream", "data"],
+        "properties": {
+          "seq": {"type": "integer", "minimum": 1},
+          "stream": {"type": "string", "enum": ["stdout", "stderr"]},
+          "data": {"type": "string"}
+        }
+      },
+      "SessionRead": {
+        "type": "object",
+        "required": ["session_id", "status", "running", "created_at", "updated_at", "next_seq", "truncated", "dropped_before_seq", "chunks", "has_more"],
+        "properties": {
+          "session_id": {"type": "string"},
+          "status": {"type": "string", "enum": ["running", "completed", "terminated"]},
+          "running": {"type": "boolean"},
+          "exit_code": {"type": ["integer", "null"]},
+          "created_at": {"type": "integer"},
+          "updated_at": {"type": "integer"},
+          "next_seq": {"type": "integer"},
+          "truncated": {"type": "boolean"},
+          "dropped_before_seq": {"type": "integer"},
+          "chunks": {"type": "array", "items": {"$ref": "#/components/schemas/SessionChunk"}},
+          "has_more": {"type": "boolean"}
+        }
+      },
+      "SessionWrite": {
+        "type": "object",
+        "additionalProperties": false,
+        "anyOf": [{"required": ["data"]}, {"required": ["data_base64"]}],
+        "properties": {
+          "data": {"type": "string", "maxLength": 8192, "description": "UTF-8 stdin represented as text."},
+          "data_base64": {"type": "string", "maxLength": 16384, "description": "Base64-encoded stdin bytes for non-text input."}
+        }
+      },
+      "SessionWriteResult": {
+        "type": "object",
+        "required": ["session_id", "accepted_bytes", "status"],
+        "properties": {
+          "session_id": {"type": "string"},
+          "accepted_bytes": {"type": "integer", "minimum": 1},
+          "status": {"type": "string"}
+        }
+      },
       "Health": {
         "type": "object",
         "required": [
