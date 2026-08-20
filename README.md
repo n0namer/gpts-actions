@@ -10,6 +10,22 @@ Runtime/service repositories remain the implementation source of truth for code,
 
 `server-ops` is the operational router and records pointers, topology, runbooks and incidents. It does not store duplicate OpenAPI payloads.
 
+## Runtime discovery and routing
+
+This repository is a publication catalog, **not a routing allowlist**.
+
+For a configured GPT, the current runtime callable Action/tool surface is authoritative for what can actually be invoked now. The GPT should inspect current Action schemas/descriptions and select by capability fit, directness, specialization, verification evidence, blast radius and reversibility.
+
+Consequences:
+
+- a newly connected callable Action is automatically eligible for selection even if its name is not hard-coded in the System Prompt;
+- a schema or historical Action documented here but not connected to the current GPT is known but not callable;
+- a renamed Action is selected by its current capability/schema rather than an old remembered connector label;
+- a removed Action must never be hallucinated or simulated; the GPT should rediscover the current surface and select a fallback;
+- System Prompt changes are required when universal operating policy changes, not whenever the Action inventory changes.
+
+Detailed selection, recovery and verification rules live in GPT Knowledge (`Capability Cards`, `Operator Protocol`, `SERVICE_CONTRACTS`), while `gpts-system-prompt.md` keeps the compact runtime law.
+
 ## Current Action contracts
 
 | Action | Version | Public contract |
@@ -21,6 +37,12 @@ Runtime/service repositories remain the implementation source of truth for code,
 | Hermes Agent (sync + async) | — | `actions/hermes.openapi.json` |
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
+
+## Legacy preservation
+
+Retired Action contracts and old routing conventions must be preserved for audit/migration rather than silently erased. Historical material belongs under `legacy/` and must be clearly marked `LEGACY`, `DEPRECATED`, or `SUPERSEDED`; it must not be treated as proof that an operation is callable now.
+
+When an Action is retired, preserve the last known publication-safe contract when available, record its former purpose and replacement/current migration path, then remove it from the **Current Action contracts** table. Do not invent an archived schema if the original bytes are unavailable.
 
 ## Sync and async behavior
 
