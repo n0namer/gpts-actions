@@ -46,6 +46,7 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 | OpenClaw Agent (sync) | — | `actions/openclaw.openapi.json` |
 | OpenClaw Async Hook | — | `actions/openclaw-hooks.openapi.json` |
 | Hermes Agent (sync + async) | — | `actions/hermes.openapi.json` |
+| LAN Ops Broker | `0.1.0` | `actions/lan-ops.openapi.json` |
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
