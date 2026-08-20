@@ -74,6 +74,7 @@ When an Action is retired, preserve the last known publication-safe contract whe
 - OpenClaw sync: runtime `OPENCLAW_GATEWAY_TOKEN` value.
 - OpenClaw async hook: dedicated OpenClaw `hooks.token` value; do not reuse the Gateway token.
 - Hermes sync + async: runtime `API_SERVER_KEY` value.
+- LAN Ops Broker: runtime `BROKER_API_TOKEN` value. `EDGE_INTERNAL_TOKEN` is strictly Broker -> Edge and must never be placed in GPT Builder.
 
 Store only the secret value in the GPT Builder Bearer/API Key field. Never commit bearer values to this repository.
 
