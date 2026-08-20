@@ -215,11 +215,11 @@
   },
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-API-Key",
-        "description": "AgentField Action gateway API key. Store only in the GPT Action authentication field."
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque",
+        "description": "Use the ACTION_BEARER_TOKEN stored in the GPT Action authentication field. Never commit or expose the token value."
       }
     }
   }
