@@ -14,7 +14,16 @@ Runtime/service repositories remain the implementation source of truth for code,
 
 This repository is a publication catalog, **not a routing allowlist**.
 
-For a configured GPT, the current runtime callable Action/tool surface is authoritative for what can actually be invoked now. The GPT should inspect current Action schemas/descriptions and select by capability fit, directness, specialization, verification evidence, blast radius and reversibility.
+For a configured GPT, the current runtime callable Action/tool surface is authoritative for what can actually be invoked now. The GPT should inspect current Action schemas/descriptions and optimize for the **fastest safe verified outcome**: capability fit, expected time-to-DONE, reuse of existing/native artifacts, specialization, verification evidence, blast radius, reversibility and expected troubleshooting/rework cost.
+
+Default search order when applicable:
+
+1. target-platform existing resources, native catalog, one-click templates and managed operations;
+2. a specialized current Action for the exact mutation;
+3. official ready-to-use image/package/release/template;
+4. existing project artifact with a bounded patch;
+5. generic API/terminal/manual orchestration;
+6. new code/Compose/config from scratch only when faster reusable paths are absent or unsuitable.
 
 Consequences:
 
@@ -22,7 +31,9 @@ Consequences:
 - a schema or historical Action documented here but not connected to the current GPT is known but not callable;
 - a renamed Action is selected by its current capability/schema rather than an old remembered connector label;
 - a removed Action must never be hallucinated or simulated; the GPT should rediscover the current surface and select a fallback;
-- System Prompt changes are required when universal operating policy changes, not whenever the Action inventory changes.
+- System Prompt changes are required when universal operating policy changes, not whenever the Action inventory changes;
+- for a targeted GitHub file mutation, `GitHub File Patch API` should normally beat a generic whole-file rewrite when it is callable and its preview/validation/expected-SHA/reread workflow covers the task;
+- for a known target platform such as Coolify, inspect its existing resources and native one-click service/template catalog before generating a new Docker Compose stack.
 
 Detailed selection, recovery and verification rules live in GPT Knowledge (`Capability Cards`, `Operator Protocol`, `SERVICE_CONTRACTS`), while `gpts-system-prompt.md` keeps the compact runtime law.
 
