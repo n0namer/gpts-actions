@@ -42,6 +42,7 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 | Action | Version | Public contract |
 |---|---:|---|
 | VPS Terminal | `0.3.0` | `actions/vps-terminal.openapi.json` |
+| GPT Coding Station | `0.4.0-wave4` | `actions/gpt-coding-station.openapi.json` |
 | GitHub File Patch API | — | `actions/github-file-patch.openapi.json` |
 | OpenClaw Agent (sync) | — | `actions/openclaw.openapi.json` |
 | OpenClaw Async Hook | — | `actions/openclaw-hooks.openapi.json` |
@@ -67,6 +68,7 @@ When an Action is retired, preserve the last known publication-safe contract whe
 
 ## Bearer mapping
 
+- GPT Coding Station: Coolify application environment variable `ACTION_BEARER_TOKEN`; the API container receives only the SHA-256 verifier through `STATION_API_AUTH_SHA256`.
 - OpenClaw sync: runtime `OPENCLAW_GATEWAY_TOKEN` value.
 - OpenClaw async hook: dedicated OpenClaw `hooks.token` value; do not reuse the Gateway token.
 - Hermes sync + async: runtime `API_SERVER_KEY` value.
