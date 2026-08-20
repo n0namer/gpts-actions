@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "LAN Ops Broker",
-    "version": "0.1.0",
-    "description": "Controlled read-only LAN discovery through a dedicated private edge. Responses contain opaque resource identifiers and never expose raw LAN credentials."
+    "version": "0.2.0",
+    "description": "Authenticated LAN Ops operator plane over a private Edge. It exposes bounded one-shot Windows command execution and managed terminal sessions in addition to LAN discovery. The native Runner remains localhost-only behind Broker -> WireGuard -> Edge -> Runner."
   },
   "servers": [
     {
