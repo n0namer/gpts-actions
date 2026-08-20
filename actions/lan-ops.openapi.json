@@ -225,7 +225,7 @@
     },
     "/v1/jobs/{job_id}": {
       "get": {
-        "operationId": "getLanStatus",
+        "operationId": "getLanJobStatus",
         "summary": "Read a LAN discovery job state and safe result count.",
         "x-openai-isConsequential": false,
         "parameters": [
