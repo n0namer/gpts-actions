@@ -67,8 +67,9 @@ When an Action is retired, preserve the last known publication-safe contract whe
 - Hermes sync uses `/v1/chat/completions` or `/v1/responses` and waits for the final response in the same HTTPS request.
 - Hermes async uses `/v1/runs` plus `/v1/runs/{run_id}` for polling and `/v1/runs/{run_id}/stop` for cancellation.
 
-## Bearer mapping
+## Authentication mapping
 
+- Universal Solver AgentField Control Plane: the public gateway verifies `X-API-Key` against its secret `AGENTFIELD_ACTION_KEY`; the value must live only in the gateway secret store and the GPT Action/API-key authentication field. Native AgentField MCP is available at `/mcp` behind the same gateway authentication.
 - GPT Coding Station: Coolify application environment variable `ACTION_BEARER_TOKEN`; the API container receives only the SHA-256 verifier through `STATION_API_AUTH_SHA256`.
 - OpenClaw sync: runtime `OPENCLAW_GATEWAY_TOKEN` value.
 - OpenClaw async hook: dedicated OpenClaw `hooks.token` value; do not reuse the Gateway token.
