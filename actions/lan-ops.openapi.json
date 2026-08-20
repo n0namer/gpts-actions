@@ -476,17 +476,6 @@
         "scheme": "bearer"
       }
     },
-    "parameters": {
-      "SessionId": {
-        "name": "session_id",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string",
-          "pattern": "^sess_[A-Za-z0-9]{8,64}$"
-        }
-      }
-    },
     "schemas": {
       "ExecRequest": {
         "type": "object",
