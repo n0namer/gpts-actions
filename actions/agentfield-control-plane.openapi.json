@@ -265,7 +265,7 @@
         "summary": "List AgentField nodes and health for debug routing",
         "description": "Read-only. Use to identify the node hosting a failing reasoner before reading node details or node logs.",
         "responses": {
-          "200": {"description":"Node summary","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "200": {"description":"Node summary","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
           "401": {"description":"Missing or invalid bearer token"}
         }
       }
