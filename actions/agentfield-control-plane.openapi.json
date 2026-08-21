@@ -227,6 +227,7 @@
     "/api/ui/v1/executions/recent": {
       "get": {
         "operationId": "listRecentAgentfieldExecutions",
+        "x-openai-isConsequential": false,
         "summary": "List recent executions for debug triage",
         "description": "Read-only starting point when the execution id is unknown. Use a small limit, identify the relevant execution, then pivot to status/events/details/logs.",
         "parameters": [
