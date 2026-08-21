@@ -54,7 +54,7 @@ LAN Ops `0.2.0` publishes the accepted terminal-capable operator surface over th
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
-### AgentField `0.2.7` debugging and persisted logs surface
+### AgentField `0.2.8` debugging and persisted logs surface
 
 The AgentField Action is an evidence-first diagnostic interface, not a generic shell. It exposes health, bounded discovery, execution/status, recent executions, execution details/logs, workflow-run correlation, node summary/details, live node logs, reasoner inventory, and persisted-log reads from the workforce volume.
 
