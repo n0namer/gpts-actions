@@ -478,6 +478,7 @@
       "DynamicInput": {
         "type": "object",
         "description": "Reasoner-specific input. Follow the schema returned by discovery.",
+        "properties": {},
         "additionalProperties": true
       },
       "WebhookConfig": {
