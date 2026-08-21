@@ -464,7 +464,6 @@
       },
       "DynamicInput": {
         "type": "object",
-        "properties": {},
         "description": "Reasoner-specific input. Follow the schema returned by discovery.",
         "additionalProperties": true
       },
