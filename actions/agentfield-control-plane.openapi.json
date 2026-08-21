@@ -207,6 +207,7 @@
     "/api/ui/v1/executions/{execution_id}/logs": {
       "get": {
         "operationId": "getAgentfieldExecutionLogs",
+        "x-openai-isConsequential": false,
         "summary": "Read a bounded tail of structured execution logs",
         "description": "Read-only. Start with a small tail and increase only when needed. Logs may contain application data; do not expose secrets in the answer.",
         "parameters": [
