@@ -273,6 +273,7 @@
     "/api/ui/v1/reasoners/all": {
       "get": {
         "operationId": "listAgentfieldReasoners",
+        "x-openai-isConsequential": false,
         "summary": "List the native AgentField reasoner inventory",
         "description": "Read-only. Prefer bounded discovery for execution input schemas; use this inventory for diagnostics and node/reasoner correlation.",
         "responses": {
