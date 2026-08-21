@@ -382,7 +382,6 @@
           },
           "properties": {
             "type": "object",
-            "properties": {},
             "additionalProperties": true
           },
           "required": {
