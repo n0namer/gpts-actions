@@ -445,20 +445,32 @@
       "CapabilitiesResponse": {
         "type": "object",
         "properties": {
+          "discovered_at": {
+            "type": "string"
+          },
+          "total_agents": {
+            "type": "integer"
+          },
+          "total_reasoners": {
+            "type": "integer"
+          },
+          "total_skills": {
+            "type": "integer"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": {"type": "integer"},
+              "offset": {"type": "integer"},
+              "has_more": {"type": "boolean"}
+            },
+            "additionalProperties": true
+          },
           "capabilities": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Capability"
             }
-          },
-          "total": {
-            "type": "integer"
-          },
-          "limit": {
-            "type": "integer"
-          },
-          "offset": {
-            "type": "integer"
           }
         },
         "additionalProperties": true
