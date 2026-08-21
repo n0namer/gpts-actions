@@ -306,7 +306,7 @@
           {"name":"node_id","in":"path","required":true,"schema":{"type":"string"}}
         ],
         "responses": {
-          "200": {"description":"Node details","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "200": {"description":"Node details","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
           "401": {"description":"Missing or invalid bearer token"},
           "404": {"description":"Node not found"}
         }
