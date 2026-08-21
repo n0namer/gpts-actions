@@ -191,6 +191,7 @@
     "/api/ui/v1/executions/{execution_id}/details": {
       "get": {
         "operationId": "getAgentfieldExecutionDebugDetails",
+        "x-openai-isConsequential": false,
         "summary": "Read rich execution details from the native AgentField UI API",
         "description": "Read-only debugging view with execution metadata and related state. Prefer this after getAgentfieldExecution when more context is needed.",
         "parameters": [
