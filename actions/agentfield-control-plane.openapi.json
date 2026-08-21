@@ -330,6 +330,80 @@
         }
       }
     },
+    "/persisted-logs/summary": {
+      "get": {
+        "operationId": "getAgentfieldPersistedLogsSummary",
+        "x-openai-isConsequential": false,
+        "summary": "Summarize persisted AgentField logs and installed agents",
+        "description": "Read persisted log inventory from the AgentField workforce volume. Works even when agent processes are offline. Output is bounded and credential-like values are redacted.",
+        "responses": {
+          "200": {"description":"Persisted log summary","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
+    "/persisted-logs/agents": {
+      "get": {
+        "operationId": "listAgentfieldPersistedLogAgents",
+        "x-openai-isConsequential": false,
+        "summary": "List installed AgentField agents with persisted log metadata",
+        "description": "Read the persisted AgentField installation registry through the native af CLI. This does not require the corresponding agent process to be online.",
+        "responses": {
+          "200": {"description":"Persisted AgentField agent inventory","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
+    "/persisted-logs/agent/{node_id}": {
+      "get": {
+        "operationId": "getAgentfieldPersistedAgentLogs",
+        "x-openai-isConsequential": false,
+        "summary": "Read persisted logs for an installed AgentField agent",
+        "description": "Read a bounded persisted log tail through native af logs. Use this when a node is offline or its live /agentfield/v1/logs endpoint is unavailable.",
+        "parameters": [
+          {"name":"node_id","in":"path","required":true,"schema":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"}},
+          {"name":"tail_lines","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":500,"default":100}}
+        ],
+        "responses": {
+          "200": {"description":"Bounded persisted agent logs","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
+          "400": {"description":"Invalid agent or tail request"},
+          "401": {"description":"Missing or invalid bearer token"},
+          "404": {"description":"Persisted agent log not found"},
+          "502": {"description":"Native af log reader failed"}
+        }
+      }
+    },
+    "/persisted-logs/runlogs": {
+      "get": {
+        "operationId": "listAgentfieldPersistedRunlogs",
+        "x-openai-isConsequential": false,
+        "summary": "List persisted AgentField runlog files",
+        "description": "List only allowlisted log-like files in the persisted runlogs directory. Arbitrary filesystem paths, config files, PID files and secret directories are not exposed.",
+        "responses": {
+          "200": {"description":"Persisted runlog file inventory","content":{"application/json":{"schema":{"type":"object","properties":{"count":{"type":"integer"},"files":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"size_bytes":{"type":"integer"},"mtime":{"type":"integer"}},"additionalProperties":true}}},"additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
+    "/persisted-logs/runlog/{name}": {
+      "get": {
+        "operationId": "getAgentfieldPersistedRunlog",
+        "x-openai-isConsequential": false,
+        "summary": "Read a bounded tail of one persisted AgentField runlog",
+        "description": "Read one allowlisted runlog by filename. Path traversal and non-log file types are rejected. Returned lines are bounded and credential-like values are redacted.",
+        "parameters": [
+          {"name":"name","in":"path","required":true,"schema":{"type":"string","pattern":"^[A-Za-z0-9._-]{1,120}$"}},
+          {"name":"tail_lines","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":500,"default":100}}
+        ],
+        "responses": {
+          "200": {"description":"Bounded persisted runlog tail","content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string"},"tail_lines":{"type":"integer"},"size_bytes":{"type":"integer"},"mtime":{"type":"integer"},"lines":{"type":"array","items":{"type":"string"}}},"additionalProperties":true}}}},
+          "400": {"description":"Invalid log name or tail request"},
+          "401": {"description":"Missing or invalid bearer token"},
+          "403": {"description":"Requested file type is not allowed"},
+          "404": {"description":"Persisted runlog not found"}
+        }
+      }
+    },
     "/api/v1/executions/active": {
       "get": {
         "operationId": "listActiveAgentfieldExecutions",
