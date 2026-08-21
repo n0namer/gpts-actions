@@ -62,7 +62,9 @@ Recommended GPT debugging order is: health → locate execution/run → status/r
 
 SSE execution events remain runtime-accessible but are intentionally excluded from the GPT Action debug funnel because long-lived streaming responses can time out or flood context. Lifecycle writes are separate from diagnosis and must not be inferred from read-only debugging operations.
 
-Publishing `0.2.1` here and deploying a matching gateway do not update an already-open GPT conversation. GPT Builder must import/refresh the current schema, and a new-session acceptance must confirm that the new operation IDs are actually callable before claiming `AGENTFIELD_DEBUG_ACTION_PASS`.
+`0.2.2` is a GPT Builder hardening release of the publication schema: all 14 operations carry explicit `x-openai-isConsequential` semantics, operation IDs are unique, and empty schema objects were removed while preserving dynamic reasoner input/output shapes. Node process logs intentionally retain the native bounded `application/x-ndjson` wire format; this is the only response media type that differs from the JSON-only working reference contracts and must be confirmed by Builder import/Preview before final acceptance.
+
+Publishing `0.2.2` here does not update an already-open GPT conversation. GPT Builder must import/refresh the current schema, and a new-session acceptance must confirm that all published operation IDs—including node logs—are actually callable before claiming `AGENTFIELD_DEBUG_ACTION_PASS`.
 
 ## Legacy preservation
 
