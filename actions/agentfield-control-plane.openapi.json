@@ -320,7 +320,7 @@
         "description": "Read-only fallback for deeper debugging when execution-scoped evidence is insufficient. Start with a small tail. Process logs can contain application data; never expose credentials or secrets.",
         "parameters": [
           {"name":"node_id","in":"path","required":true,"schema":{"type":"string"}},
-          {"name":"tail","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":200,"default":50}}
+          {"name":"tail_lines","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":200,"default":50},"description":"Native AgentField node-log parameter: return the last N process log lines."}
         ],
         "responses": {
           "200": {"description":"NDJSON process log stream","content":{"application/x-ndjson":{"schema":{"type":"string"}}}},
