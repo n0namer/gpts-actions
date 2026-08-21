@@ -98,7 +98,7 @@
         "operationId": "executeAgentfieldReasonerAsync",
         "x-openai-isConsequential": true,
         "summary": "Start an asynchronous AgentField reasoner execution",
-        "description": "Use a reasoner identifier returned by discovery. The input object must follow that reasoner's discovered input schema.",
+        "description": "Construct the execution target from discovery as <agent_id>.<reasoner_id> using the enclosing capability's agent_id and the selected reasoner's id, for example contract-af.analyze. Do not pass a colon-separated native invocation_target value; the execute endpoint requires dot notation. The input object must follow that reasoner's discovered input schema.",
         "parameters": [
           {
             "name": "reasoner",
