@@ -54,6 +54,16 @@ LAN Ops `0.2.0` publishes the accepted terminal-capable operator surface over th
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
+### AgentField `0.2.1` debugging surface
+
+The AgentField Action is designed as an evidence-first diagnostic interface, not as a generic shell. In addition to health, discovery, execution and status, the public contract exposes bounded read-only debugging operations for recent executions, execution details, structured execution logs, workflow-run list/detail, node summary/detail, bounded node process logs and reasoner inventory.
+
+Recommended GPT debugging order is: health → locate execution/run → status/result → execution details → bounded execution logs → correlated workflow run → node details/process logs only if execution-scoped evidence is insufficient. Keep correlation identifiers (`execution_id`, `run_id`/workflow id, node/agent id, reasoner id and timestamps) in the analysis. Start with a small log tail and add level/source/text filters only as needed; do not dump whole log streams into model context.
+
+SSE execution events remain runtime-accessible but are intentionally excluded from the GPT Action debug funnel because long-lived streaming responses can time out or flood context. Lifecycle writes are separate from diagnosis and must not be inferred from read-only debugging operations.
+
+Publishing `0.2.1` here and deploying a matching gateway do not update an already-open GPT conversation. GPT Builder must import/refresh the current schema, and a new-session acceptance must confirm that the new operation IDs are actually callable before claiming `AGENTFIELD_DEBUG_ACTION_PASS`.
+
 ## Legacy preservation
 
 Retired Action contracts and old routing conventions must be preserved for audit/migration rather than silently erased. Historical material belongs under `legacy/` and must be clearly marked `LEGACY`, `DEPRECATED`, or `SUPERSEDED`; it must not be treated as proof that an operation is callable now.
