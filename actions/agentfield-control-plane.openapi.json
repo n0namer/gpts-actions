@@ -94,6 +94,7 @@
     "/api/v1/execute/async/{reasoner}": {
       "post": {
         "operationId": "executeAgentfieldReasonerAsync",
+        "x-openai-isConsequential": true,
         "summary": "Start an asynchronous AgentField reasoner execution",
         "description": "Use a reasoner identifier returned by discovery. The input object must follow that reasoner's discovered input schema.",
         "parameters": [
