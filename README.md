@@ -54,7 +54,7 @@ LAN Ops `0.2.0` publishes the accepted terminal-capable operator surface over th
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
-### AgentField `0.2.4` debugging surface
+### AgentField `0.2.5` debugging surface
 
 The AgentField Action is designed as an evidence-first diagnostic interface, not as a generic shell. In addition to health, discovery, execution and status, the public contract exposes bounded read-only debugging operations for recent executions, execution details, structured execution logs, workflow-run list/detail, node summary/detail, bounded node process logs and reasoner inventory.
 
@@ -62,9 +62,9 @@ Recommended GPT debugging order is: health → locate execution/run → status/r
 
 SSE execution events remain runtime-accessible but are intentionally excluded from the GPT Action debug funnel because long-lived streaming responses can time out or flood context. Lifecycle writes are separate from diagnosis and must not be inferred from read-only debugging operations.
 
-`0.2.4` remains a provisional publication-schema release, not a Builder acceptance claim. It retains the 0.2.2 normalization (`x-openai-isConsequential` metadata on all 14 operations and removal of several empty schema objects), documents the live execute target format `<agent_id>.<reasoner_id>`, corrects node-log bounding to the native `tail_lines` query parameter, and explicitly marks native colon-form `invocation_target` discovery values as informational metadata rather than executable targets. The known-working reference contracts use both annotated and unannotated operations, so the normalization itself is not evidence of GPT Builder compatibility. Node process logs intentionally retain the native bounded `application/x-ndjson` wire format; this is the only response media type that differs from the selected JSON-only working reference contracts and must be confirmed by Builder import/Preview before final acceptance.
+`0.2.5` remains a provisional publication-schema release, not a Builder acceptance claim. It retains the prior normalization, documents the live execute target format `<agent_id>.<reasoner_id>`, keeps native node-log bounding as `tail_lines`, and aligns the discovery response schema with the observed runtime payload: `invocation_target` is reasoner-level metadata, while top-level discovery metadata uses `discovered_at`, `total_agents`, `total_reasoners`, `total_skills`, and `pagination`. Colon-form `invocation_target` values remain informational and must not be passed directly to execute. Node process logs intentionally retain the native bounded `application/x-ndjson` wire format; Builder import/Preview and new-session Action acceptance are still required before final acceptance.
 
-Publishing `0.2.4` here does not update an already-open GPT conversation. GPT Builder must import/refresh the current schema, and a new-session acceptance must confirm that all published operation IDs—including node logs—are actually callable before claiming `AGENTFIELD_DEBUG_ACTION_PASS`.
+Publishing `0.2.5` here does not update an already-open GPT conversation. GPT Builder must import/refresh the current schema, and a new-session acceptance must confirm that all published operation IDs—including node logs—are actually callable before claiming `AGENTFIELD_DEBUG_ACTION_PASS`.
 
 ## Legacy preservation
 
