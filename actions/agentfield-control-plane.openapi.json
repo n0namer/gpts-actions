@@ -433,10 +433,6 @@
           "health_status": {
             "type": "string"
           },
-          "invocation_target": {
-            "type": "string",
-            "description": "Native AgentField discovery metadata. Do not pass this value directly to execute when it uses colon notation such as agent:reasoner; construct the executable target as <agent_id>.<reasoner_id> instead."
-          },
           "reasoners": {
             "type": "array",
             "items": {
