@@ -261,6 +261,7 @@
     "/api/ui/v1/nodes/summary": {
       "get": {
         "operationId": "listAgentfieldNodes",
+        "x-openai-isConsequential": false,
         "summary": "List AgentField nodes and health for debug routing",
         "description": "Read-only. Use to identify the node hosting a failing reasoner before reading node details or node logs.",
         "responses": {
