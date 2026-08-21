@@ -43,7 +43,7 @@
         "operationId": "discoverAgentfieldCapabilities",
         "x-openai-isConsequential": false,
         "summary": "Discover currently active AgentField agents and reasoners",
-        "description": "Call this before execution. Keep discovery bounded: default pages omit input schemas. When a candidate reasoner is found, request a small page with include_input_schema=true to obtain its exact input schema. Paginate with offset instead of requesting the full fleet at once.",
+        "description": "Call this before execution. Keep discovery bounded: default pages omit input schemas. When a candidate reasoner is found, request a small page with include_input_schema=true to obtain its exact input schema. For execution, construct <agent_id>.<reasoner_id>; a native colon-form invocation_target returned by discovery is informational metadata and must not be passed directly to execute. Paginate with offset instead of requesting the full fleet at once.",
         "parameters": [
           {
             "name": "include_input_schema",
