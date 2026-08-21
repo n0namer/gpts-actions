@@ -54,17 +54,15 @@ LAN Ops `0.2.0` publishes the accepted terminal-capable operator surface over th
 
 VPS Terminal `0.3.0` exposes bounded `exec.run` plus managed session start/read/write/terminate. Terminal mutation is server-side restricted to the allowed OpenClaw target; arbitrary-container exec is not part of the public Action contract.
 
-### AgentField `0.2.6` debugging surface
+### AgentField `0.2.7` debugging and persisted logs surface
 
-The AgentField Action is designed as an evidence-first diagnostic interface, not as a generic shell. In addition to health, discovery, execution and status, the public contract exposes bounded read-only debugging operations for recent executions, execution details, structured execution logs, workflow-run list/detail, node summary/detail, bounded node process logs and reasoner inventory.
+The AgentField Action is an evidence-first diagnostic interface, not a generic shell. It exposes health, bounded discovery, execution/status, recent executions, execution details/logs, workflow-run correlation, node summary/details, live node logs, reasoner inventory, and persisted-log reads from the workforce volume.
 
-Recommended GPT debugging order is: health → locate execution/run → status/result → execution details → bounded execution logs → correlated workflow run → node details/process logs only if execution-scoped evidence is insufficient. Keep correlation identifiers (`execution_id`, `run_id`/workflow id, node/agent id, reasoner id and timestamps) in the analysis. Start with a small log tail and add level/source/text filters only as needed; do not dump whole log streams into model context.
+Recommended order is: execution-scoped evidence first, then live node logs, then persisted logs when a node is offline or its live `/agentfield/v1/logs` route is unavailable. Persisted reads are bounded, read-only and credential-like values are redacted. Arbitrary filesystem paths, config files, PID files and secret directories are not exposed.
 
-SSE execution events remain runtime-accessible but are intentionally excluded from the GPT Action debug funnel because long-lived streaming responses can time out or flood context. Lifecycle writes are separate from diagnosis and must not be inferred from read-only debugging operations.
+`0.2.7` adds five persisted-log operations: summary, installed-agent inventory, persisted agent logs through native `af logs`, runlog inventory, and bounded runlog tail. Native live node logs keep `tail_lines` and `application/x-ndjson`; persisted-log responses are bounded JSON.
 
-`0.2.5` remains a provisional publication-schema release, not a Builder acceptance claim. It retains the prior normalization, documents the live execute target format `<agent_id>.<reasoner_id>`, keeps native node-log bounding as `tail_lines`, and aligns the discovery response schema with the observed runtime payload: `invocation_target` is reasoner-level metadata, while top-level discovery metadata uses `discovered_at`, `total_agents`, `total_reasoners`, `total_skills`, and `pagination`. Colon-form `invocation_target` values remain informational and must not be passed directly to execute. Node process logs intentionally retain the native bounded `application/x-ndjson` wire format; Builder import/Preview and new-session Action acceptance are still required before final acceptance.
-
-Publishing `0.2.5` here does not update an already-open GPT conversation. GPT Builder must import/refresh the current schema, and a new-session acceptance must confirm that all published operation IDs—including node logs—are actually callable before claiming `AGENTFIELD_DEBUG_ACTION_PASS`.
+The previously accepted `0.2.6` Builder surface exposed 14 operations. `0.2.7` publishes 19 operations total. Publishing the schema does not refresh an already-open GPT conversation; Builder re-import and a new-session acceptance are required before claiming the five persisted-log operation IDs are callable there.
 
 ## Legacy preservation
 
