@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Universal Solver AgentField Control Plane",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Authenticated bounded access to the Universal Solver AgentField Control Plane for execution and evidence-first debugging. Recommended debug funnel: health -> bounded discovery -> active/recent executions -> execution status -> bounded details/logs -> correlated workflow run -> node logs only if execution-scoped evidence is insufficient. Debug routes are read-only and log reads are bounded. The native execution-events endpoint is SSE and is intentionally omitted from the GPT Action surface to avoid streaming timeouts."
   },
   "servers": [
