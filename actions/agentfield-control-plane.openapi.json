@@ -300,6 +300,7 @@
     "/api/ui/v1/nodes/{node_id}/details": {
       "get": {
         "operationId": "getAgentfieldNodeDetails",
+        "x-openai-isConsequential": false,
         "summary": "Read AgentField node details and reasoner inventory",
         "parameters": [
           {"name":"node_id","in":"path","required":true,"schema":{"type":"string"}}
