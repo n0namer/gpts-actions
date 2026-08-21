@@ -479,7 +479,6 @@
           },
           "headers": {
             "type": "object",
-            "properties": {},
             "additionalProperties": {
               "type": "string"
             }
