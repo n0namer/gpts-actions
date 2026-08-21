@@ -233,6 +233,60 @@
         }
       }
     },
+    "/api/ui/v1/executions/recent": {
+      "get": {
+        "operationId": "listRecentAgentfieldExecutions",
+        "summary": "List recent executions for debug triage",
+        "description": "Read-only starting point when the execution id is unknown. Use a small limit, identify the relevant execution, then pivot to status/events/details/logs.",
+        "parameters": [
+          {"name":"limit","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":100,"default":20}},
+          {"name":"offset","in":"query","required":false,"schema":{"type":"integer","minimum":0,"default":0}}
+        ],
+        "responses": {
+          "200": {"description":"Recent executions","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
+    "/api/ui/v2/workflow-runs": {
+      "get": {
+        "operationId": "listAgentfieldWorkflowRuns",
+        "summary": "List recent workflow runs for cross-execution triage",
+        "description": "Read-only. Use when a user refers to a run/workflow but does not know the execution id.",
+        "parameters": [
+          {"name":"page","in":"query","required":false,"schema":{"type":"integer","minimum":1,"default":1}},
+          {"name":"page_size","in":"query","required":false,"schema":{"type":"integer","minimum":1,"maximum":100,"default":20}},
+          {"name":"status","in":"query","required":false,"schema":{"type":"string"}},
+          {"name":"search","in":"query","required":false,"schema":{"type":"string","maxLength":200}}
+        ],
+        "responses": {
+          "200": {"description":"Workflow runs","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
+    "/api/ui/v1/nodes/summary": {
+      "get": {
+        "operationId": "listAgentfieldNodes",
+        "summary": "List AgentField nodes and health for debug routing",
+        "description": "Read-only. Use to identify the node hosting a failing reasoner before reading node details or node logs.",
+        "responses": {
+          "200": {"description":"Node summary","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
+    "/api/ui/v1/reasoners/all": {
+      "get": {
+        "operationId": "listAgentfieldReasoners",
+        "summary": "List the native AgentField reasoner inventory",
+        "description": "Read-only. Prefer bounded discovery for execution input schemas; use this inventory for diagnostics and node/reasoner correlation.",
+        "responses": {
+          "200": {"description":"Reasoner inventory","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "401": {"description":"Missing or invalid bearer token"}
+        }
+      }
+    },
     "/api/ui/v2/workflow-runs/{run_id}": {
       "get": {
         "operationId": "getAgentfieldWorkflowRun",
