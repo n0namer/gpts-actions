@@ -19,6 +19,7 @@
     "/health": {
       "get": {
         "operationId": "agentfieldHealth",
+        "x-openai-isConsequential": false,
         "summary": "Check AgentField gateway and control-plane health",
         "responses": {
           "200": {
