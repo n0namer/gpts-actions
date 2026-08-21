@@ -1,0 +1,953 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VPS Terminal",
+    "version": "0.3.0",
+    "description": "Bounded generic terminal API for GPT Actions. Terminal execution is server-side restricted to the single neutral Workbench target; callers cannot choose arbitrary containers."
+  },
+  "servers": [
+    {
+      "url": "https://vps-terminal.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "security": [],
+        "summary": "Check VPS Terminal liveness",
+        "responses": {
+          "200": {
+            "description": "Live",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["status", "service", "gateway", "upstream"],
+                  "properties": {
+                    "status": {"type": "string"},
+                    "service": {"type": "string"},
+                    "gateway": {"type": "string"},
+                    "upstream": {
+                      "type": "object",
+                      "required": ["service", "version"],
+                      "properties": {
+                        "service": {"type": "string"},
+                        "version": {"type": ["string", "null"]}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/ready": {
+      "get": {
+        "operationId": "ready",
+        "security": [],
+        "summary": "Check VPS Terminal and Docker readiness",
+        "responses": {
+          "200": {
+            "description": "Ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ready"
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/api/v1/version": {
+      "get": {
+        "operationId": "version",
+        "summary": "Read service version information",
+        "responses": {
+          "200": {
+            "description": "Version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["service", "upstream"],
+                  "properties": {
+                    "service": {"type": "string"},
+                    "upstream": {
+                      "type": "object",
+                      "properties": {
+                        "agentVersion": {"type": "string"},
+                        "protocolName": {"type": "string"},
+                        "protocolVersion": {"type": "string"},
+                        "adapter": {"type": "string"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/containers": {
+      "get": {
+        "operationId": "listContainers",
+        "summary": "List running containers with bounded cursor pagination",
+        "description": "Read-only operational inventory. Terminal execution cannot target these arbitrary container identifiers.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 12
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque continuation cursor.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bounded page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContainerPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/containers/{container}": {
+      "get": {
+        "operationId": "inspectContainer",
+        "summary": "Read compact redacted container details",
+        "parameters": [
+          {
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Compact redacted detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["id", "name", "image", "created", "restart_count", "state", "health", "network_mode", "networks", "mounts"],
+                  "properties": {
+                    "id": {"type": "string"},
+                    "name": {"type": "string"},
+                    "image": {"type": "string"},
+                    "created": {"type": "string"},
+                    "restart_count": {"type": "integer"},
+                    "state": {
+                      "type": "object",
+                      "properties": {
+                        "status": {"type": "string"},
+                        "running": {"type": "boolean"},
+                        "paused": {"type": "boolean"},
+                        "restarting": {"type": "boolean"},
+                        "oom_killed": {"type": "boolean"},
+                        "dead": {"type": "boolean"},
+                        "pid": {"type": "integer"},
+                        "exit_code": {"type": "integer"},
+                        "error": {"type": "string"}
+                      }
+                    },
+                    "health": {
+                      "type": ["object", "null"],
+                      "properties": {
+                        "status": {"type": "string"},
+                        "failing_streak": {"type": "integer"}
+                      }
+                    },
+                    "network_mode": {"type": "string"},
+                    "networks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {"type": "string"},
+                          "ip": {"type": "string"},
+                          "gateway": {"type": "string"}
+                        }
+                      }
+                    },
+                    "mounts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {"type": "string"},
+                          "destination": {"type": "string"},
+                          "rw": {"type": "boolean"},
+                          "volume_name": {"type": "string"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/exec/run": {
+      "post": {
+        "operationId": "exec",
+        "summary": "Run a bounded command in the canonical Workbench",
+        "description": "The server selects the single neutral Workbench target. The caller cannot choose a container. Returns separated stdout and stderr, exit code, duration, timeout state, and truncation state.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecRunResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "operationId": "startSession",
+        "summary": "Start a managed terminal session in the canonical Workbench",
+        "description": "Starts a bounded non-TTY session with readable stdout/stderr and writable stdin. The caller cannot choose a container.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionStartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Session started",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}": {
+      "get": {
+        "operationId": "getSession",
+        "summary": "Read managed terminal session state",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/output": {
+      "get": {
+        "operationId": "readSession",
+        "summary": "Read bounded stdout/stderr chunks from a managed session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          },
+          {
+            "name": "after_seq",
+            "in": "query",
+            "required": false,
+            "description": "Return chunks whose seq is greater than this value.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit_bytes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 256,
+              "maximum": 8192,
+              "default": 8192
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Output page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionOutput"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/input": {
+      "post": {
+        "operationId": "writeSession",
+        "summary": "Write stdin to a running managed session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Input accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionWriteResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error"
+          },
+          "413": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/terminate": {
+      "post": {
+        "operationId": "terminateSession",
+        "summary": "Terminate a managed terminal session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string"}
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Terminated session state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionState"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Error"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error"
+          },
+          "502": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Container": {
+        "name": "container",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "SessionId": {
+        "name": "sessionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "Ready": {
+        "type": "object",
+        "required": [
+          "ready",
+          "service",
+          "docker"
+        ],
+        "properties": {
+          "ready": {
+            "type": "boolean"
+          },
+          "service": {
+            "type": "string"
+          },
+          "docker": {
+            "type": "object",
+            "required": [
+              "connected",
+              "status"
+            ],
+            "properties": {
+              "connected": {
+                "type": "boolean"
+              },
+              "status": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "ContainerPage": {
+        "type": "object",
+        "required": [
+          "items",
+          "page"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 50,
+            "items": {
+              "type": "object",
+              "required": ["id", "name", "image", "created", "state", "status", "ports", "networks"],
+              "properties": {
+                "id": {"type": "string"},
+                "name": {"type": "string"},
+                "image": {"type": "string"},
+                "created": {"type": "integer"},
+                "state": {"type": "string"},
+                "status": {"type": "string"},
+                "ports": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "private_port": {"type": ["integer", "null"]},
+                      "public_port": {"type": ["integer", "null"]},
+                      "type": {"type": "string"}
+                    }
+                  }
+                },
+                "networks": {
+                  "type": "array",
+                  "items": {"type": "string"}
+                }
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "required": [
+              "scope",
+              "limit",
+              "returned",
+              "total",
+              "has_more",
+              "next_cursor"
+            ],
+            "properties": {
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "running"
+                ]
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "returned": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              },
+              "next_cursor": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "Command": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
+      "ExecRunRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cmd"
+        ],
+        "properties": {
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 120000,
+            "default": 30000
+          }
+        }
+      },
+      "ExecRunResult": {
+        "type": "object",
+        "required": [
+          "status",
+          "exit_code",
+          "stdout",
+          "stderr",
+          "duration_ms",
+          "timed_out",
+          "truncated"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "timeout"
+            ]
+          },
+          "exit_code": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "stdout": {
+            "type": "string",
+            "description": "Bounded stdout. Use managed sessions for larger or long-running output."
+          },
+          "stderr": {
+            "type": "string",
+            "description": "Bounded stderr."
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "timed_out": {
+            "type": "boolean"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SessionStartRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cmd"
+        ],
+        "properties": {
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "SessionState": {
+        "type": "object",
+        "required": [
+          "session_id",
+          "status",
+          "running",
+          "exit_code",
+          "created_at",
+          "updated_at",
+          "next_seq",
+          "truncated",
+          "dropped_before_seq"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "running": {
+            "type": "boolean"
+          },
+          "exit_code": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "updated_at": {
+            "type": "integer"
+          },
+          "next_seq": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "dropped_before_seq": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "SessionChunk": {
+        "type": "object",
+        "required": [
+          "seq",
+          "stream",
+          "data"
+        ],
+        "properties": {
+          "seq": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "stream": {
+            "type": "string",
+            "enum": [
+              "stdout",
+              "stderr"
+            ]
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      },
+      "SessionOutput": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SessionState"
+          },
+          {
+            "type": "object",
+            "required": [
+              "chunks",
+              "has_more"
+            ],
+            "properties": {
+              "chunks": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SessionChunk"
+                }
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "SessionInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Provide exactly one of data or data_base64.",
+        "properties": {
+          "data": {
+            "type": "string",
+            "description": "UTF-8 stdin bytes."
+          },
+          "data_base64": {
+            "type": "string",
+            "description": "Base64-encoded stdin bytes."
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "data"
+            ]
+          },
+          {
+            "required": [
+              "data_base64"
+            ]
+          }
+        ]
+      },
+      "SessionWriteResult": {
+        "type": "object",
+        "required": [
+          "session_id",
+          "accepted_bytes",
+          "status"
+        ],
+        "properties": {
+          "session_id": {
+            "type": "string"
+          },
+          "accepted_bytes": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "status",
+          "error"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Bounded error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque"
+      }
+    }
+  }
+}
