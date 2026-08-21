@@ -235,7 +235,7 @@
           {"name":"offset","in":"query","required":false,"schema":{"type":"integer","minimum":0,"default":0}}
         ],
         "responses": {
-          "200": {"description":"Recent executions","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "200": {"description":"Recent executions","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
           "401": {"description":"Missing or invalid bearer token"}
         }
       }
