@@ -60,9 +60,9 @@ The AgentField Action is an evidence-first diagnostic interface, not a generic s
 
 Recommended order is: execution-scoped evidence first, then live node logs, then persisted logs when a node is offline or its live `/agentfield/v1/logs` route is unavailable. Persisted reads are bounded, read-only and credential-like values are redacted. Arbitrary filesystem paths, config files, PID files and secret directories are not exposed.
 
-`0.2.7` adds five persisted-log operations: summary, installed-agent inventory, persisted agent logs through native `af logs`, runlog inventory, and bounded runlog tail. Native live node logs keep `tail_lines` and `application/x-ndjson`; persisted-log responses are bounded JSON.
+`0.2.8` adds five persisted-log operations: summary, installed-agent inventory, persisted agent logs through native `af logs`, runlog inventory, and bounded runlog tail. Native live node logs keep `tail_lines` and `application/x-ndjson`; persisted-log responses are bounded JSON. The `0.2.8` schema also uses explicit object `properties` throughout for GPT Builder compatibility.
 
-The previously accepted `0.2.6` Builder surface exposed 14 operations. `0.2.7` publishes 19 operations total. Publishing the schema does not refresh an already-open GPT conversation; Builder re-import and a new-session acceptance are required before claiming the five persisted-log operation IDs are callable there.
+The previously accepted `0.2.6` Builder surface exposed 14 operations. `0.2.8` publishes 19 operations total. Publishing the schema does not refresh an already-open GPT conversation; Builder re-import and a new-session acceptance are required before claiming the five persisted-log operation IDs are callable there.
 
 ## Legacy preservation
 
