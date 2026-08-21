@@ -285,6 +285,7 @@
     "/api/ui/v2/workflow-runs/{run_id}": {
       "get": {
         "operationId": "getAgentfieldWorkflowRun",
+        "x-openai-isConsequential": false,
         "summary": "Read a workflow/run detail view for cross-execution correlation",
         "parameters": [
           {"name":"run_id","in":"path","required":true,"schema":{"type":"string"}}
