@@ -333,6 +333,7 @@
     "/api/v1/executions/active": {
       "get": {
         "operationId": "listActiveAgentfieldExecutions",
+        "x-openai-isConsequential": false,
         "summary": "List currently active AgentField executions",
         "responses": {
           "200": {
