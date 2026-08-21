@@ -156,6 +156,7 @@
     "/api/v1/executions/{execution_id}": {
       "get": {
         "operationId": "getAgentfieldExecution",
+        "x-openai-isConsequential": false,
         "summary": "Read AgentField execution status and result",
         "parameters": [
           {
