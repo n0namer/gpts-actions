@@ -253,7 +253,7 @@
           {"name":"search","in":"query","required":false,"schema":{"type":"string","maxLength":200}}
         ],
         "responses": {
-          "200": {"description":"Workflow runs","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
+          "200": {"description":"Workflow runs","content":{"application/json":{"schema":{"type":"object","properties":{},"additionalProperties":true}}}},
           "401": {"description":"Missing or invalid bearer token"}
         }
       }
