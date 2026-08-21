@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Universal Solver AgentField Control Plane",
-    "version": "0.1.1",
-    "description": "Authenticated bounded access to the Universal Solver AgentField Control Plane. Discover active agents/reasoners, start asynchronous executions, and poll execution state."
+    "version": "0.2.0",
+    "description": "Authenticated bounded access to the Universal Solver AgentField Control Plane for execution and evidence-first debugging. Discover active agents/reasoners, start asynchronous executions, inspect execution state/events/details/logs, correlate workflow runs, and read bounded node diagnostics. Debug routes are read-only."
   },
   "servers": [
     {
