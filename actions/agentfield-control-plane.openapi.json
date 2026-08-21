@@ -243,6 +243,7 @@
     "/api/ui/v2/workflow-runs": {
       "get": {
         "operationId": "listAgentfieldWorkflowRuns",
+        "x-openai-isConsequential": false,
         "summary": "List recent workflow runs for cross-execution triage",
         "description": "Read-only. Use when a user refers to a run/workflow but does not know the execution id.",
         "parameters": [
