@@ -315,6 +315,7 @@
     "/api/ui/v1/nodes/{node_id}/logs": {
       "get": {
         "operationId": "getAgentfieldNodeLogs",
+        "x-openai-isConsequential": false,
         "summary": "Read a bounded tail of node process logs",
         "description": "Read-only fallback for deeper debugging when execution-scoped evidence is insufficient. Start with a small tail. Process logs can contain application data; never expose credentials or secrets.",
         "parameters": [
