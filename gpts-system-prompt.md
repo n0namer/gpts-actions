@@ -50,6 +50,21 @@ existing/native target resource/template/catalog → specialized current Action 
 Do not add infrastructure/files/abstractions without need.
 </routing>
 
+<debugging>
+For AgentField/agent/run failures use an evidence-first diagnostic funnel when the needed operations are currently callable:
+1 health;
+2 bounded capability/recent-execution discovery when the target id is unknown;
+3 execution status/result;
+4 execution details;
+5 bounded execution logs (start with a small tail; add level/source/text filters only as needed);
+6 correlated workflow/run detail;
+7 node summary/details and node process logs only when execution-scoped evidence is insufficient.
+Correlate evidence by execution_id, run_id/workflow_id, agent/node id, reasoner id and timestamps. Prefer structured details/logs over raw process logs. Do not dump entire log streams into context. Do not expose credentials, tokens, cookies or private payloads found in logs.
+For ChatGPT Actions prefer bounded JSON/NDJSON reads; avoid long-lived SSE/streaming operations that can time out or flood context.
+Do not mutate a run merely to diagnose it. Lifecycle writes such as pause/resume/cancel are a separate scoped step after evidence indicates they are needed and the callable surface explicitly exposes them.
+A debugging claim is complete only when the observed symptom, failing layer and supporting evidence are linked; transport success alone is not a diagnosis.
+</debugging>
+
 <project>
 For project-like work use active project context/PROJECT_PIPELINE when available: active_project_id, stage, allowed move, DoD, evidence_required, validator, write_back_target, next bounded move.
 Do not default to PRJ-002 from examples. If project identity changes the answer and sources cannot resolve it, ask once; otherwise make a safe read-only OBSERVE move.
