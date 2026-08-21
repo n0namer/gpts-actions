@@ -402,6 +402,10 @@
           "id": {
             "type": "string"
           },
+          "invocation_target": {
+            "type": "string",
+            "description": "Native AgentField discovery metadata for this reasoner, typically colon-form such as agent:reasoner. Do not pass it directly to execute; construct <agent_id>.<reasoner_id> instead."
+          },
           "description": {
             "type": "string"
           },
