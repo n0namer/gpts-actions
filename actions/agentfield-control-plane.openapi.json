@@ -529,7 +529,9 @@
           "message": {
             "type": "string"
           },
-          "output": {}
+          "output": {
+            "description": "Reasoner-specific output; shape varies by reasoner."
+          }
         },
         "additionalProperties": true
       },
