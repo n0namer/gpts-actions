@@ -218,7 +218,7 @@
           {"name":"q","in":"query","required":false,"schema":{"type":"string","maxLength":200},"description":"Optional text filter."}
         ],
         "responses": {
-          "200": {"description":"Structured execution log entries","content":{"application/json":{"schema":{"type":"object","properties":{"entries":{"type":"array","items":{"type":"object","additionalProperties":true}}},"additionalProperties":true}}}},
+          "200": {"description":"Structured execution log entries","content":{"application/json":{"schema":{"type":"object","properties":{"entries":{"type":"array","items":{"type":"object","properties":{},"additionalProperties":true}}},"additionalProperties":true}}}},
           "400": {"description":"Invalid or excessive log query"},
           "401": {"description":"Missing or invalid bearer token"}
         }
