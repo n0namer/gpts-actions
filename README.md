@@ -69,7 +69,7 @@ When an Action is retired, preserve the last known publication-safe contract whe
 
 ## Authentication mapping
 
-- Universal Solver AgentField Control Plane: canonical GPT Action authentication is `Authorization: Bearer <token>` using the gateway secret `ACTION_BEARER_TOKEN`. The older `X-API-Key` / `AGENTFIELD_ACTION_KEY` path remains a runtime compatibility fallback but is no longer the published Action default. Native AgentField MCP is available at `/mcp` behind the same gateway authentication boundary.
+- Universal Solver AgentField Control Plane: canonical GPT Builder secret name is `ACTION_BEARER_SECRET`, sent as `Authorization: Bearer <token>`. The gateway maps that value to its runtime `ACTION_BEARER_TOKEN`. The older `X-API-Key` / `AGENTFIELD_ACTION_KEY` path remains a runtime compatibility fallback but is no longer the published Action default. Native AgentField MCP is available at `/mcp` behind the same gateway authentication boundary.
 - GPT Coding Station: Coolify application environment variable `ACTION_BEARER_TOKEN`; the API container receives only the SHA-256 verifier through `STATION_API_AUTH_SHA256`.
 - OpenClaw sync: runtime `OPENCLAW_GATEWAY_TOKEN` value.
 - OpenClaw async hook: dedicated OpenClaw `hooks.token` value; do not reuse the Gateway token.
