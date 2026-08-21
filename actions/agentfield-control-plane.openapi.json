@@ -184,21 +184,6 @@
         }
       }
     },
-    "/api/v1/executions/{execution_id}/events": {
-      "get": {
-        "operationId": "getAgentfieldExecutionEvents",
-        "summary": "Read structured execution events for debugging",
-        "description": "Use after reading execution status to inspect correlated lifecycle and runtime events for one execution.",
-        "parameters": [
-          {"name":"execution_id","in":"path","required":true,"schema":{"type":"string"}}
-        ],
-        "responses": {
-          "200": {"description":"Execution events","content":{"application/json":{"schema":{"type":"object","additionalProperties":true}}}},
-          "401": {"description":"Missing or invalid bearer token"},
-          "404": {"description":"Execution not found"}
-        }
-      }
-    },
     "/api/ui/v1/executions/{execution_id}/details": {
       "get": {
         "operationId": "getAgentfieldExecutionDebugDetails",
