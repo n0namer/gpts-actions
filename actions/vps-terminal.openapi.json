@@ -674,6 +674,11 @@
           }
         }
       },
+      "TargetLogs": {"type":"object","required":["target_id","tail","since","text","truncated","bytes"],"properties":{"target_id":{"type":"string"},"tail":{"type":"integer"},"since":{"type":["integer","null"]},"text":{"type":"string"},"truncated":{"type":"boolean"},"bytes":{"type":"integer","minimum":0}}},
+      "TargetStats": {"type":"object","required":["target_id","read","memory","pids","cpu","network"],"properties":{"target_id":{"type":"string"},"read":{"type":["string","null"]},"memory":{"type":"object","properties":{"usage":{"type":"integer"},"limit":{"type":"integer"}}},"pids":{"type":"object","properties":{"current":{"type":"integer"}}},"cpu":{"type":"object","properties":{"total_usage":{"type":"integer"},"system_usage":{"type":"integer"},"online_cpus":{"type":"integer"}}},"network":{"type":"object","properties":{"rx_bytes":{"type":"integer"},"tx_bytes":{"type":"integer"}}}}},
+      "DebugCloneCreate": {"type":"object","additionalProperties":false,"properties":{"mounts":{"type":"array","maxItems":8,"items":{"type":"string","maxLength":512},"default":[]}}},
+      "DebugClone": {"type":"object","required":["debug_id","target_id","source_target_id","name","container_id","created_at","expires_at","status","mounts"],"properties":{"debug_id":{"type":"string","format":"uuid"},"target_id":{"type":"string"},"source_target_id":{"type":"string"},"name":{"type":"string"},"container_id":{"type":"string"},"created_at":{"type":"integer"},"expires_at":{"type":"integer"},"status":{"type":"string"},"mounts":{"type":"array","items":{"type":"object","properties":{"destination":{"type":"string"},"read_only":{"type":"boolean"}}}},"state":{"type":"object","properties":{"running":{"type":"boolean"},"status":{"type":"string"},"pid":{"type":"integer"},"exit_code":{"type":"integer"}}}}},
+      "DebugCloneDelete": {"type":"object","required":["debug_id","deleted"],"properties":{"debug_id":{"type":"string"},"deleted":{"type":"boolean"},"verified_absent":{"type":"boolean"},"already_absent":{"type":"boolean"}}},
       "Command": {
         "type": "array",
         "minItems": 1,
