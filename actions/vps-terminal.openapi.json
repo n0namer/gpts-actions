@@ -558,14 +558,9 @@
           "type": "string"
         }
       },
-      "SessionId": {
-        "name": "sessionId",
-        "in": "path",
-        "required": true,
-        "schema": {
-          "type": "string"
-        }
-      }
+      "SessionId": {"name":"sessionId","in":"path","required":true,"schema":{"type":"string"}},
+      "TargetId": {"name":"x-vps-target-id","in":"header","required":true,"description":"Registered static target id, or debug:<uuid> where the operation permits an existing debug target.","schema":{"type":"string","minLength":1,"maxLength":128}},
+      "DebugId": {"name":"debugId","in":"path","required":true,"schema":{"type":"string","format":"uuid"}}
     },
     "schemas": {
       "Ready": {
