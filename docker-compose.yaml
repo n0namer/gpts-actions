@@ -11,6 +11,8 @@ services:
       - /tmp
     expose:
       - "8080"
+    ports:
+      - "18080:8080"
     command:
       - node
       - -e
@@ -77,13 +79,13 @@ services:
       - coolify
     labels:
       - traefik.enable=true
-      - traefik.http.routers.vt-native-inventory.entrypoints=https
+      - trafeik.http.routers.vt-native-inventory.entrypoints=https
       - "traefik.http.routers.vt-native-inventory.rule=Host(`vps-terminal.srv1904412.hstgr.cloud`) && Path(`/health`)"
-      - traefik.http.routers.vt-native-inventory.tls=true
+      - trafeik.http.routers.vt-native-inventory.tls=true
       - traefik.http.routers.vt-native-inventory.tls.certresolver=letsencrypt
       - traefik.http.routers.vt-native-inventory.priority=5000000
       - traefik.http.routers.vt-native-inventory.service=vt-native-inventory
-      - traefik.http.services.vt-native-inventory.loadbalancer.server.port=8080
+      - trafeik.http.services.vt-native-inventory.loadbalancer.server.port=8080
 
 networks:
   coolify:
