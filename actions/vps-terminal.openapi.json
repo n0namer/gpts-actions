@@ -279,7 +279,8 @@
       "post": {
         "operationId": "exec",
         "summary": "Run a bounded command in the canonical Workbench",
-        "description": "The server selects the single neutral Workbench target. The caller cannot choose a container. Returns separated stdout and stderr, exit code, duration, timeout state, and truncation state.",
+        "description": "Runs in a server-registered target selected by x-vps-target-id; arbitrary container ids remain forbidden. Returns separated stdout and stderr, exit code, duration, timeout state, and truncation state.",
+        "parameters": [{"$ref":"#/components/parameters/TargetId"}],
         "requestBody": {
           "required": true,
           "content": {
