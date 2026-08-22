@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal",
-    "version": "0.3.0",
-    "description": "Bounded generic terminal API for GPT Actions. Terminal execution is server-side restricted to the single neutral Workbench target; callers cannot choose arbitrary containers."
+    "version": "0.4.0",
+    "description": "Bounded target-aware terminal API for GPT Actions. Static targets are selected by the server-side target registry and x-vps-target-id binding; debug clones are isolated, TTL-bounded targets created only from explicitly permitted sources."
   },
   "servers": [
     {
