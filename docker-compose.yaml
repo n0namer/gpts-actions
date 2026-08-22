@@ -13,7 +13,7 @@ services:
         const http=require('http');
         const names=[
           'gateway-xxa2dirf0d21yw7n1csngufk-123026641400',
-          'bridge-nuej789vjay9b1lqhxrpiwjm'
+          'bridge-af5ywrc48rz8tevwdb5yytet'
         ];
         function get(name){
           return new Promise((resolve,reject)=>{
