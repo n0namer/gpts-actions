@@ -3,35 +3,37 @@ services:
     image: node:22-alpine
     restart: unless-stopped
     read_only: true
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges:true
-    tmpfs:
-      - /tmp
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/tmp]
     command:
       - node
       - -e
       - |
         const http=require('http');
-        const name='gateway-xxa2dirf0d21yw7n1csngufk-123026641400';
-        function run(){
-          const r=http.request({socketPath:'/var/run/docker.sock',path:'/containers/'+encodeURIComponent(name)+'/json',method:'GET'},res=>{
-            const a=[];
-            res.on('data',c=>a.push(c));
-            res.on('end',()=>{
-              const j=JSON.parse(Buffer.concat(a).toString('utf8'));
-              const nets={};
-              for(const [k,v] of Object.entries(j.NetworkSettings?.Networks||{})){
-                nets[k]={ip:v.IPAddress,aliases:v.Aliases||[],dns:v.DNSNames||[]};
-              }
-              console.log(JSON.stringify({event:'gateway_networks',name,nets}));
-            });
+        const names=[
+          'gateway-xxa2dirf0d21yw7n1csngufk-123026641400',
+          'bridge-nuej789vjay9b1lqhxrpiwjm'
+        ];
+        function get(name){
+          return new Promise((resolve,reject)=>{
+            const r=http.request({socketPath:'/var/run/docker.sock',path:'/containers/'+encodeURIComponent(name)+'/json',method:'GET'},res=>{
+              const a=[];res.on('data',c=>a.push(c));res.on('end',()=>{
+                try{
+                  const j=JSON.parse(Buffer.concat(a).toString('utf8'));
+                  const nets={};
+                  for(const [k,v] of Object.entries(j.NetworkSettings?.Networks||{})){
+                    nets[k]={ip:v.IPAddress,aliases:v.Aliases||[],dns:v.DNSNames||[]};
+                  }
+                  resolve({name,exists:res.statusCode===200,state:{status:j.State?.Status,exitCode:j.State?.ExitCode,error:j.State?.Error},cmd:j.Config?.Cmd,nets});
+                }catch(e){reject(e)}
+              });
+            });r.on('error',reject);r.end();
           });
-          r.on('error',e=>console.error(JSON.stringify({event:'gateway_networks_error',error:String(e.message||e)})));
-          r.end();
         }
-        run();
+        Promise.all(names.map(n=>get(n).catch(e=>({name:n,error:String(e.message||e)}))))
+          .then(rows=>console.log(JSON.stringify({event:'bridge_gateway_inspect',rows})))
+          .catch(e=>console.error(JSON.stringify({event:'inspect_error',error:String(e.message||e)})));
         setInterval(()=>{},3600000);
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
