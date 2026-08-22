@@ -1,7 +1,7 @@
 services:
   inspect:
     image: node:22-alpine
-    restart: "no"
+    restart: unless-stopped
     read_only: true
     cap_drop:
       - ALL
@@ -15,19 +15,23 @@ services:
       - |
         const http=require('http');
         const name='gateway-xxa2dirf0d21yw7n1csngufk-123026641400';
-        const r=http.request({socketPath:'/var/run/docker.sock',path:'/containers/'+encodeURIComponent(name)+'/json',method:'GET'},res=>{
-          const a=[];
-          res.on('data',c=>a.push(c));
-          res.on('end',()=>{
-            const j=JSON.parse(Buffer.concat(a).toString('utf8'));
-            const nets={};
-            for(const [k,v] of Object.entries(j.NetworkSettings?.Networks||{})){
-              nets[k]={ip:v.IPAddress,aliases:v.Aliases||[],dns:v.DNSNames||[]};
-            }
-            console.log(JSON.stringify({event:'gateway_networks',name,nets}));
+        function run(){
+          const r=http.request({socketPath:'/var/run/docker.sock',path:'/containers/'+encodeURIComponent(name)+'/json',method:'GET'},res=>{
+            const a=[];
+            res.on('data',c=>a.push(c));
+            res.on('end',()=>{
+              const j=JSON.parse(Buffer.concat(a).toString('utf8'));
+              const nets={};
+              for(const [k,v] of Object.entries(j.NetworkSettings?.Networks||{})){
+                nets[k]={ip:v.IPAddress,aliases:v.Aliases||[],dns:v.DNSNames||[]};
+              }
+              console.log(JSON.stringify({event:'gateway_networks',name,nets}));
+            });
           });
-        });
-        r.on('error',e=>{console.error(JSON.stringify({event:'gateway_networks_error',error:String(e.message||e)}));process.exit(1)});
-        r.end();
+          r.on('error',e=>console.error(JSON.stringify({event:'gateway_networks_error',error:String(e.message||e)})));
+          r.end();
+        }
+        run();
+        setInterval(()=>{},3600000);
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
