@@ -2,35 +2,615 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal",
-    "version": "0.4.1",
-    "description": "Bounded target-aware terminal API for GPT Actions."
+    "version": "0.4.2",
+    "description": "Bounded target-aware terminal API for GPT Actions. Target selection uses GPT-compatible query/body fields; arbitrary container selection is not exposed."
   },
-  "servers": [{"url": "https://vps-terminal.srv1904412.hstgr.cloud"}],
-  "security": [{"Bearer": []}],
+  "servers": [
+    {
+      "url": "https://vps-terminal.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
   "paths": {
-    "/health": {"get":{"operationId":"health","security":[],"summary":"Check VPS Terminal liveness","responses":{"200":{"description":"Live"}}}},
-    "/ready": {"get":{"operationId":"ready","security":[],"summary":"Check VPS Terminal and Docker readiness","responses":{"200":{"description":"Ready"},"503":{"description":"Not ready"}}}},
-    "/api/v1/version": {"get":{"operationId":"version","summary":"Read service version information","responses":{"200":{"description":"Version"}}}},
-    "/v1/target/logs": {"get":{"operationId":"targetLogs","summary":"Read bounded logs for the bound target","parameters":[{"name":"x-vps-target-id","in":"header","required":true,"schema":{"type":"string","minLength":1,"maxLength":128}},{"name":"tail","in":"query","schema":{"type":"integer","minimum":1,"maximum":2000,"default":200}},{"name":"since","in":"query","schema":{"type":"integer","minimum":0}},{"name":"limit_bytes","in":"query","schema":{"type":"integer","minimum":1024,"maximum":262144,"default":65536}}],"responses":{"200":{"description":"Target logs"},"400":{"description":"Bad request"},"401":{"description":"Unauthorized"},"404":{"description":"Not found"}}}},
-    "/v1/target/stats": {"get":{"operationId":"targetStats","summary":"Read compact resource stats for the bound target","parameters":[{"name":"x-vps-target-id","in":"header","required":true,"schema":{"type":"string","minLength":1,"maxLength":128}}],"responses":{"200":{"description":"Target stats"},"400":{"description":"Bad request"},"401":{"description":"Unauthorized"},"404":{"description":"Not found"}}}},
-    "/v1/debug-clones": {"post":{"operationId":"createDebugClone","summary":"Create an isolated TTL-bounded debug clone","parameters":[{"name":"x-vps-target-id","in":"header","required":true,"schema":{"type":"string","minLength":1,"maxLength":128}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"object","additionalProperties":false,"properties":{"mounts":{"type":"array","maxItems":8,"items":{"type":"string","maxLength":512}}}}}}},"responses":{"201":{"description":"Debug clone created"},"400":{"description":"Bad request"},"401":{"description":"Unauthorized"},"409":{"description":"Not allowed"}}}},
-    "/v1/debug-clones/{debugId}": {"get":{"operationId":"getDebugClone","summary":"Inspect a managed debug clone","parameters":[{"name":"debugId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Debug clone state"},"401":{"description":"Unauthorized"},"404":{"description":"Not found"}}},"delete":{"operationId":"deleteDebugClone","summary":"Delete a managed debug clone and verify absence","parameters":[{"name":"debugId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Deletion result"},"401":{"description":"Unauthorized"}}}},
-    "/v1/containers": {"get":{"operationId":"listContainers","summary":"List running containers with bounded cursor pagination","responses":{"200":{"description":"Bounded page"}}}},
-    "/v1/containers/{container}": {"get":{"operationId":"inspectContainer","summary":"Read compact redacted container details","parameters":[{"name":"container","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Container detail"}}}},
-    "/v1/exec/run": {"post":{"operationId":"exec","summary":"Run a bounded command in a registered target","parameters":[{"name":"x-vps-target-id","in":"header","required":true,"schema":{"type":"string","minLength":1,"maxLength":128}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/ExecRunRequest"}}}},"responses":{"200":{"description":"Execution result"},"400":{"description":"Bad request"},"401":{"description":"Unauthorized"}}}},
-    "/v1/sessions": {"post":{"operationId":"startSession","summary":"Start a bounded non-TTY session in a registered target","parameters":[{"name":"x-vps-target-id","in":"header","required":true,"schema":{"type":"string","minLength":1,"maxLength":128}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SessionStartRequest"}}}},"responses":{"201":{"description":"Session started"},"400":{"description":"Bad request"},"401":{"description":"Unauthorized"}}}},
-    "/v1/sessions/{sessionId}": {"get":{"operationId":"getSession","summary":"Read managed terminal session state","parameters":[{"name":"sessionId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Session state"}}}},
-    "/v1/sessions/{sessionId}/output": {"get":{"operationId":"readSession","summary":"Read bounded stdout/stderr chunks from a managed session","parameters":[{"name":"sessionId","in":"path","required":true,"schema":{"type":"string"}},{"name":"after_seq","in":"query","schema":{"type":"integer","minimum":0,"default":0}},{"name":"limit_bytes","in":"query","schema":{"type":"integer","minimum":256,"maximum":8192,"default":8192}}],"responses":{"200":{"description":"Output page"}}}},
-    "/v1/sessions/{sessionId}/input": {"post":{"operationId":"writeSession","summary":"Write stdin to a running managed session","parameters":[{"name":"sessionId","in":"path","required":true,"schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/SessionInput"}}}},"responses":{"200":{"description":"Input accepted"}}}},
-    "/v1/sessions/{sessionId}/terminate": {"post":{"operationId":"terminateSession","summary":"Terminate a managed terminal session","parameters":[{"name":"sessionId","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"Terminated session"}}}}
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Check VPS Terminal liveness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "ready",
+        "summary": "Check VPS Terminal and Docker readiness",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Not ready"
+          }
+        }
+      }
+    },
+    "/api/v1/version": {
+      "get": {
+        "operationId": "version",
+        "summary": "Read service version information",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/target/logs": {
+      "get": {
+        "operationId": "targetLogs",
+        "summary": "Read bounded logs for a registered target",
+        "parameters": [
+          {
+            "name": "target_id",
+            "in": "query",
+            "required": true,
+            "description": "Registered target id, or debug:<uuid> for an existing debug target.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "tail",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000,
+              "default": 200
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit_bytes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1024,
+              "maximum": 262144,
+              "default": 65536
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/v1/target/stats": {
+      "get": {
+        "operationId": "targetStats",
+        "summary": "Read compact resource stats for a registered target",
+        "parameters": [
+          {
+            "name": "target_id",
+            "in": "query",
+            "required": true,
+            "description": "Registered target id, or debug:<uuid> for an existing debug target.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/v1/debug-clones": {
+      "post": {
+        "operationId": "createDebugClone",
+        "summary": "Create an isolated TTL-bounded debug clone",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target_id"
+                ],
+                "properties": {
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "description": "Static source target whose capabilities allow debug_clone."
+                  },
+                  "mounts": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "maxLength": 512
+                    },
+                    "default": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Not allowed"
+          },
+          "429": {
+            "description": "Limit reached"
+          }
+        }
+      }
+    },
+    "/v1/debug-clones/{debugId}": {
+      "get": {
+        "operationId": "getDebugClone",
+        "summary": "Inspect a managed debug clone",
+        "parameters": [
+          {
+            "name": "debugId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteDebugClone",
+        "summary": "Delete a managed debug clone and verify absence",
+        "parameters": [
+          {
+            "name": "debugId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/v1/containers": {
+      "get": {
+        "operationId": "listContainers",
+        "summary": "List running containers with bounded cursor pagination",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 12
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/containers/{container}": {
+      "get": {
+        "operationId": "inspectContainer",
+        "summary": "Read compact redacted container details",
+        "parameters": [
+          {
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/exec/run": {
+      "post": {
+        "operationId": "exec",
+        "summary": "Run a bounded command in a registered target",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/v1/sessions": {
+      "post": {
+        "operationId": "startSession",
+        "summary": "Start a bounded non-TTY session in a registered target",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionStartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}": {
+      "get": {
+        "operationId": "getSession",
+        "summary": "Read managed terminal session state",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/output": {
+      "get": {
+        "operationId": "readSession",
+        "summary": "Read bounded stdout/stderr chunks from a managed session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after_seq",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit_bytes",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 256,
+              "maximum": 8192,
+              "default": 8192
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/input": {
+      "post": {
+        "operationId": "writeSession",
+        "summary": "Write stdin to a running managed session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v1/sessions/{sessionId}/terminate": {
+      "post": {
+        "operationId": "terminateSession",
+        "summary": "Terminate a managed terminal session",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+        }
+      }
+    }
   },
   "components": {
     "schemas": {
-      "Command": {"type":"array","minItems":1,"maxItems":32,"items":{"type":"string","maxLength":2048}},
-      "ExecRunRequest": {"type":"object","additionalProperties":false,"required":["cmd"],"properties":{"cmd":{"$ref":"#/components/schemas/Command"},"working_dir":{"type":"string","maxLength":512},"timeout_ms":{"type":"integer","minimum":100,"maximum":120000,"default":30000}}},
-      "SessionStartRequest": {"type":"object","additionalProperties":false,"required":["cmd"],"properties":{"cmd":{"$ref":"#/components/schemas/Command"},"working_dir":{"type":"string","maxLength":512}}},
-      "SessionInput": {"type":"object","additionalProperties":false,"description":"Provide exactly one of data or data_base64.","properties":{"data":{"type":"string"},"data_base64":{"type":"string"}},"oneOf":[{"required":["data"]},{"required":["data_base64"]}]}
+      "Command": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
+      "ExecRunRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "cmd"
+        ],
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Registered target id, or debug:<uuid> for an existing debug target."
+          },
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 120000,
+            "default": 30000
+          }
+        }
+      },
+      "SessionStartRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "cmd"
+        ],
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "description": "Registered target id, or debug:<uuid> for an existing debug target."
+          },
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
+      "SessionInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "data_base64": {
+            "type": "string"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "data"
+            ]
+          },
+          {
+            "required": [
+              "data_base64"
+            ]
+          }
+        ]
+      }
     },
-    "securitySchemes": {"Bearer":{"type":"http","scheme":"bearer","bearerFormat":"opaque"}}
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque"
+      }
+    }
   }
 }
