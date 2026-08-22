@@ -1,7 +1,7 @@
 services:
-  inventory:
+  inspect:
     image: node:22-alpine
-    restart: unless-stopped
+    restart: "no"
     read_only: true
     cap_drop:
       - ALL
@@ -9,63 +9,25 @@ services:
       - no-new-privileges:true
     tmpfs:
       - /tmp
-    expose:
-      - "8080"
     command:
       - node
       - -e
       - |
         const http=require('http');
-        const socket='/var/run/docker.sock';
-        function query(){
-          return new Promise((resolve,reject)=>{
-            const r=http.request({socketPath:socket,path:'/containers/json?all=1',method:'GET'},res=>{
-              const chunks=[];
-              res.on('data',c=>chunks.push(c));
-              res.on('end',()=>{
-                try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')||'[]'))}
-                catch(e){reject(e)}
-              });
-            });
-            r.on('error',reject); r.end();
-          });
-        }
-        function pick(labels={}){
-          const out={};
-          for(const [k,v] of Object.entries(labels)){
-            if(k==='com.docker.compose.project' ||
-               k==='com.docker.compose.service' ||
-               k==='coolify.applicationId' ||
-               k==='coolify.serviceId' ||
-               k.startsWith('traefik.http.routers.') ||
-               k.startsWith('traefik.http.services.')){
-              out[k]=String(v).slice(0,500);
+        const name='gateway-xxa2dirf0d21yw7n1csngufk-123026641400';
+        const r=http.request({socketPath:'/var/run/docker.sock',path:'/containers/'+encodeURIComponent(name)+'/json',method:'GET'},res=>{
+          const a=[];
+          res.on('data',c=>a.push(c));
+          res.on('end',()=>{
+            const j=JSON.parse(Buffer.concat(a).toString('utf8'));
+            const nets={};
+            for(const [k,v] of Object.entries(j.NetworkSettings?.Networks||{})){
+              nets[k]={ip:v.IPAddress,aliases:v.Aliases||[],dns:v.DNSNames||[]};
             }
-          }
-          return out;
-        }
-        async function inventory(){
-          const rows=(await query()).filter(x=>{
-            const names=(x.Names||[]).join(',');
-            const labels=JSON.stringify(x.Labels||{});
-            return names.includes('vps-terminal') || labels.includes('vps-terminal');
-          }).map(x=>({
-            id:String(x.Id||'').slice(0,12),
-            names:x.Names||[],
-            image:String(x.Image||''),
-            state:String(x.State||''),
-            status:String(x.Status||''),
-            labels:pick(x.Labels||{})
-          }));
-          return {event:'vps_terminal_inventory',count:rows.length,containers:rows};
-        }
-        inventory()
-          .then(x=>console.log(JSON.stringify(x)))
-          .catch(e=>console.error(JSON.stringify({event:'vps_terminal_inventory_error',error:String(e?.message||e).slice(0,300)})));
-        http.createServer((req,res)=>{
-          const body=Buffer.from('{"status":"ok","service":"vps-terminal-inventory"}');
-          res.writeHead(200,{'content-type':'application/json','content-length':body.length});
-          res.end(body);
-        }).listen(8080,'0.0.0.0');
+            console.log(JSON.stringify({event:'gateway_networks',name,nets}));
+          });
+        });
+        r.on('error',e=>{console.error(JSON.stringify({event:'gateway_networks_error',error:String(e.message||e)}));process.exit(1)});
+        r.end();
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
