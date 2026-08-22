@@ -23,7 +23,8 @@ services:
               const chunks=[];
               res.on('data',c=>chunks.push(c));
               res.on('end',()=>{
-                try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')||'[]'));}catch(e){reject(e)}
+                try{resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')||'[]'))}
+                catch(e){reject(e)}
               });
             });
             r.on('error',reject); r.end();
@@ -31,27 +32,27 @@ services:
         }
         function pick(labels={}){
           const out={};
-          for(const [k,v] of Object.entries(labels||{})){
+          for(const [k,v] of Object.entries(labels)){
             if(k==='com.docker.compose.project' ||
-             k==='com.docker.compose.service' ||
-             k==='coolify.applicationId' ||
-             k==='coolify.serviceId' ||
-             k.startsWith('traefik.http.routers.')){
+               k==='com.docker.compose.service' ||
+               k==='coolify.applicationId' ||
+               k==='coolify.serviceId' ||
+               k.startsWith('traefik.http.routers.')){
               out[k]=String(v).slice(0,500);
             }
           }
           return out;
         }
-        http.createServer(!sync(req,res)=>{
-          if((req.url||'').split('?')[0]!=='/health'){
-            res.writeHead(404,{ 'content-type':'application/json' });
+        http.createServer(async(req,res)=>{
+          if((req.url||'').split('?')[0]!='/health'){
+            res.writeHead(404,{'content-type':'application/json'});
             return res.end('{"status":"not_found"}');
           }
           let payload;
           try{
             const rows=(await query()).filter(x=>{
               const names=(x.Names||[]).join(',');
-              const labels=JSON.stringify?x.Labels:{};
+              const labels=JSON.stringify(x.Labels||{});
               return names.includes('vps-terminal') || labels.includes('vps-terminal');
             }).map(x=>({
               id:String(x.Id||'').slice(0,12),
@@ -63,7 +64,7 @@ services:
             }));
             payload={status:'ok',service:'vps-terminal-inventory',count:rows.length,containers:rows};
           }catch(e){
-            payload={status:'error',service:'vps-terminal-inventory',error:String(H?.message||e).slice(0,300)};
+            payload={status:'error',service:'vps-terminal-inventory',error:String(e?.message||e).slice(0,300)};
           }
           const body=Buffer.from(JSON.stringify(payload));
           res.writeHead(200,{'content-type':'application/json','content-length':body.length,'cache-control':'no-store'});
@@ -76,12 +77,12 @@ services:
       - coolify
     labels:
       - traefik.enable=true
-      - trafeik.http.routers.vt-native-inventory.entrypoints=https
-      - "traefik.http.routers.vt-native-inventory.rule=Host(`vps-terminal.srv1904412.hstgr.cloud`) && Path(`/health`"
+      - traefik.http.routers.vt-native-inventory.entrypoints=https
+      - "traefik.http.routers.vt-native-inventory.rule=Host(`vps-terminal.srv1904412.hstgr.cloud`) && Path(`/health`)"
       - traefik.http.routers.vt-native-inventory.tls=true
-      - trafeik.http.routers.vt-native-inventory.tls.certresolver=letsencrypt
-      - trafeik.http.routers.vt-native-inventory.priority=5000000
-      -traefik.http.routers.vt-native-inventory.service=vt-native-inventory
+      - traefik.http.routers.vt-native-inventory.tls.certresolver=letsencrypt
+      - traefik.http.routers.vt-native-inventory.priority=5000000
+      - traefik.http.routers.vt-native-inventory.service=vt-native-inventory
       - traefik.http.services.vt-native-inventory.loadbalancer.server.port=8080
 
 networks:
