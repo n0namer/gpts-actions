@@ -1,0 +1,96 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VPS Terminal Validator DEV",
+    "version": "0.1.0-dev",
+    "description": "Read-only project-agnostic Validator Action for isolated VPS Terminal DEV acceptance. The caller selects a registered validator and exact candidate identity; the server owns execution target and argv. This Action cannot approve, mutate, deploy, restart, delete, or execute arbitrary commands."
+  },
+  "servers": [
+    {"url": "https://vps-terminal-dev.srv1904412.hstgr.cloud"}
+  ],
+  "security": [{"Bearer": []}],
+  "paths": {
+    "/v1/validators": {
+      "get": {
+        "operationId": "listValidators",
+        "summary": "List server-registered read-only validators",
+        "responses": {
+          "200": {"description": "Validator registry view"},
+          "401": {"description": "Unauthorized"},
+          "503": {"description": "Validator channel unavailable"}
+        }
+      }
+    },
+    "/v1/validators/run": {
+      "post": {
+        "operationId": "runValidator",
+        "summary": "Run one registered read-only validator against an exact candidate identity",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["validator_id", "candidate_digest"],
+                "properties": {
+                  "validator_id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+                  },
+                  "candidate_digest": {
+                    "type": "string",
+                    "minLength": 7,
+                    "maxLength": 200,
+                    "description": "Exact immutable candidate identity/digest to bind into ValidationResult."
+                  },
+                  "input_ref": {
+                    "type": "string",
+                    "maxLength": 240,
+                    "description": "Optional logical project-owned evidence/input reference. Never an arbitrary filesystem path or command."
+                  },
+                  "input": {
+                    "type": "object",
+                    "description": "Optional validator-specific structured read-only expectations. Backend validator contract remains authoritative and fail-closed."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Bounded validation run record with PASS, FAIL, or BLOCKED result"},
+          "400": {"description": "Invalid or unsupported input"},
+          "401": {"description": "Unauthorized"},
+          "404": {"description": "Validator not registered"},
+          "503": {"description": "Validator execution channel unavailable"}
+        }
+      }
+    },
+    "/v1/validators/runs/{run_id}": {
+      "get": {
+        "operationId": "getValidation",
+        "summary": "Read a bounded credential-owned validation run record",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {"type": "string", "minLength": 1, "maxLength": 128}
+          }
+        ],
+        "responses": {
+          "200": {"description": "Validation run record"},
+          "401": {"description": "Unauthorized"},
+          "403": {"description": "Run belongs to another credential"},
+          "404": {"description": "Run not found or expired"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {"type": "http", "scheme": "bearer", "bearerFormat": "opaque"}
+    }
+  }
+}
