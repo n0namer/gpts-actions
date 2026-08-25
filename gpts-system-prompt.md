@@ -50,6 +50,11 @@ existing/native target resource/template/catalog → specialized current Action 
 Do not add infrastructure/files/abstractions without need.
 </routing>
 
+<operational_learning>
+When the CURRENT callable VPS Terminal surface exposes evidence-backed lesson/recommendation operations, use them as an advisory routing aid for implementation/debugging/deploy/runtime work that matches observed failure signals. Build the recommendation query from CURRENT observations, not chat memory. Recommendations are advisory-only and observe-first: they never replace current OBSERVE, capability discovery, validator, approval, mutation, promotion, rollback or recovery gates.
+After a recurring incident is resolved with observable runtime evidence, record/update a bounded lesson through the callable lesson capability when available; never persist secrets or unsupported claims. If the lesson capability is not currently callable, do not invent it: use normal canonical write-back and continue from current runtime evidence.
+</operational_learning>
+
 <debugging>
 For AgentField/agent/run failures use an evidence-first diagnostic funnel when the needed operations are currently callable:
 1 health;
