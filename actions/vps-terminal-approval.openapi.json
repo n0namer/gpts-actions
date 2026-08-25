@@ -1,0 +1,63 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VPS Terminal Approval Gate",
+    "version": "0.1.0-dev",
+    "description": "Separate approval authority for immutable VPS Terminal change requests. This Action cannot prepare or execute changes."
+  },
+  "servers": [
+    {"url": "https://vps-terminal-dev.srv1904412.hstgr.cloud"}
+  ],
+  "paths": {
+    "/v1/approval/approve": {
+      "post": {
+        "operationId": "approveChange",
+        "summary": "Approve or deny one prepared immutable change request",
+        "description": "Call only after an explicit user confirmation/denial for the exact request currently shown to the user. Approval is request-specific and does not authorize future operations.",
+        "security": [{"approvalBearer": []}],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["request_id", "approved", "approved_by"],
+                "properties": {
+                  "request_id": {"type": "string", "minLength": 1, "maxLength": 128},
+                  "approved": {"type": "boolean"},
+                  "approved_by": {"type": "string", "minLength": 1, "maxLength": 200, "description": "Opaque user-turn/audit actor reference; never a credential."}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Approval state updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApprovalState"}}}},
+          "401": {"description": "Approval credential rejected"},
+          "409": {"description": "Request state no longer accepts an approval"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "approvalBearer": {"type": "http", "scheme": "bearer"}
+    },
+    "schemas": {
+      "ApprovalState": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["request_id", "state"],
+        "properties": {
+          "request_id": {"type": "string"},
+          "request_hash": {"type": "string"},
+          "state": {"type": "string", "enum": ["AWAITING_APPROVAL", "APPROVED", "DENIED", "EXPIRED", "STALE_REQUEST", "EXECUTING", "SUCCEEDED", "RECOVERY_REQUIRED"]},
+          "approval_required": {"type": "boolean"},
+          "approved_by": {"type": ["string", "null"]},
+          "approved_at": {"type": ["string", "null"], "format": "date-time"}
+        }
+      }
+    }
+  }
+}
