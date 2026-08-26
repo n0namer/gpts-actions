@@ -262,6 +262,45 @@
         "properties": {"data": {"type": "string"}, "data_base64": {"type": "string"}},
         "oneOf": [{"required": ["data"]}, {"required": ["data_base64"]}]
       },
+      "ApprovalArgs": {
+        "type": "object",
+        "description": "Optional bounded operation arguments. The server hashes the complete object into the immutable request.",
+        "properties": {
+          "target_id": {"type": "string", "maxLength": 160},
+          "candidate_sha": {"type": "string", "maxLength": 80},
+          "config_digest": {"type": "string", "maxLength": 128},
+          "image": {"type": "string", "maxLength": 240},
+          "branch": {"type": "string", "maxLength": 160},
+          "force": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      },
+      "ApprovalObservedState": {
+        "type": "object",
+        "description": "Observed pre-change state used for stale-request protection.",
+        "properties": {
+          "generation": {"type": "integer"},
+          "status": {"type": "string", "maxLength": 120},
+          "state": {"type": "string", "maxLength": 120},
+          "config_hash": {"type": "string", "maxLength": 128},
+          "image": {"type": "string", "maxLength": 240},
+          "commit_sha": {"type": "string", "maxLength": 80}
+        },
+        "additionalProperties": true
+      },
+      "ApprovalPrepareRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["resource", "operation"],
+        "properties": {
+          "resource": {"type": "string", "minLength": 1, "maxLength": 200, "description": "Exact DEV resource selector. Wildcards are rejected server-side."},
+          "operation": {"type": "string", "minLength": 1, "maxLength": 80, "description": "Requested operation. Risk/effect are derived server-side; caller labels do not authorize it."},
+          "args": {"$ref": "#/components/schemas/ApprovalArgs"},
+          "observed_state": {"$ref": "#/components/schemas/ApprovalObservedState"},
+          "reason": {"type": "string", "maxLength": 500},
+          "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}
+        }
+      },
       "RecordLessonRequest": {
         "type": "object",
         "additionalProperties": false,
