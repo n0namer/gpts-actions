@@ -88,6 +88,20 @@ When an Action is retired, preserve the last known publication-safe contract whe
 
 Store only the secret value in the GPT Builder Bearer/API Key field. Never commit bearer values to this repository.
 
+### Action bearer placement rail (mandatory)
+
+Before publishing or re-importing any GPT Action whose bearer must be copied into GPT Builder, verify the deployment-platform secret metadata, not only runtime authentication.
+
+For Coolify-hosted Actions the canonical bearer source is an **application environment variable** owned by the application configuration. The acceptance contract is:
+
+- `is_runtime=true`;
+- `is_coolify=false` — the bearer must not be a platform-generated/managed `SERVICE_*` or Docker-derived variable;
+- `is_shared=false` unless the Action contract explicitly requires a shared credential;
+- `is_shown_once=false` when an operator must copy the value into GPT Builder;
+- the container/runtime may consume the environment value, but Docker/container configuration must not be treated as the source of truth for the bearer.
+
+If any required metadata flag is wrong, the Action credential setup is **FAIL** even when an authentication probe succeeds. Correct the application environment metadata first, recreate/reload the affected runtime if needed, then verify both: (1) metadata readback satisfies this contract and (2) wrong/missing bearer is rejected while the intended bearer reaches the authenticated endpoint. Never print the bearer during verification.
+
 ## Publication rules
 
 Every published contract must:
