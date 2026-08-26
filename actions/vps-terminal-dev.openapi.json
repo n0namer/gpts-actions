@@ -219,7 +219,7 @@
         "operationId": "prepareChange",
         "summary": "Prepare immutable DEV change request through enforced server-derived preflight",
         "description": "Caller intent/risk claims do not authorize a change. This call may be blocked before any request is created.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": true}}}},
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApprovalPrepareRequest"}}}},
         "responses": {"200": {"description": "Prepared request"}, "400": {"description": "Bad request"}, "409": {"description": "Observation/review required or stale"}}
       }
     },
