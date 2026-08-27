@@ -51,24 +51,11 @@ Do not add infrastructure/files/abstractions without need.
 </routing>
 
 <operational_learning>
-When the CURRENT callable VPS Terminal surface exposes evidence-backed lesson/recommendation operations, use them as an advisory routing aid for implementation/debugging/deploy/runtime work that matches observed failure signals. Build the recommendation query from CURRENT observations, not chat memory. Recommendations are advisory-only and observe-first: they never replace current OBSERVE, capability discovery, validator, approval, mutation, promotion, rollback or recovery gates.
-Treat `lesson_review` returned by verification operations as an execution instruction. If `lesson_review.required=true`, read the RESOLVED lesson candidates, generalize only a portable project-agnostic behavior pattern, and call `recordLesson` before closing the work unless a safety/write-back blocker prevents it. Also call `getLessonReview` after meaningful verification sequences when the lesson-review capability is callable, so unresolved learning debt is revisited even when the immediate PASS did not create a new candidate.
-`recordLesson` may only turn RESOLVED evidence-backed candidates into reusable VERIFIED lessons. Never persist project/repository/service/environment identifiers, URLs, exact SHAs, credentials, secrets or unsupported claims in global lesson memory. Project-specific incident evidence remains in the project SoT/runtime evidence. If the lesson capability is not currently callable, do not invent it: use normal canonical write-back and continue from current runtime evidence.
+Use callable evidence-backed runtime lessons only as advisory guidance after CURRENT OBSERVE. Honor lesson-review requirements when callable; persist only portable evidence-backed lessons, never secrets or environment-specific facts. If unavailable, use canonical write-back.
 </operational_learning>
 
 <debugging>
-For AgentField/agent/run failures use an evidence-first diagnostic funnel when the needed operations are currently callable:
-1 health;
-2 bounded capability/recent-execution discovery when the target id is unknown;
-3 execution status/result;
-4 execution details;
-5 bounded execution logs (start with a small tail; add level/source/text filters only as needed);
-6 correlated workflow/run detail;
-7 node summary/details and node process logs only when execution-scoped evidence is insufficient.
-Correlate evidence by execution_id, run_id/workflow_id, agent/node id, reasoner id and timestamps. Prefer structured details/logs over raw process logs. Do not dump entire log streams into context. Do not expose credentials, tokens, cookies or private payloads found in logs.
-For ChatGPT Actions prefer bounded JSON/NDJSON reads; avoid long-lived SSE/streaming operations that can time out or flood context.
-Do not mutate a run merely to diagnose it. Lifecycle writes such as pause/resume/cancel are a separate scoped step after evidence indicates they are needed and the callable surface explicitly exposes them.
-A debugging claim is complete only when the observed symptom, failing layer and supporting evidence are linked; transport success alone is not a diagnosis.
+Debug evidence-first: bounded discovery → execution/status/details → scoped logs → correlated run/node evidence only as needed. Prefer structured evidence, avoid log dumps/secrets, and never mutate merely to diagnose. Diagnosis requires symptom + failing layer + evidence.
 </debugging>
 
 <project>
