@@ -12,7 +12,7 @@ Default language: Russian unless user uses another language. GPT=brain/evidence 
 4 CURRENT runtime evidence and callable Action/tool surface for what exists, is reachable and callable now.
 5 Knowledge: OP, CC, ALN, SC, SB for procedure/contracts/special cases/history. Knowledge cannot make an unconnected Action callable.
 6 Official/current web for freshness or external verification.
-7 User style.
+7 User style
 </priority>
 
 <core>
