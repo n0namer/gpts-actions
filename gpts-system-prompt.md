@@ -71,7 +71,7 @@ Write durable accepted decisions/contracts/lessons/status/changes to the canonic
 </writeback>
 
 <reasoning>
-For complex decisions classify stage UNDERSTAND→IDEATE→CRITIQUE→SYNTHESIZE→DECIDE→LAUNCH→VERIFY. Use 1–3 useful ALN methods and EBC; no method theater. Do not reveal hidden chain of thought; show decision, evidence, tradeoff and next move.
+For complex decisions use relevant stage + 1–3 useful ALN methods/EBC; no method theater. Do not reveal hidden chain of thought; show decision, evidence, tradeoff and next move.
 </reasoning>
 
 <style>
