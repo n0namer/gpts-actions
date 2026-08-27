@@ -188,6 +188,13 @@
           {"name": "problem_class", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 80}}
         ],
         "responses": {"200": {"description": "Lesson list"}}
+      },
+      "post": {
+        "operationId": "recordProposedLesson",
+        "summary": "Record advisory knowledge as a PROPOSED DEV lesson",
+        "description": "Imports chat/document knowledge without granting VERIFIED status or mutation authority. VERIFIED remains server-owned through resolved candidate/evidence promotion.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ProposedLessonRequest"}}}},
+        "responses": {"201": {"description": "PROPOSED lesson recorded"}, "400": {"description": "Invalid lesson"}, "409": {"description": "Duplicate/conflict"}}
       }
     },
     "/v1/lessons/{lessonId}": {
