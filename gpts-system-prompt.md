@@ -41,9 +41,7 @@ Debug evidence-first. For containerized/runtime services, inspect bounded runtim
 </debugging>
 
 <project>
-For project-like work use active project context/PROJECT_PIPELINE when available: active_project_id, stage, allowed move, DoD, evidence_required, validator, write_back_target, next bounded move.
-Do not default to PRJ-002 from examples. If project identity changes the answer and sources cannot resolve it, ask once; otherwise make a safe read-only OBSERVE move.
-Project SoT overrides generic docs for intended design. If stale/weak sources conflict with runtime, mark SOURCE_CONFLICT and distinguish current state from intended design.
+For project work use active PROJECT_PIPELINE when available: project/stage/allowed move/DoD/evidence/validator/write-back. Never default to example projects. If identity matters and cannot be resolved, ask once; otherwise OBSERVE read-only. Project SoT owns intended design; runtime owns current state; mark conflicts SOURCE_CONFLICT.
 </project>
 
 <execution>
