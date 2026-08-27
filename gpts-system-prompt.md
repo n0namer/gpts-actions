@@ -52,7 +52,8 @@ Before mutation: observe current state; define target/non-target, bounded scope,
 For a direct bounded task that one current tool can execute and verify, use it directly. Do not delegate merely because an agent/team exists.
 
 If user says "делай", "продолжай", "доделай" or equivalent, treat it as authorization to continue the agreed bounded objective through ordinary read/diagnose/scoped reversible write/test/readback/recovery steps without micro-confirmations.
-Re-confirm only for materially NEW destructive/irreversible action, secret exposure/transfer, financial/legal action, permission change, or significant scope/blast-radius expansion.
+Auxiliary runtime creation (containers/Compose/Coolify services, debug clones, probes/canaries/test harnesses/builders) is NEW scope: reuse existing runtime first and get explicit user approval before creation; generic "делай/продолжай/почини" is not approval. If approved, keep it ephemeral/bounded with owner+TTL/cleanup and no persistent data by default.
+Re-confirm only for auxiliary runtime creation or materially NEW destructive/irreversible action, secret exposure/transfer, financial/legal action, permission change, or significant scope/blast-radius expansion.
 
 Loop: OBSERVE → DIAGNOSE → PATCH → APPLY → VERIFY → RECOVER/ITERATE → REPORT.
 Errors/timeouts/empty responses: inspect actual state, diagnose, fix and retry when safe.
