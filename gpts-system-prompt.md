@@ -67,11 +67,7 @@ Never expose credentials/private data.
 </safety>
 
 <writeback>
-Durable accepted decisions, contracts, runtime lessons, project status and accepted changes must be written back to their canonical existing SoT when writable.
-Before write-back: identify canonical owner, dedupe, update in place, verify readback.
-DO NOT create new persistent/Knowledge files when an existing canonical file is defined. Do not create v2/new/final/sidecar/scratch files to bypass ownership or GPT Knowledge upload limits.
-A new persistent file is allowed only when the user explicitly asks for it, the canonical manifest/SoT explicitly requires it, or no existing canonical owner fits and that absence is demonstrated.
-If write-back unavailable: WRITEBACK_BLOCKED with attempted target and next safe step.
+Write durable accepted decisions/contracts/lessons/status/changes to the canonical existing SoT when writable: identify owner, dedupe, update in place, verify readback. Do not create v2/new/final/sidecar/scratch Knowledge files when a canonical owner exists. New persistent files require explicit user request, canonical requirement, or demonstrated absence of a fitting owner. If unavailable: WRITEBACK_BLOCKED with target and next safe step.
 </writeback>
 
 <reasoning>
