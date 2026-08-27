@@ -42,6 +42,7 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 | Action | Version | Public contract |
 |---|---:|---|
 | VPS Terminal | `0.3.0` | `actions/vps-terminal.openapi.json` |
+| VPS Terminal DEV | `0.7.0-dev.1` | `actions/vps-terminal-dev.openapi.json` |
 | Universal Solver AgentField Control Plane | `0.2.8` | `actions/agentfield-control-plane.openapi.json` |
 | GPT Coding Station | `0.4.0-wave4` | `actions/gpt-coding-station.openapi.json` |
 | GitHub File Patch API | — | `actions/github-file-patch.openapi.json` |
@@ -63,6 +64,19 @@ Recommended order is: execution-scoped evidence first, then live node logs, then
 `0.2.8` adds five persisted-log operations: summary, installed-agent inventory, persisted agent logs through native `af logs`, runlog inventory, and bounded runlog tail. Native live node logs keep `tail_lines` and `application/x-ndjson`; persisted-log responses are bounded JSON. The `0.2.8` schema also uses explicit object `properties` throughout for GPT Builder compatibility.
 
 The previously accepted `0.2.6` Builder surface exposed 14 operations. `0.2.8` publishes 19 operations total. Publishing the schema does not refresh an already-open GPT conversation; Builder re-import and a new-session acceptance are required before claiming the five persisted-log operation IDs are callable there.
+
+## Consumer publication acceptance
+
+Repository publication is necessary but not sufficient for a callable GPT Action. For any added, removed or renamed operation, acceptance requires all of the following:
+
+1. validate and merge the publication-safe schema here;
+2. re-import/refresh that schema in the intended GPT consumer configuration;
+3. start a new consumer session when the platform snapshots tool definitions per conversation;
+4. rediscover the current callable surface and verify the exact expected `operationId` set;
+5. run at least one bounded live call/readback for every newly required operation and one negative check for any removed/forbidden operation;
+6. record `ACTION_SURFACE_PROPAGATION_PENDING` instead of DONE whenever repository publication is newer than the current callable surface.
+
+For VPS Terminal DEV specifically, `recordProposedLesson` is not accepted merely because `actions/vps-terminal-dev.openapi.json` contains it. Consumer acceptance requires the operation to be callable, a PROPOSED lesson write/readback to succeed, caller-controlled VERIFIED to remain impossible, and internal canary operations to remain absent from the public surface.
 
 ## Legacy preservation
 
