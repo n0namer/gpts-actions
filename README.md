@@ -65,6 +65,19 @@ Recommended order is: execution-scoped evidence first, then live node logs, then
 
 The previously accepted `0.2.6` Builder surface exposed 14 operations. `0.2.8` publishes 19 operations total. Publishing the schema does not refresh an already-open GPT conversation; Builder re-import and a new-session acceptance are required before claiming the five persisted-log operation IDs are callable there.
 
+## Consumer publication acceptance
+
+Repository publication is necessary but not sufficient for a callable GPT Action. For any added, removed or renamed operation, acceptance requires all of the following:
+
+1. validate and merge the publication-safe schema here;
+2. re-import/refresh that schema in the intended GPT consumer configuration;
+3. start a new consumer session when the platform snapshots tool definitions per conversation;
+4. rediscover the current callable surface and verify the exact expected `operationId` set;
+5. run at least one bounded live call/readback for every newly required operation and one negative check for any removed/forbidden operation;
+6. record `ACTION_SURFACE_PROPAGATION_PENDING` instead of DONE whenever repository publication is newer than the current callable surface.
+
+For VPS Terminal DEV specifically, `recordProposedLesson` is not accepted merely because `actions/vps-terminal-dev.openapi.json` contains it. Consumer acceptance requires the operation to be callable, a PROPOSED lesson write/readback to succeed, caller-controlled VERIFIED to remain impossible, and internal canary operations to remain absent from the public surface.
+
 ## Legacy preservation
 
 Retired Action contracts and old routing conventions must be preserved for audit/migration rather than silently erased. Historical material belongs under `legacy/` and must be clearly marked `LEGACY`, `DEPRECATED`, or `SUPERSEDED`; it must not be treated as proof that an operation is callable now.
