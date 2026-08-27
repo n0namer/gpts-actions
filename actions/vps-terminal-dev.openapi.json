@@ -230,6 +230,22 @@
         "parameters": [{"name": "request_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1}}],
         "responses": {"200": {"description": "Approval status"}, "404": {"description": "Not found"}}
       }
+    },
+    "/v1/target/file/canary": {
+      "post": {
+        "operationId": "createTargetCanaryFile",
+        "summary": "Create one exclusive disposable canary file in an allowlisted DEV target",
+        "description": "Purpose-built reversible verification primitive. Creation is mediated server-side and fails if the path already exists.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CanaryCreateRequest"}}}},
+        "responses": {"200": {"description": "Canary created with SHA-256 readback evidence"}, "400": {"description": "Bad request"}, "404": {"description": "Target not found"}, "409": {"description": "Blocked, stale, or path already exists"}}
+      },
+      "delete": {
+        "operationId": "deleteTargetCanaryFile",
+        "summary": "Delete only a matching disposable canary file from an allowlisted DEV target",
+        "description": "Stale-safe cleanup primitive. expected_sha256 must match the current file before deletion; successful response verifies absence.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CanaryDeleteRequest"}}}},
+        "responses": {"200": {"description": "Canary deleted and absence verified"}, "400": {"description": "Bad request"}, "404": {"description": "Target or file not found"}, "409": {"description": "Blocked or SHA mismatch"}}
+      }
     }
   },
   "components": {
