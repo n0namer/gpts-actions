@@ -188,6 +188,13 @@
           {"name": "problem_class", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 80}}
         ],
         "responses": {"200": {"description": "Lesson list"}}
+      },
+      "post": {
+        "operationId": "recordProposedLesson",
+        "summary": "Record advisory knowledge as a PROPOSED DEV lesson",
+        "description": "Imports chat/document knowledge without granting VERIFIED status or mutation authority. VERIFIED remains server-owned through resolved candidate/evidence promotion.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ProposedLessonRequest"}}}},
+        "responses": {"201": {"description": "PROPOSED lesson recorded"}, "400": {"description": "Invalid lesson"}, "409": {"description": "Duplicate/conflict"}}
       }
     },
     "/v1/lessons/{lessonId}": {
@@ -230,46 +237,10 @@
         "parameters": [{"name": "request_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1}}],
         "responses": {"200": {"description": "Approval status"}, "404": {"description": "Not found"}}
       }
-    },
-    "/v1/target/file/canary": {
-      "post": {
-        "operationId": "createTargetCanaryFile",
-        "summary": "Create one exclusive disposable canary file in an allowlisted DEV target",
-        "description": "Purpose-built reversible verification primitive. Creation is mediated server-side and fails if the path already exists.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CanaryCreateRequest"}}}},
-        "responses": {"200": {"description": "Canary created with SHA-256 readback evidence"}, "400": {"description": "Bad request"}, "404": {"description": "Target not found"}, "409": {"description": "Blocked, stale, or path already exists"}}
-      },
-      "delete": {
-        "operationId": "deleteTargetCanaryFile",
-        "summary": "Delete only a matching disposable canary file from an allowlisted DEV target",
-        "description": "Stale-safe cleanup primitive. expected_sha256 must match the current file before deletion; successful response verifies absence.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CanaryDeleteRequest"}}}},
-        "responses": {"200": {"description": "Canary deleted and absence verified"}, "400": {"description": "Bad request"}, "404": {"description": "Target or file not found"}, "409": {"description": "Blocked or SHA mismatch"}}
-      }
     }
   },
   "components": {
     "schemas": {
-      "CanaryCreateRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["target_id", "path", "content"],
-        "properties": {
-          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
-          "path": {"type": "string", "minLength": 1, "maxLength": 512},
-          "content": {"type": "string", "minLength": 1, "maxLength": 4096}
-        }
-      },
-      "CanaryDeleteRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["target_id", "path", "expected_sha256"],
-        "properties": {
-          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
-          "path": {"type": "string", "minLength": 1, "maxLength": 512},
-          "expected_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
-        }
-      },
       "Command": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"type": "string", "maxLength": 2048}},
       "CommandRequest": {
         "type": "object",
@@ -335,6 +306,21 @@
           "observed_state": {"$ref": "#/components/schemas/ApprovalObservedState"},
           "reason": {"type": "string", "maxLength": 500},
           "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}
+        }
+      },
+      "ProposedLessonRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["lesson_id", "title", "problem_class", "scope", "signals", "recommendations", "rationale", "origin"],
+        "properties": {
+          "lesson_id": {"type": "string", "minLength": 1, "maxLength": 120},
+          "title": {"type": "string", "minLength": 1, "maxLength": 160},
+          "problem_class": {"type": "string", "minLength": 2, "maxLength": 80},
+          "scope": {"type": "object", "additionalProperties": false, "required": ["target_class"], "properties": {"target_class": {"type": "string", "minLength": 1, "maxLength": 100}}},
+          "signals": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"type": "string", "minLength": 1, "maxLength": 160}},
+          "recommendations": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"type": "string", "minLength": 1, "maxLength": 320}},
+          "rationale": {"type": "string", "minLength": 1, "maxLength": 600},
+          "origin": {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"type": "string", "enum": ["CHAT_IMPORT", "DOC_IMPORT"]}, "source_confidence": {"type": "string", "enum": ["VERIFIED", "LIKELY", "MEMORY_ONLY"]}, "source_refs": {"type": "array", "maxItems": 16, "items": {"type": "string", "maxLength": 240}}}}
         }
       },
       "RecordLessonRequest": {
