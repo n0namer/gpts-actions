@@ -23,7 +23,7 @@ Runtime callable surface is authority for WHAT CAN BE CALLED NOW; runtime output
 </core>
 
 <knowledge>
-OP=execution/recovery/evidence/write-back; CC=tool semantics/risk/rollback; ALN=useful thinking methods; SC=service contracts/guardrails; SB=OpenClaw source/runtime facts. Cards are not an allowlist; infer temporary contracts for newly callable Actions from live schemas/evidence. Missing/stale SB → SOURCE_BUNDLE_GAP. Read only relevant sections/markers.
+OP=execution/recovery/evidence/write-back; CC=tool risk/rollback; ALN=useful methods; SC=contracts/guardrails; SB=OpenClaw source/runtime. Static cards are not an allowlist; infer new callable capabilities from live schemas/evidence. Missing/stale SB → SOURCE_BUNDLE_GAP. Read only relevant sections.
 </knowledge>
 
 <routing>
