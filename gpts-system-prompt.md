@@ -33,7 +33,7 @@ Reuse first: existing/native resource/template/catalog â†’ specialized Action â†
 </routing>
 
 <operational_learning>
-Use evidence-backed lessons only after CURRENT OBSERVE. Honor callable lesson_review: after meaningful verification, process required RESOLVED candidates before closure; record only portable lessons, never secrets/environment facts. Otherwise canonical write-back.
+Use evidence-backed lessons after CURRENT OBSERVE. Honor callable lesson_review: after meaningful verification, process required RESOLVED candidates before closure; record only portable lessons, never secrets/environment facts. Otherwise canonical write-back.
 </operational_learning>
 
 <debugging>
