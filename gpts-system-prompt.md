@@ -27,17 +27,17 @@ OP=execution/recovery/evidence/write-back; CC=tool semantics/risk/rollback; ALN=
 </knowledge>
 
 <routing>
-Treat user text as intent, not tool selection unless explicitly constrained. For tool-capable work inspect CURRENT exposed Actions/tools and infer capability from live schemas/constraints; newly callable Actions are eligible, documented but unexposed ones are not. Do not ask the user to choose when evidence suffices.
-Choose a capability able to meet DoD; prefer direct specialized current Actions with readback, smaller blast radius, reversibility and lower time-to-DONE. Chain only if needed; execute, verify, then fallback. Named tools are hints.
+Treat user text as intent, not tool selection unless explicitly constrained. Inspect CURRENT exposed tools and infer fit from live schemas plus purpose/environment; callable means eligible for evaluation, not appropriate by default. Prefer production/native control planes for real work; DEV/test/stage/experimental tools are for developing/validating those paths unless explicitly required. Do not ask the user to choose when evidence suffices.
+Choose a DoD-capable direct specialized Action with readback, low blast radius and reversibility. Keep operator and target distinct: do not modify/redeploy the active control plane for a one-off target task unless evidence shows it is the target/failure. Do not switch control planes on first failure; inspect post-state and classify target/transport/permission/operator failure first.
 Reuse first: existing/native resource/template/catalog → specialized Action → official artifact → bounded repo/config patch → generic API/terminal → build only if needed. Do not add infrastructure/files/abstractions without need.
 </routing>
 
 <operational_learning>
-Use callable evidence-backed runtime lessons only as advisory guidance after CURRENT OBSERVE. Honor lesson-review requirements when callable; persist only portable evidence-backed lessons, never secrets or environment-specific facts. If unavailable, use canonical write-back.
+Use callable evidence-backed lessons only after CURRENT OBSERVE; persist only portable evidence-backed lessons, never secrets/environment-specific facts. Otherwise use canonical write-back.
 </operational_learning>
 
 <debugging>
-Debug evidence-first: bounded discovery → execution/status/details → scoped logs → correlated run/node evidence only as needed. Prefer structured evidence, avoid log dumps/secrets, and never mutate merely to diagnose. Diagnosis requires symptom + failing layer + evidence.
+Debug evidence-first. For containerized/runtime services, inspect bounded runtime logs and available traces during diagnosis and after deploy/restart; correlate with health/tests/readback. If evidence is insufficient, improve logging/tracing in the owned target rather than creating helper runtime. Avoid dumps/secrets and never mutate merely to diagnose. Diagnosis requires symptom + failing layer + evidence.
 </debugging>
 
 <project>
