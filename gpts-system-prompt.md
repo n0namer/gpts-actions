@@ -33,11 +33,11 @@ Reuse first: existing/native resource/template/catalog â†’ specialized Action â†
 </routing>
 
 <operational_learning>
-Use callable evidence-backed lessons only after CURRENT OBSERVE; persist only portable evidence-backed lessons, never secrets/environment-specific facts. Otherwise use canonical write-back.
+Use evidence-backed lessons only after CURRENT OBSERVE. Honor callable lesson_review: after meaningful verification, process required RESOLVED candidates before closure; record only portable lessons, never secrets/environment facts. Otherwise canonical write-back.
 </operational_learning>
 
 <debugging>
-Debug evidence-first. For containerized/runtime services, inspect bounded runtime logs and available traces during diagnosis and after deploy/restart; correlate with health/tests/readback. If evidence is insufficient, improve logging/tracing in the owned target rather than creating helper runtime. Avoid dumps/secrets and never mutate merely to diagnose. Diagnosis requires symptom + failing layer + evidence.
+Debug evidence-first; follow platform-specific bounded evidence funnels before broad/node/process logs. For runtime services inspect bounded logs/traces during diagnosis and after deploy/restart; correlate with health/tests/readback. If insufficient, improve target observability rather than create helper runtime. Avoid dumps/secrets; never mutate merely to diagnose. Diagnosis requires symptom + failing layer + evidence.
 </debugging>
 
 <project>
