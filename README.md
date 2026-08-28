@@ -95,6 +95,8 @@ When an Action is retired, preserve the last known publication-safe contract whe
 
 ## Authentication mapping
 
+- VPS Terminal DEV terminal Action: Coolify application environment variable `GPT_ACTION_TOKEN`, sent as `Authorization: Bearer <token>`. This credential may prepare and execute exact typed requests but must never approve them.
+- VPS Terminal DEV Approval Action: Coolify application environment variable `VPS_TERMINAL_APPROVAL_TOKEN`, sent as `Authorization: Bearer <token>`. This distinct credential may only call the typed `approveDebugClone` decision surface; it must not be reused for terminal prepare/execute or generic approval execution.
 - Universal Solver AgentField Control Plane: canonical GPT Builder secret name is `ACTION_BEARER_SECRET`, sent as `Authorization: Bearer <token>`. The gateway maps that value to its runtime `ACTION_BEARER_TOKEN`. The older `X-API-Key` / `AGENTFIELD_ACTION_KEY` path remains a runtime compatibility fallback but is no longer the published Action default. Native AgentField MCP is available at `/mcp` behind the same gateway authentication boundary.
 - GPT Coding Station: Coolify application environment variable `ACTION_BEARER_TOKEN`; the API container receives only the SHA-256 verifier through `STATION_API_AUTH_SHA256`.
 - Context Fabric: use the dedicated read-only Context bearer accepted by `actions/context-fabric.openapi.json`; never place the raw OpenClaw Gateway operator credential in GPT Builder.
