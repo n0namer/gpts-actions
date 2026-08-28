@@ -3,7 +3,7 @@
   "info": {
     "title": "Context Fabric Action",
     "description": "Read-only provider-independent multisource context retrieval for Custom GPTs and operational assistants. The facade may return project/document/code evidence, ranked specialists, eligible skill snapshots, and canonical VERIFIED lessons while remaining advisory-only.",
-    "version": "0.2.0"
+    "version": "0.3.0"
   },
   "servers": [
     {
