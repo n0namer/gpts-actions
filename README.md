@@ -43,6 +43,7 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 |---|---:|---|
 | VPS Terminal | `0.3.0` | `actions/vps-terminal.openapi.json` |
 | VPS Terminal DEV | `0.7.0-dev.1` | `actions/vps-terminal-dev.openapi.json` |
+| VPS Terminal DEV Approval | `0.7.0-dev.1` | `actions/vps-terminal-dev-approval.openapi.json` |
 | Universal Solver AgentField Control Plane | `0.2.8` | `actions/agentfield-control-plane.openapi.json` |
 | GPT Coding Station | `0.4.0-wave4` | `actions/gpt-coding-station.openapi.json` |
 | Context Fabric | `0.2.0` | `actions/context-fabric.openapi.json` |
