@@ -33,6 +33,65 @@
         "responses": {"200": {"description": "Version and runtime status"}, "503": {"description": "Startup self-test not ready"}}
       }
     },
+    "/v1/target/file": {
+      "get": {
+        "operationId": "readTargetFile",
+        "summary": "Read bounded UTF-8 from a DEV live-patch target with SHA-256 evidence",
+        "parameters": [
+          {"name": "target_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 128}},
+          {"name": "path", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 512}},
+          {"name": "start_line", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "default": 1}},
+          {"name": "line_count", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 200, "default": 120}},
+          {"name": "max_bytes", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 256, "maximum": 12000, "default": 8192}}
+        ],
+        "responses": {"200": {"description": "File range and SHA-256"}, "403": {"description": "Live patch not allowed"}, "404": {"description": "Not found"}}
+      }
+    },
+    "/v1/target/file/patch/preview": {
+      "post": {
+        "operationId": "previewTargetPatch",
+        "summary": "Preview exact stale-safe DEV live patch without writing",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TargetPatchRequest"}}}},
+        "responses": {"200": {"description": "Patch preview"}, "409": {"description": "Stale or ambiguous patch"}}
+      }
+    },
+    "/v1/target/file/patch": {
+      "post": {
+        "operationId": "applyTargetPatch",
+        "summary": "Apply exact DEV live patch and create durable vtchg journal evidence",
+        "description": "Atomically applies a stale-safe exact patch through RuntimeFileACI. Successful writes return capture_required=true and git_writeback_status=PENDING in the durable vtchg record.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TargetPatchRequest"}}}},
+        "responses": {"200": {"description": "Applied patch plus durable capture record"}, "409": {"description": "Stale or ambiguous patch"}, "502": {"description": "Readback verification failed"}}
+      }
+    },
+    "/v1/target/file/changes": {
+      "get": {
+        "operationId": "listTargetChanges",
+        "summary": "Read durable DEV live-patch journal records",
+        "parameters": [
+          {"name": "target_id", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 128}},
+          {"name": "change_id", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 120}},
+          {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 200, "default": 50}}
+        ],
+        "responses": {"200": {"description": "Durable vtchg records"}}
+      }
+    },
+    "/v1/target/check": {
+      "post": {
+        "operationId": "runTargetCheck",
+        "summary": "Run target-owned validation preset after DEV live patch",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["target_id", "preset"], "properties": {"target_id": {"type": "string", "minLength": 1, "maxLength": 128}, "preset": {"type": "string", "enum": ["python_compile", "node_check", "git_diff_check"]}, "path": {"type": "string", "maxLength": 512}}}}}},
+        "responses": {"200": {"description": "Validation result"}, "403": {"description": "Preset not allowed"}}
+      }
+    },
+    "/v1/target/reload": {
+      "post": {
+        "operationId": "reloadTarget",
+        "summary": "Reload an opted-in DEV target with its registered preset",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["target_id"], "properties": {"target_id": {"type": "string", "minLength": 1, "maxLength": 128}}}}}},
+        "responses": {"200": {"description": "Reloaded"}, "403": {"description": "Reload not allowed"}, "504": {"description": "Reload timeout"}}
+      }
+    },
     "/v1/operator-guidance": {
       "post": {
         "operationId": "getOperatorGuidance",
