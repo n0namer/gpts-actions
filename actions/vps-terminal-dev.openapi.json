@@ -76,6 +76,15 @@
         "responses": {"200": {"description": "Durable vtchg records"}}
       }
     },
+    "/v1/target/file/changes/writeback": {
+      "post": {
+        "operationId": "updateTargetWriteback",
+        "summary": "Record evidence-backed Git writeback state for one DEV live-patch change",
+        "description": "Append-only state transition. PENDING may become CANDIDATE or REJECTED; CANDIDATE may become ACCEPTED or REJECTED. CANDIDATE requires exact branch, commit SHA and PR number. ACCEPTED requires merged SHA.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TargetWritebackRequest"}}}},
+        "responses": {"200": {"description": "Folded current writeback state"}, "400": {"description": "Required evidence missing"}, "404": {"description": "Change not found"}, "409": {"description": "Invalid state transition or mediation block"}}
+      }
+    },
     "/v1/target/check": {
       "post": {
         "operationId": "runTargetCheck",
@@ -338,6 +347,20 @@
           "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
           "old_text": {"type": "string", "minLength": 1, "maxLength": 12000},
           "new_text": {"type": "string", "maxLength": 12000}
+        }
+      },
+      "TargetWritebackRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["change_id", "status"],
+        "properties": {
+          "change_id": {"type": "string", "pattern": "^vtchg_[0-9a-f]{32}$"},
+          "status": {"type": "string", "enum": ["CANDIDATE", "ACCEPTED", "REJECTED"]},
+          "branch": {"type": "string", "maxLength": 200},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+          "pr_number": {"type": "integer", "minimum": 1},
+          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+          "reason": {"type": "string", "maxLength": 500}
         }
       },
       "ApprovalArgs": {
