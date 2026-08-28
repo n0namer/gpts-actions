@@ -3,7 +3,7 @@
   "info": {
     "title": "VPS Terminal - Dev Approval",
     "version": "0.7.0-dev.1",
-    "description": "DEV ONLY approval-decision Action. Uses the distinct VPS_TERMINAL_APPROVAL_TOKEN credential. It can approve only exact typed debug-clone requests and read their approval status. It cannot prepare, execute, inspect runtime internals, run commands, or approve generic change requests."
+    "description": "DEV ONLY approval-decision Action. Uses the distinct VPS_TERMINAL_APPROVAL_TOKEN credential. It can only approve or deny exact typed debug-clone requests. It cannot prepare, execute, read terminal-bearer status, inspect runtime internals, run commands, or approve generic change requests."
   },
   "servers": [
     {"url": "https://vps-terminal-dev.srv1904412.hstgr.cloud"}
