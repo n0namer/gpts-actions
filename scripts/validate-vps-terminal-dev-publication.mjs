@@ -12,6 +12,7 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "previewTargetPatch",
   "applyTargetPatch",
   "listTargetChanges",
+  "updateTargetWriteback",
   "runTargetCheck",
   "reloadTarget",
   "getOperatorGuidance",
