@@ -4,14 +4,18 @@ on:
   pull_request:
     paths:
       - "actions/vps-terminal-dev.openapi.json"
+      - "actions/vps-terminal-dev-approval.openapi.json"
       - "scripts/validate-vps-terminal-dev-publication.mjs"
+      - "scripts/validate-vps-terminal-dev-approval-publication.mjs"
       - ".github/workflows/vps-terminal-dev-publication-consistency.yml"
   push:
     branches:
       - main
     paths:
       - "actions/vps-terminal-dev.openapi.json"
+      - "actions/vps-terminal-dev-approval.openapi.json"
       - "scripts/validate-vps-terminal-dev-publication.mjs"
+      - "scripts/validate-vps-terminal-dev-approval-publication.mjs"
       - ".github/workflows/vps-terminal-dev-publication-consistency.yml"
 
 permissions:
