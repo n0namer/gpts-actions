@@ -1,0 +1,52 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VPS Terminal - Dev Approval",
+    "version": "0.7.0-dev.1",
+    "description": "DEV ONLY approval-decision Action. Uses the distinct VPS_TERMINAL_APPROVAL_TOKEN credential. It can approve only exact typed debug-clone requests and read their approval status. It cannot prepare, execute, inspect runtime internals, run commands, or approve generic change requests."
+  },
+  "servers": [
+    {"url": "https://vps-terminal-dev.srv1904412.hstgr.cloud"}
+  ],
+  "security": [{"Bearer": []}],
+  "paths": {
+    "/v1/approval/debug-clone/approve": {
+      "post": {
+        "operationId": "approveDebugClone",
+        "summary": "Approve or deny one exact typed DEV debug-clone request",
+        "description": "The server rereads the immutable request and rejects any generic or foreign request_id. This operation never executes the resource change.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["request_id", "approved", "approved_by"],
+                "properties": {
+                  "request_id": {"type": "string", "minLength": 1, "maxLength": 120},
+                  "approved": {"type": "boolean"},
+                  "approved_by": {"type": "string", "minLength": 1, "maxLength": 160},
+                  "reason": {"type": "string", "maxLength": 500}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Decision recorded"},
+          "400": {"description": "Bad request or scope mismatch"},
+          "401": {"description": "Invalid approval bearer"},
+          "403": {"description": "Request is not an exact typed debug-clone request"},
+          "404": {"description": "Approval request not found"},
+          "409": {"description": "Expired, stale or invalid request state"}
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {"type": "http", "scheme": "bearer", "bearerFormat": "opaque"}
+    }
+  }
+}
