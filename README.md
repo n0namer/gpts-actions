@@ -45,6 +45,7 @@ Detailed selection, recovery and verification rules live in GPT Knowledge (`Capa
 | VPS Terminal DEV | `0.7.0-dev.1` | `actions/vps-terminal-dev.openapi.json` |
 | Universal Solver AgentField Control Plane | `0.2.8` | `actions/agentfield-control-plane.openapi.json` |
 | GPT Coding Station | `0.4.0-wave4` | `actions/gpt-coding-station.openapi.json` |
+| Context Fabric | `0.1.0` | `actions/context-fabric.openapi.json` |
 | GitHub File Patch API | — | `actions/github-file-patch.openapi.json` |
 | OpenClaw Agent (sync) | — | `actions/openclaw.openapi.json` |
 | OpenClaw Async Hook | — | `actions/openclaw-hooks.openapi.json` |
@@ -95,6 +96,7 @@ When an Action is retired, preserve the last known publication-safe contract whe
 
 - Universal Solver AgentField Control Plane: canonical GPT Builder secret name is `ACTION_BEARER_SECRET`, sent as `Authorization: Bearer <token>`. The gateway maps that value to its runtime `ACTION_BEARER_TOKEN`. The older `X-API-Key` / `AGENTFIELD_ACTION_KEY` path remains a runtime compatibility fallback but is no longer the published Action default. Native AgentField MCP is available at `/mcp` behind the same gateway authentication boundary.
 - GPT Coding Station: Coolify application environment variable `ACTION_BEARER_TOKEN`; the API container receives only the SHA-256 verifier through `STATION_API_AUTH_SHA256`.
+- Context Fabric: use the dedicated read-only Context bearer accepted by `actions/context-fabric.openapi.json`; never place the raw OpenClaw Gateway operator credential in GPT Builder.
 - OpenClaw sync: runtime `OPENCLAW_GATEWAY_TOKEN` value.
 - OpenClaw async hook: dedicated OpenClaw `hooks.token` value; do not reuse the Gateway token.
 - Hermes sync + async: runtime `API_SERVER_KEY` value.
