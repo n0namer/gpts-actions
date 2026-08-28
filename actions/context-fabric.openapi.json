@@ -142,7 +142,16 @@
                             "type": "array",
                             "items": { "type": "string" }
                           },
-                          "verification_status": { "type": "string" }
+                          "verification_status": { "type": "string" },
+                          "invocation_surface": { "type": "string", "description": "For SKILL results, verified OpenClaw exposure surface such as MODEL_CONTEXT_AND_USER_COMMAND. This is not execution authorization." },
+                          "model_visible": { "type": ["boolean", "null"] },
+                          "user_invocable": { "type": ["boolean", "null"] },
+                          "command_visible": { "type": ["boolean", "null"] },
+                          "direct_dispatch_metadata_status": { "type": "string", "description": "For SKILL results, whether direct-dispatch metadata was verified from the active runtime inventory." },
+                          "direct_dispatch_inventory_complete": { "type": ["boolean", "null"], "description": "For SKILL results, true only when the direct-dispatch inventory scan/verification was complete. False/null must not be used to prove absence." },
+                          "direct_tool_dispatch": { "type": ["boolean", "null"], "description": "For SKILL results, true only for a verified command-dispatch: tool binding; false proves absence only when inventory completeness and metadata status are verified." },
+                          "command_tool": { "type": "string", "description": "Verified direct tool name when direct_tool_dispatch is true; empty otherwise." },
+                          "command_arg_mode": { "type": "string", "description": "Verified direct-dispatch argument mode when present; empty otherwise." }
                         }
                       }
                     },
