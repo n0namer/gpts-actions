@@ -34,11 +34,14 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "recommendLessons",
   "getSelfProtection",
   "prepareChange",
-  "approvalStatus"
+  "approvalStatus",
+  "prepareDebugClone",
+  "executeApprovedDebugClone"
 ];
 
 const FORBIDDEN_PUBLIC_PATHS = [
   "/v1/approval/approve",
+  "/v1/approval/debug-clone/approve",
   "/v1/approval/execute",
   "/v1/internal/self-protection/approvals/issue",
   "/v1/validators",
