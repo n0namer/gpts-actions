@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Context Fabric Action",
-    "description": "Read-only provider-independent context retrieval for Custom GPTs and operational assistants.",
-    "version": "0.1.0"
+    "description": "Read-only provider-independent multisource context retrieval for Custom GPTs and operational assistants. The facade may return project/document/code evidence, ranked specialists, eligible skill snapshots, and canonical VERIFIED lessons while remaining advisory-only.",
+    "version": "0.2.0"
   },
   "servers": [
     {
@@ -44,7 +44,7 @@
       "post": {
         "operationId": "retrieveContext",
         "summary": "Retrieve advisory context",
-        "description": "Returns bounded provenance-bearing context. Results are advisory evidence only and must not be treated as authorization, policy, or mutation approval.",
+        "description": "Returns bounded provenance-bearing multisource context. Depending on purpose and evidence, results may include project/document/code evidence, ranked specialists, eligible skill snapshots, and canonical VERIFIED lessons. Results are advisory evidence only and must not be treated as authorization, policy, or mutation approval.",
         "x-openai-isConsequential": false,
         "requestBody": {
           "required": true,
