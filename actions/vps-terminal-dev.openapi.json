@@ -367,6 +367,20 @@
           "new_text": {"type": "string", "maxLength": 12000}
         }
       },
+      "TargetWritebackRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["change_id", "status"],
+        "properties": {
+          "change_id": {"type": "string", "pattern": "^vtchg_[0-9a-f]{32}$"},
+          "status": {"type": "string", "enum": ["CANDIDATE", "ACCEPTED", "REJECTED"]},
+          "branch": {"type": "string", "maxLength": 200},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+          "pr_number": {"type": "integer", "minimum": 1},
+          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
+          "reason": {"type": "string", "maxLength": 500}
+        }
+      },
       "ApprovalArgs": {
         "type": "object",
         "description": "Optional bounded operation arguments. The server hashes the complete object into the immutable request.",
