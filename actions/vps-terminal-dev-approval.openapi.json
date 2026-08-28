@@ -42,20 +42,6 @@
           "409": {"description": "Expired, stale or invalid request state"}
         }
       }
-    },
-    "/v1/approval/status": {
-      "get": {
-        "operationId": "getDebugCloneApprovalStatus",
-        "summary": "Read immutable DEV approval request status",
-        "parameters": [
-          {"name": "request_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 120}}
-        ],
-        "responses": {
-          "200": {"description": "Approval status"},
-          "401": {"description": "Invalid approval bearer"},
-          "404": {"description": "Not found"}
-        }
-      }
     }
   },
   "components": {
