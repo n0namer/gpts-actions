@@ -328,6 +328,18 @@
         "properties": {"data": {"type": "string"}, "data_base64": {"type": "string"}},
         "oneOf": [{"required": ["data"]}, {"required": ["data_base64"]}]
       },
+      "TargetPatchRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target_id", "path", "expected_sha256", "old_text", "new_text"],
+        "properties": {
+          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
+          "path": {"type": "string", "minLength": 1, "maxLength": 512},
+          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+          "old_text": {"type": "string", "minLength": 1, "maxLength": 12000},
+          "new_text": {"type": "string", "maxLength": 12000}
+        }
+      },
       "ApprovalArgs": {
         "type": "object",
         "description": "Optional bounded operation arguments. The server hashes the complete object into the immutable request.",
