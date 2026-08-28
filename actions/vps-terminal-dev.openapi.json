@@ -280,6 +280,24 @@
         "responses": {"200": {"description": "Self-protection status"}}
       }
     },
+    "/v1/approval/debug-clone/prepare": {
+      "post": {
+        "operationId": "prepareDebugClone",
+        "summary": "Prepare an immutable typed DEV debug-clone approval request",
+        "description": "Server observes the source target/container identity. Caller cannot supply operation, resource, observed state, image or command.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["target_id"], "properties": {"target_id": {"type": "string", "minLength": 1, "maxLength": 120}, "mounts": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 240, "pattern": "^/"}}, "reason": {"type": "string", "maxLength": 500}, "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}}}}}},
+        "responses": {"200": {"description": "Typed request awaiting approval"}, "400": {"description": "Scope denied"}, "404": {"description": "Source target unavailable"}, "409": {"description": "Policy or state conflict"}}
+      }
+    },
+    "/v1/approval/debug-clone/execute": {
+      "post": {
+        "operationId": "executeApprovedDebugClone",
+        "summary": "Execute an already approved typed DEV debug-clone request exactly once",
+        "description": "Accepts request_id only. The server revalidates approval binding and source identity, creates one clone through the private typed executor, verifies it by readback, and blocks replay.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["request_id"], "properties": {"request_id": {"type": "string", "minLength": 1, "maxLength": 120}}}}}},
+        "responses": {"200": {"description": "Approved clone created and verified"}, "400": {"description": "Execute scope denied"}, "409": {"description": "Not approved, stale or replayed"}, "502": {"description": "Execution/verification failure"}}
+      }
+    },
     "/v1/approval/prepare": {
       "post": {
         "operationId": "prepareChange",
