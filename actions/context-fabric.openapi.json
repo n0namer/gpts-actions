@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Context Fabric Action",
-    "description": "Read-only provider-independent context retrieval for Custom GPTs and operational assistants.",
-    "version": "0.1.0"
+    "description": "Read-only provider-independent multisource context retrieval for Custom GPTs and operational assistants. The facade may return project/document/code evidence, ranked specialists, eligible skill snapshots, and canonical VERIFIED lessons while remaining advisory-only.",
+    "version": "0.2.0"
   },
   "servers": [
     {
