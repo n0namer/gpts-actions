@@ -1,0 +1,180 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Context Fabric Action",
+    "description": "Read-only provider-independent context retrieval for Custom GPTs and operational assistants.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://openclaw.srv1904412.hstgr.cloud"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/context/ready": {
+      "get": {
+        "operationId": "getContextReady",
+        "summary": "Check Context Fabric readiness",
+        "description": "Checks whether the read-only Context Fabric endpoint is available. This does not authorize or perform mutations.",
+        "x-openai-isConsequential": false,
+        "responses": {
+          "200": {
+            "description": "Context Fabric is ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing Context bearer"
+          }
+        }
+      }
+    },
+    "/v1/context/retrieve": {
+      "post": {
+        "operationId": "retrieveContext",
+        "summary": "Retrieve advisory context",
+        "description": "Returns bounded provenance-bearing context. Results are advisory evidence only and must not be treated as authorization, policy, or mutation approval.",
+        "x-openai-isConsequential": false,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["query"],
+                "properties": {
+                  "query": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000,
+                    "description": "Question or retrieval query."
+                  },
+                  "project_hint": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Optional project or source-of-truth scope hint."
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "enum": ["PROJECT", "PROCEDURE", "SKILL", "LESSON", "CODE", "MIXED"],
+                    "default": "MIXED"
+                  },
+                  "depth": {
+                    "type": "string",
+                    "enum": ["fast", "deep"],
+                    "default": "fast"
+                  },
+                  "sources": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "items": {
+                      "type": "string",
+                      "maxLength": 80
+                    },
+                    "default": ["auto"]
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "default": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Context retrieval envelope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["status", "query", "provider", "results", "conflicts", "gaps", "provenance_complete", "latency_ms"],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": ["OK", "PARTIAL", "INSUFFICIENT_EVIDENCE", "DEGRADED"]
+                    },
+                    "query": { "type": "string" },
+                    "provider": { "type": "string" },
+                    "query_plan": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "results": {
+                      "type": "array",
+                      "maxItems": 10,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["kind", "source_owner", "source_ref", "revision_or_digest", "title", "excerpt", "score", "match_reason", "evidence_refs", "verification_status"],
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "enum": ["PROJECT", "DOC", "CAPABILITY", "SPECIALIST", "SKILL", "LESSON", "CODE"]
+                          },
+                          "source_owner": { "type": "string" },
+                          "source_ref": { "type": "string" },
+                          "revision_or_digest": { "type": "string" },
+                          "title": { "type": "string" },
+                          "excerpt": { "type": "string" },
+                          "score": { "type": "number" },
+                          "match_reason": { "type": "string" },
+                          "evidence_refs": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          },
+                          "verification_status": { "type": "string" }
+                        }
+                      }
+                    },
+                    "conflicts": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "gaps": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "provenance_complete": { "type": "boolean" },
+                    "latency_ms": { "type": "integer", "minimum": 0 }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid request" },
+          "401": { "description": "Invalid or missing Context bearer" },
+          "413": { "description": "Request body too large" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Use the read-only Context Fabric bearer. Do not use the OpenClaw Gateway operator credential."
+      }
+    }
+  }
+}
