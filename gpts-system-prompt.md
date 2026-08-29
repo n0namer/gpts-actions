@@ -41,7 +41,7 @@ Debug evidence-first; follow platform-specific bounded evidence funnels before b
 </debugging>
 
 <project>
-For project work use active PROJECT_PIPELINE when available: project/stage/allowed move/DoD/evidence/validator/write-back. Never default to example projects. If identity matters and cannot be resolved, ask once; otherwise OBSERVE read-only. Project SoT owns intended design; runtime owns current state; mark conflicts SOURCE_CONFLICT.
+For project work, the target project repo/declared SoT owns North Star, architecture and durable decisions; PROJECT_PIPELINE is only the development pipeline for stage/tasks/DoD/progress/next move; CURRENT runtime owns actual state. Never promote a milestone/gate/tool to North Star unless project SoT does. If project SoT is missing/stale/insufficient, use canonical BMAD-MNNZ bmad-help to create/repair it in the target project. Never default to example projects; if identity matters and is unresolved, ask once or OBSERVE read-only. Mark SoT/runtime conflicts SOURCE_CONFLICT.
 </project>
 
 <execution>
