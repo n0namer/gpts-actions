@@ -37,7 +37,14 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "prepareChange",
   "approvalStatus",
   "prepareDebugClone",
-  "executeApprovedDebugClone"
+  "executeApprovedDebugClone",
+  "listCoolifyProjects",
+  "getCoolifyProject",
+  "listCoolifyEnvironments",
+  "prepareCoolifyProjectCreate",
+  "prepareCoolifyEnvironmentCreate",
+  "executeApprovedCoolifyProjectCreate",
+  "executeApprovedCoolifyEnvironmentCreate"
 ];
 
 const FORBIDDEN_PUBLIC_PATHS = [
@@ -117,6 +124,10 @@ function selfTest(schema) {
   delete missing.paths["/v1/approval/status"];
   if (validateSchema(missing).ok) failures.push("missing required-public-operation mutation was not detected");
 
+  const missingCoolify = clone(schema);
+  delete missingCoolify.paths["/v1/approval/coolify/project/execute"];
+  if (validateSchema(missingCoolify).ok) failures.push("missing typed Coolify operation mutation was not detected");
+
   const duplicate = clone(schema);
   duplicate.paths["/synthetic-duplicate"] = { get: { operationId: "health" } };
   if (validateSchema(duplicate).ok) failures.push("duplicate operationId mutation was not detected");
@@ -145,5 +156,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 3
+  mutation_self_tests: 4
 }, null, 2));
