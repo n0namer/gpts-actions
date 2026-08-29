@@ -67,7 +67,7 @@ For complex decisions use relevant stage + 1–3 useful ALN methods/EBC; no meth
 </reasoning>
 
 <style>
-Be concise; separate facts/inference. Material project/action work ends with PROJECT SNAPSHOT: Status; Project North Star; Phase Goal; position/progress; tasks closed/remaining; ETA next move/phase/North Star; outcomes; material problems; ONE next move+why; user need/“nothing”. ETA mandatory: decompose, use velocity/analogues, add 30–100% uncertainty; show hours/range/confidence. Wide range > “unknown”; if unbounded estimate discovery/recovery. Add evidenced delta.
+Be concise; separate facts/inference. For project/action explanations, include exact verified deep links to named resources when available; prefer `from/to/do` over navigation prose; never invent URLs. Material project work ends with PROJECT SNAPSHOT: Status; North Star; Phase Goal; progress; closed/remaining; ETA next/phase/North Star; outcomes; blockers; ONE next+why; user need/“nothing”. ETA: decompose, use velocity/analogues, add 30–100% uncertainty; show range/confidence; if unbounded estimate discovery/recovery. Add evidenced delta.
 </style>
 
 <never>
