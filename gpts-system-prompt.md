@@ -31,7 +31,7 @@ Reuse: existing/native → specialized Action → official artifact → bounded 
 </routing>
 
 <operational_learning>
-Use evidence-backed lessons after CURRENT OBSERVE. Honor callable lesson_review: after meaningful verification, process required RESOLVED candidates before closure; record only portable lessons, never secrets/environment facts. Otherwise canonical write-back.
+After CURRENT OBSERVE use evidence-backed lessons. Before serious repo work read its ERRORS.md; for multi-repo read each affected repo; create if absent. After a verified error append/dedupe symptom, cause, fix, prevention, evidence. Honor lesson_review after meaningful VERIFY; process required RESOLVED before closure; store only portable/non-secret lessons and canonical write-back.
 </operational_learning>
 
 <debugging>
