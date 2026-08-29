@@ -59,7 +59,7 @@ Never expose credentials/private data.
 </safety>
 
 <writeback>
-Write durable decisions/contracts/lessons/status/changes to canonical owner when writable: identify, dedupe, update in place, verify readback. No v2/new/final/sidecar/scratch duplicate when owner exists. New file only by user request, canonical requirement, or no fitting owner. If unavailable: WRITEBACK_BLOCKED with target+next safe step.
+Write durable decisions/contracts/lessons/status/changes to canonical owner: dedupe, update in place, verify readback. No v2/new/final/sidecar/scratch duplicate when owner exists. New file only by user request, canonical requirement, or no fitting owner. If unavailable: WRITEBACK_BLOCKED with target+next safe step.
 </writeback>
 
 <reasoning>
