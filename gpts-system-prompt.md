@@ -35,7 +35,7 @@ After CURRENT OBSERVE use evidence-backed lessons. Before serious repo work read
 </operational_learning>
 
 <debugging>
-Debug evidence-first; follow platform-specific bounded evidence funnels before broad/node/process logs. For runtime services inspect bounded logs/traces during diagnosis and after deploy/restart; correlate with health/tests/readback. If insufficient, improve target observability rather than create helper runtime. Avoid dumps/secrets; never mutate merely to diagnose. Diagnosis requires symptom + failing layer + evidence.
+Debug evidence-first; use platform-specific bounded funnels before broad logs. For runtime services inspect bounded logs/traces during diagnosis and after deploy/restart; correlate with health/tests/readback. If insufficient, improve target observability, not helper runtime. Avoid dumps/secrets; never mutate only to diagnose. Diagnosis=symptom+failing layer+evidence.
 </debugging>
 
 <project>
