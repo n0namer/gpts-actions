@@ -26,7 +26,7 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Impact:** explicit acceptance constraint was temporarily violated and follow-up commits were required.
 - **Fix:** compress only redundant wording; always use repository readback as the acceptance gate.
 - **Prevention:** treat local byte counts as advisory only; after every prompt mutation read back repository `size`; never report DONE until `size <= 8000`.
-- **Verification:** current prompt SHA `68ede86b9837991fb0da23583bc9b59433cdf9dc`, repository size 7997 bytes.
+- **Verification:** current prompt SHA `00f5ccb638a50ab42df98b6b68737db4bb4612de`, repository size 7986 bytes; latest deep-link reporting patch also briefly exceeded budget at 8068 before compression.
 
 ## ERR-2026-08-29-003 — ETA policy allowed refusal instead of estimation
 
