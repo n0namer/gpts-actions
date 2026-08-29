@@ -6,16 +6,26 @@
     "description": "DEV ONLY. Isolated VPS Terminal Action for the dedicated Coolify development environment. Never use this Action as production authority or for production mutations. Exposes core terminal diagnostics plus Wave-2 guidance, enforced mediation evidence, durable lesson review/retrieval and public-token approval preparation/status. Validator execution and approval-decision endpoints intentionally remain outside this single-bearer GPT Action because the server requires separate credentials."
   },
   "servers": [
-    {"url": "https://vps-terminal-dev.srv1904412.hstgr.cloud"}
+    {
+      "url": "https://vps-terminal-dev.srv1904412.hstgr.cloud"
+    }
   ],
-  "security": [{"Bearer": []}],
+  "security": [
+    {
+      "Bearer": []
+    }
+  ],
   "paths": {
     "/health": {
       "get": {
         "operationId": "health",
         "summary": "Check DEV VPS Terminal liveness",
         "security": [],
-        "responses": {"200": {"description": "OK"}}
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/ready": {
@@ -23,14 +33,28 @@
         "operationId": "ready",
         "summary": "Check DEV VPS Terminal and Docker readiness",
         "security": [],
-        "responses": {"200": {"description": "Ready"}, "503": {"description": "Not ready"}}
+        "responses": {
+          "200": {
+            "description": "Ready"
+          },
+          "503": {
+            "description": "Not ready"
+          }
+        }
       }
     },
     "/api/v1/version": {
       "get": {
         "operationId": "version",
         "summary": "Read DEV service version, guidance, mediation and durable-plane status",
-        "responses": {"200": {"description": "Version and runtime status"}, "503": {"description": "Startup self-test not ready"}}
+        "responses": {
+          "200": {
+            "description": "Version and runtime status"
+          },
+          "503": {
+            "description": "Startup self-test not ready"
+          }
+        }
       }
     },
     "/v1/target/file": {
@@ -38,21 +62,94 @@
         "operationId": "readTargetFile",
         "summary": "Read bounded UTF-8 from a DEV live-patch target with SHA-256 evidence",
         "parameters": [
-          {"name": "target_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 128}},
-          {"name": "path", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 512}},
-          {"name": "start_line", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "default": 1}},
-          {"name": "line_count", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 200, "default": 120}},
-          {"name": "max_bytes", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 256, "maximum": 12000, "default": 8192}}
+          {
+            "name": "target_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            }
+          },
+          {
+            "name": "start_line",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "line_count",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 120
+            }
+          },
+          {
+            "name": "max_bytes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 256,
+              "maximum": 12000,
+              "default": 8192
+            }
+          }
         ],
-        "responses": {"200": {"description": "File range and SHA-256"}, "403": {"description": "Live patch not allowed"}, "404": {"description": "Not found"}}
+        "responses": {
+          "200": {
+            "description": "File range and SHA-256"
+          },
+          "403": {
+            "description": "Live patch not allowed"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
       }
     },
     "/v1/target/file/patch/preview": {
       "post": {
         "operationId": "previewTargetPatch",
         "summary": "Preview exact stale-safe DEV live patch without writing",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TargetPatchRequest"}}}},
-        "responses": {"200": {"description": "Patch preview"}, "409": {"description": "Stale or ambiguous patch"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetPatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Patch preview"
+          },
+          "409": {
+            "description": "Stale or ambiguous patch"
+          }
+        }
       }
     },
     "/v1/target/file/patch": {
@@ -60,8 +157,27 @@
         "operationId": "applyTargetPatch",
         "summary": "Apply exact DEV live patch and create durable vtchg journal evidence",
         "description": "Atomically applies a stale-safe exact patch through RuntimeFileACI. Successful writes return capture_required=true and git_writeback_status=PENDING in the durable vtchg record.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TargetPatchRequest"}}}},
-        "responses": {"200": {"description": "Applied patch plus durable capture record"}, "409": {"description": "Stale or ambiguous patch"}, "502": {"description": "Readback verification failed"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetPatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Applied patch plus durable capture record"
+          },
+          "409": {
+            "description": "Stale or ambiguous patch"
+          },
+          "502": {
+            "description": "Readback verification failed"
+          }
+        }
       }
     },
     "/v1/target/file/changes": {
@@ -69,11 +185,41 @@
         "operationId": "listTargetChanges",
         "summary": "Read durable DEV live-patch journal records",
         "parameters": [
-          {"name": "target_id", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 128}},
-          {"name": "change_id", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 120}},
-          {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 200, "default": 50}}
+          {
+            "name": "target_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "change_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 50
+            }
+          }
         ],
-        "responses": {"200": {"description": "Durable vtchg records"}}
+        "responses": {
+          "200": {
+            "description": "Durable vtchg records"
+          }
+        }
       }
     },
     "/v1/target/file/changes/writeback": {
@@ -81,24 +227,116 @@
         "operationId": "updateTargetWriteback",
         "summary": "Record evidence-backed Git writeback state for one DEV live-patch change",
         "description": "Append-only state transition. PENDING may become CANDIDATE or REJECTED; CANDIDATE may become ACCEPTED or REJECTED. CANDIDATE requires exact branch, commit SHA and PR number. ACCEPTED requires merged SHA.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/TargetWritebackRequest"}}}},
-        "responses": {"200": {"description": "Folded current writeback state"}, "400": {"description": "Required evidence missing"}, "404": {"description": "Change not found"}, "409": {"description": "Invalid state transition or mediation block"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetWritebackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folded current writeback state"
+          },
+          "400": {
+            "description": "Required evidence missing"
+          },
+          "404": {
+            "description": "Change not found"
+          },
+          "409": {
+            "description": "Invalid state transition or mediation block"
+          }
+        }
       }
     },
     "/v1/target/check": {
       "post": {
         "operationId": "runTargetCheck",
         "summary": "Run target-owned validation preset after DEV live patch",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["target_id", "preset"], "properties": {"target_id": {"type": "string", "minLength": 1, "maxLength": 128}, "preset": {"type": "string", "enum": ["python_compile", "node_check", "git_diff_check"]}, "path": {"type": "string", "maxLength": 512}}}}}},
-        "responses": {"200": {"description": "Validation result"}, "403": {"description": "Preset not allowed"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target_id",
+                  "preset"
+                ],
+                "properties": {
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "preset": {
+                    "type": "string",
+                    "enum": [
+                      "python_compile",
+                      "node_check",
+                      "git_diff_check"
+                    ]
+                  },
+                  "path": {
+                    "type": "string",
+                    "maxLength": 512
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation result"
+          },
+          "403": {
+            "description": "Preset not allowed"
+          }
+        }
       }
     },
     "/v1/target/reload": {
       "post": {
         "operationId": "reloadTarget",
         "summary": "Reload an opted-in DEV target with its registered preset",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["target_id"], "properties": {"target_id": {"type": "string", "minLength": 1, "maxLength": 128}}}}}},
-        "responses": {"200": {"description": "Reloaded"}, "403": {"description": "Reload not allowed"}, "504": {"description": "Reload timeout"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target_id"
+                ],
+                "properties": {
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reloaded"
+          },
+          "403": {
+            "description": "Reload not allowed"
+          },
+          "504": {
+            "description": "Reload timeout"
+          }
+        }
       }
     },
     "/v1/operator-guidance": {
@@ -108,21 +346,61 @@
         "description": "Caller intent, target_id and signals are advisory/untrusted context. Actual operations are classified and mediated server-side.",
         "requestBody": {
           "required": true,
-          "content": {"application/json": {"schema": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["intent"],
-            "properties": {
-              "intent": {"type": "string", "minLength": 1, "maxLength": 120},
-              "operation": {"type": "string", "maxLength": 120},
-              "target_class": {"type": "string", "maxLength": 120},
-              "target_id": {"type": "string", "maxLength": 160},
-              "problem_class": {"type": "string", "maxLength": 80},
-              "signals": {"type": "array", "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 160}}
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "intent"
+                ],
+                "properties": {
+                  "intent": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "operation": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "target_class": {
+                    "type": "string",
+                    "maxLength": 120
+                  },
+                  "target_id": {
+                    "type": "string",
+                    "maxLength": 160
+                  },
+                  "problem_class": {
+                    "type": "string",
+                    "maxLength": 80
+                  },
+                  "signals": {
+                    "type": "array",
+                    "maxItems": 32,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 160
+                    }
+                  }
+                }
+              }
             }
-          }}}
+          }
         },
-        "responses": {"200": {"description": "Guidance with advice and lesson matches"}, "400": {"description": "Bad request"}, "401": {"description": "Unauthorized"}}
+        "responses": {
+          "200": {
+            "description": "Guidance with advice and lesson matches"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
       }
     },
     "/v1/containers": {
@@ -130,22 +408,88 @@
         "operationId": "listContainers",
         "summary": "List DEV Docker containers with bounded pagination",
         "parameters": [
-          {"name": "limit", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 50, "default": 12}},
-          {"name": "cursor", "in": "query", "required": false, "schema": {"type": "string"}},
-          {"name": "all", "in": "query", "required": false, "schema": {"type": "boolean", "default": false}},
-          {"name": "status", "in": "query", "required": false, "schema": {"type": "string"}},
-          {"name": "label", "in": "query", "required": false, "schema": {"type": "string"}},
-          {"name": "name", "in": "query", "required": false, "schema": {"type": "string"}}
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 12
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "all",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "label",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
-        "responses": {"200": {"description": "Container inventory"}}
+        "responses": {
+          "200": {
+            "description": "Container inventory"
+          }
+        }
       }
     },
     "/v1/containers/{container}": {
       "get": {
         "operationId": "inspectContainer",
         "summary": "Inspect a DEV container with redacted details",
-        "parameters": [{"name": "container", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "responses": {"200": {"description": "Container details"}, "404": {"description": "Not found"}}
+        "parameters": [
+          {
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Container details"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
       }
     },
     "/v1/containers/{container}/logs": {
@@ -153,45 +497,184 @@
         "operationId": "containerLogs",
         "summary": "Read bounded DEV container logs",
         "parameters": [
-          {"name": "container", "in": "path", "required": true, "schema": {"type": "string"}},
-          {"name": "tail", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1, "maximum": 2000, "default": 200}},
-          {"name": "since", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 0}},
-          {"name": "limit_bytes", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 1024, "maximum": 262144, "default": 65536}}
+          {
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tail",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 2000,
+              "default": 200
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "limit_bytes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1024,
+              "maximum": 262144,
+              "default": 65536
+            }
+          }
         ],
-        "responses": {"200": {"description": "Logs"}, "401": {"description": "Unauthorized"}, "404": {"description": "Not found"}}
+        "responses": {
+          "200": {
+            "description": "Logs"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
       }
     },
     "/v1/containers/{container}/exec": {
       "post": {
         "operationId": "execContainer",
         "summary": "Run bounded argv in a DEV container through enforced mediation",
-        "parameters": [{"name": "container", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CommandRequest"}}}},
-        "responses": {"200": {"description": "Execution result"}, "400": {"description": "Bad request"}, "401": {"description": "Unauthorized"}, "403": {"description": "Denied"}, "409": {"description": "Observation or review required"}}
+        "parameters": [
+          {
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommandRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Execution result"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Denied"
+          },
+          "409": {
+            "description": "Observation or review required"
+          }
+        }
       }
     },
     "/v1/exec/run": {
       "post": {
         "operationId": "exec",
         "summary": "Run a bounded command in a registered DEV target",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ExecRunRequest"}}}},
-        "responses": {"200": {"description": "Execution result"}, "400": {"description": "Bad request"}, "401": {"description": "Unauthorized"}, "404": {"description": "Target not found"}, "409": {"description": "Blocked by enforced mediation/guidance"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Execution result"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Target not found"
+          },
+          "409": {
+            "description": "Blocked by enforced mediation/guidance"
+          }
+        }
       }
     },
     "/v1/sessions": {
       "post": {
         "operationId": "startSession",
         "summary": "Start a bounded non-TTY DEV session",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ExecRunRequest"}}}},
-        "responses": {"201": {"description": "Created"}, "400": {"description": "Bad request"}, "409": {"description": "Blocked"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExecRunRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Blocked"
+          }
+        }
       }
     },
     "/v1/sessions/{sessionId}": {
       "get": {
         "operationId": "getSession",
         "summary": "Read DEV session state",
-        "parameters": [{"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "responses": {"200": {"description": "Session"}, "404": {"description": "Not found"}}
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
       }
     },
     "/v1/sessions/{sessionId}/output": {
@@ -199,43 +682,136 @@
         "operationId": "readSession",
         "summary": "Read bounded DEV session stdout/stderr",
         "parameters": [
-          {"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string"}},
-          {"name": "after_seq", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 0, "default": 0}},
-          {"name": "limit_bytes", "in": "query", "required": false, "schema": {"type": "integer", "minimum": 256, "maximum": 8192, "default": 8192}}
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "after_seq",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "limit_bytes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 256,
+              "maximum": 8192,
+              "default": 8192
+            }
+          }
         ],
-        "responses": {"200": {"description": "Output"}}
+        "responses": {
+          "200": {
+            "description": "Output"
+          }
+        }
       }
     },
     "/v1/sessions/{sessionId}/input": {
       "post": {
         "operationId": "writeSession",
         "summary": "Write stdin to a running DEV session",
-        "parameters": [{"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SessionInput"}}}},
-        "responses": {"200": {"description": "OK"}, "409": {"description": "Blocked"}}
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Blocked"
+          }
+        }
       }
     },
     "/v1/sessions/{sessionId}/terminate": {
       "post": {
         "operationId": "terminateSession",
         "summary": "Terminate a managed DEV session",
-        "parameters": [{"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string"}}],
-        "responses": {"200": {"description": "Terminated"}, "409": {"description": "Blocked"}}
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Terminated"
+          },
+          "409": {
+            "description": "Blocked"
+          }
+        }
       }
     },
     "/v1/lesson-review": {
       "get": {
         "operationId": "getLessonReview",
         "summary": "Check whether resolved DEV errors should be promoted to reusable VERIFIED lessons",
-        "responses": {"200": {"description": "Lesson review reminder and resolved candidates"}}
+        "responses": {
+          "200": {
+            "description": "Lesson review reminder and resolved candidates"
+          }
+        }
       }
     },
     "/v1/lesson-candidates": {
       "get": {
         "operationId": "listLessonCandidates",
         "summary": "List durable DEV incident/solution candidates",
-        "parameters": [{"name": "status", "in": "query", "required": false, "schema": {"type": "string", "enum": ["OPEN", "RESOLVED", "RECORDED"]}}],
-        "responses": {"200": {"description": "Candidate queue"}}
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OPEN",
+                "RESOLVED",
+                "RECORDED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Candidate queue"
+          }
+        }
       }
     },
     "/v1/lesson-review/record": {
@@ -243,8 +819,24 @@
         "operationId": "recordLesson",
         "summary": "Record a VERIFIED reusable lesson from resolved DEV candidates",
         "description": "Use only resolved candidates. Generalize a portable behavior pattern; evidence is bound server-side. Lessons are advisory and never authorize mutation.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RecordLessonRequest"}}}},
-        "responses": {"200": {"description": "VERIFIED lesson recorded"}, "400": {"description": "Invalid or unresolved candidate"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordLessonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "VERIFIED lesson recorded"
+          },
+          "400": {
+            "description": "Invalid or unresolved candidate"
+          }
+        }
       }
     },
     "/v1/lessons": {
@@ -252,25 +844,86 @@
         "operationId": "listLessons",
         "summary": "List durable DEV lessons",
         "parameters": [
-          {"name": "status", "in": "query", "required": false, "schema": {"type": "string", "enum": ["PROPOSED", "VERIFIED", "RETIRED"]}},
-          {"name": "problem_class", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 80}}
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PROPOSED",
+                "VERIFIED",
+                "RETIRED"
+              ]
+            }
+          },
+          {
+            "name": "problem_class",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
         ],
-        "responses": {"200": {"description": "Lesson list"}}
+        "responses": {
+          "200": {
+            "description": "Lesson list"
+          }
+        }
       },
       "post": {
         "operationId": "recordProposedLesson",
         "summary": "Record advisory knowledge as a PROPOSED DEV lesson",
         "description": "Imports chat/document knowledge without granting VERIFIED status or mutation authority. VERIFIED remains server-owned through resolved candidate/evidence promotion.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ProposedLessonRequest"}}}},
-        "responses": {"201": {"description": "PROPOSED lesson recorded"}, "400": {"description": "Invalid lesson"}, "409": {"description": "Duplicate/conflict"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProposedLessonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "PROPOSED lesson recorded"
+          },
+          "400": {
+            "description": "Invalid lesson"
+          },
+          "409": {
+            "description": "Duplicate/conflict"
+          }
+        }
       }
     },
     "/v1/lessons/{lessonId}": {
       "get": {
         "operationId": "getLesson",
         "summary": "Read one durable DEV lesson",
-        "parameters": [{"name": "lessonId", "in": "path", "required": true, "schema": {"type": "string", "minLength": 1, "maxLength": 120}}],
-        "responses": {"200": {"description": "Lesson"}, "404": {"description": "Not found"}}
+        "parameters": [
+          {
+            "name": "lessonId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lesson"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
       }
     },
     "/v1/lessons/recommend": {
@@ -278,15 +931,32 @@
         "operationId": "recommendLessons",
         "summary": "Retrieve relevant VERIFIED DEV lessons for observed technical signals",
         "description": "Observe-first advisory retrieval. Historical lessons never authorize mutation.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/LessonRecommendRequest"}}}},
-        "responses": {"200": {"description": "Relevant lesson matches"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LessonRecommendRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Relevant lesson matches"
+          }
+        }
       }
     },
     "/v1/self-protection": {
       "get": {
         "operationId": "getSelfProtection",
         "summary": "Read DEV self-protection status",
-        "responses": {"200": {"description": "Self-protection status"}}
+        "responses": {
+          "200": {
+            "description": "Self-protection status"
+          }
+        }
       }
     },
     "/v1/approval/debug-clone/prepare": {
@@ -294,8 +964,61 @@
         "operationId": "prepareDebugClone",
         "summary": "Prepare an immutable typed DEV debug-clone approval request",
         "description": "Server observes the source target/container identity. Caller cannot supply operation, resource, observed state, image or command.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["target_id"], "properties": {"target_id": {"type": "string", "minLength": 1, "maxLength": 120}, "mounts": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 240, "pattern": "^/"}}, "reason": {"type": "string", "maxLength": 500}, "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}}}}}},
-        "responses": {"200": {"description": "Typed request awaiting approval"}, "400": {"description": "Scope denied"}, "404": {"description": "Source target unavailable"}, "409": {"description": "Policy or state conflict"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target_id"
+                ],
+                "properties": {
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "mounts": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 240,
+                      "pattern": "^/"
+                    }
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "ttl_ms": {
+                    "type": "integer",
+                    "minimum": 5000,
+                    "maximum": 900000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Typed request awaiting approval"
+          },
+          "400": {
+            "description": "Scope denied"
+          },
+          "404": {
+            "description": "Source target unavailable"
+          },
+          "409": {
+            "description": "Policy or state conflict"
+          }
+        }
       }
     },
     "/v1/approval/debug-clone/execute": {
@@ -303,8 +1026,41 @@
         "operationId": "executeApprovedDebugClone",
         "summary": "Execute an already approved typed DEV debug-clone request exactly once",
         "description": "Accepts request_id only. The server revalidates approval binding and source identity, creates one clone through the private typed executor, verifies it by readback, and blocks replay.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["request_id"], "properties": {"request_id": {"type": "string", "minLength": 1, "maxLength": 120}}}}}},
-        "responses": {"200": {"description": "Approved clone created and verified"}, "400": {"description": "Execute scope denied"}, "409": {"description": "Not approved, stale or replayed"}, "502": {"description": "Execution/verification failure"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "request_id"
+                ],
+                "properties": {
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Approved clone created and verified"
+          },
+          "400": {
+            "description": "Execute scope denied"
+          },
+          "409": {
+            "description": "Not approved, stale or replayed"
+          },
+          "502": {
+            "description": "Execution/verification failure"
+          }
+        }
       }
     },
     "/v1/approval/prepare": {
@@ -312,85 +1068,495 @@
         "operationId": "prepareChange",
         "summary": "Prepare immutable DEV change request through enforced server-derived preflight",
         "description": "Caller intent/risk claims do not authorize a change. This call may be blocked before any request is created.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ApprovalPrepareRequest"}}}},
-        "responses": {"200": {"description": "Prepared request"}, "400": {"description": "Bad request"}, "409": {"description": "Observation/review required or stale"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovalPrepareRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Prepared request"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Observation/review required or stale"
+          }
+        }
       }
     },
     "/v1/approval/status": {
       "get": {
         "operationId": "approvalStatus",
         "summary": "Read immutable DEV approval request status",
-        "parameters": [{"name": "request_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1}}],
-        "responses": {"200": {"description": "Approval status"}, "404": {"description": "Not found"}}
+        "parameters": [
+          {
+            "name": "request_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Approval status"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/v1/coolify/projects": {
+      "get": {
+        "operationId": "listCoolifyProjects",
+        "summary": "List typed DEV Coolify projects",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        }
+      }
+    },
+    "/v1/coolify/projects/{project_uuid}": {
+      "get": {
+        "operationId": "getCoolifyProject",
+        "summary": "Read one typed DEV Coolify project",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 160
+            }
+          }
+        ]
+      }
+    },
+    "/v1/coolify/projects/{project_uuid}/environments": {
+      "get": {
+        "operationId": "listCoolifyEnvironments",
+        "summary": "List typed DEV Coolify environments",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        },
+        "parameters": [
+          {
+            "name": "project_uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 6,
+              "maxLength": 160
+            }
+          }
+        ]
+      }
+    },
+    "/v1/approval/coolify/project/prepare": {
+      "post": {
+        "operationId": "prepareCoolifyProjectCreate",
+        "summary": "Prepare exact typed Coolify project creation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "ttl_ms": {
+                    "type": "integer",
+                    "minimum": 5000,
+                    "maximum": 900000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Not approved, stale or replayed"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        }
+      }
+    },
+    "/v1/approval/coolify/environment/prepare": {
+      "post": {
+        "operationId": "prepareCoolifyEnvironmentCreate",
+        "summary": "Prepare exact typed Coolify environment creation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "project_uuid",
+                  "name"
+                ],
+                "properties": {
+                  "project_uuid": {
+                    "type": "string",
+                    "minLength": 6,
+                    "maxLength": 160
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "reason": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "ttl_ms": {
+                    "type": "integer",
+                    "minimum": 5000,
+                    "maximum": 900000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Not approved, stale or replayed"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        }
+      }
+    },
+    "/v1/approval/coolify/project/execute": {
+      "post": {
+        "operationId": "executeApprovedCoolifyProjectCreate",
+        "summary": "Execute approved typed Coolify project creation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "request_id"
+                ],
+                "properties": {
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Not approved, stale or replayed"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        }
+      }
+    },
+    "/v1/approval/coolify/environment/execute": {
+      "post": {
+        "operationId": "executeApprovedCoolifyEnvironmentCreate",
+        "summary": "Execute approved typed Coolify environment creation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "request_id"
+                ],
+                "properties": {
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "409": {
+            "description": "Not approved, stale or replayed"
+          },
+          "503": {
+            "description": "Server-side Coolify credential unavailable"
+          }
+        }
       }
     }
   },
   "components": {
     "schemas": {
-      "Command": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"type": "string", "maxLength": 2048}},
+      "Command": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 32,
+        "items": {
+          "type": "string",
+          "maxLength": 2048
+        }
+      },
       "CommandRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["cmd"],
+        "required": [
+          "cmd"
+        ],
         "properties": {
-          "cmd": {"$ref": "#/components/schemas/Command"},
-          "working_dir": {"type": "string", "maxLength": 512},
-          "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000, "default": 30000}
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 120000,
+            "default": 30000
+          }
         }
       },
       "ExecRunRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["target_id", "cmd"],
+        "required": [
+          "target_id",
+          "cmd"
+        ],
         "properties": {
-          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
-          "cmd": {"$ref": "#/components/schemas/Command"},
-          "working_dir": {"type": "string", "maxLength": 512},
-          "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000, "default": 30000}
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 120000,
+            "default": 30000
+          }
         }
       },
       "SessionInput": {
         "type": "object",
         "additionalProperties": false,
-        "properties": {"data": {"type": "string"}, "data_base64": {"type": "string"}},
-        "oneOf": [{"required": ["data"]}, {"required": ["data_base64"]}]
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "data_base64": {
+            "type": "string"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "data"
+            ]
+          },
+          {
+            "required": [
+              "data_base64"
+            ]
+          }
+        ]
       },
       "TargetPatchRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["target_id", "path", "expected_sha256", "old_text", "new_text"],
+        "required": [
+          "target_id",
+          "path",
+          "expected_sha256",
+          "old_text",
+          "new_text"
+        ],
         "properties": {
-          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
-          "path": {"type": "string", "minLength": 1, "maxLength": 512},
-          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
-          "old_text": {"type": "string", "minLength": 1, "maxLength": 12000},
-          "new_text": {"type": "string", "maxLength": 12000}
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{64}$"
+          },
+          "old_text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12000
+          },
+          "new_text": {
+            "type": "string",
+            "maxLength": 12000
+          }
         }
       },
       "TargetWritebackRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["change_id", "status"],
+        "required": [
+          "change_id",
+          "status"
+        ],
         "properties": {
-          "change_id": {"type": "string", "pattern": "^vtchg_[0-9a-f]{32}$"},
-          "status": {"type": "string", "enum": ["CANDIDATE", "ACCEPTED", "REJECTED"]},
-          "branch": {"type": "string", "maxLength": 200},
-          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
-          "pr_number": {"type": "integer", "minimum": 1},
-          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40,64}$"},
-          "reason": {"type": "string", "maxLength": 500}
+          "change_id": {
+            "type": "string",
+            "pattern": "^vtchg_[0-9a-f]{32}$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CANDIDATE",
+              "ACCEPTED",
+              "REJECTED"
+            ]
+          },
+          "branch": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "commit_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{40,64}$"
+          },
+          "pr_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "merged_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{40,64}$"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          }
         }
       },
       "ApprovalArgs": {
         "type": "object",
         "description": "Optional bounded operation arguments. The server hashes the complete object into the immutable request.",
         "properties": {
-          "target_id": {"type": "string", "maxLength": 160},
-          "candidate_sha": {"type": "string", "maxLength": 80},
-          "config_digest": {"type": "string", "maxLength": 128},
-          "image": {"type": "string", "maxLength": 240},
-          "branch": {"type": "string", "maxLength": 160},
-          "force": {"type": "boolean"}
+          "target_id": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "candidate_sha": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "config_digest": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "image": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "branch": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "force": {
+            "type": "boolean"
+          }
         },
         "additionalProperties": true
       },
@@ -398,61 +1564,255 @@
         "type": "object",
         "description": "Observed pre-change state used for stale-request protection.",
         "properties": {
-          "generation": {"type": "integer"},
-          "status": {"type": "string", "maxLength": 120},
-          "state": {"type": "string", "maxLength": 120},
-          "config_hash": {"type": "string", "maxLength": 128},
-          "image": {"type": "string", "maxLength": 240},
-          "commit_sha": {"type": "string", "maxLength": 80}
+          "generation": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "state": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "config_hash": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "image": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "commit_sha": {
+            "type": "string",
+            "maxLength": 80
+          }
         },
         "additionalProperties": true
       },
       "ApprovalPrepareRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["resource", "operation"],
+        "required": [
+          "resource",
+          "operation"
+        ],
         "properties": {
-          "resource": {"type": "string", "minLength": 1, "maxLength": 200, "description": "Exact DEV resource selector. Wildcards are rejected server-side."},
-          "operation": {"type": "string", "minLength": 1, "maxLength": 80, "description": "Requested operation. Risk/effect are derived server-side; caller labels do not authorize it."},
-          "args": {"$ref": "#/components/schemas/ApprovalArgs"},
-          "observed_state": {"$ref": "#/components/schemas/ApprovalObservedState"},
-          "reason": {"type": "string", "maxLength": 500},
-          "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}
+          "resource": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "Exact DEV resource selector. Wildcards are rejected server-side."
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "description": "Requested operation. Risk/effect are derived server-side; caller labels do not authorize it."
+          },
+          "args": {
+            "$ref": "#/components/schemas/ApprovalArgs"
+          },
+          "observed_state": {
+            "$ref": "#/components/schemas/ApprovalObservedState"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "ttl_ms": {
+            "type": "integer",
+            "minimum": 5000,
+            "maximum": 900000
+          }
         }
       },
       "ProposedLessonRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["lesson_id", "title", "problem_class", "scope", "signals", "recommendations", "rationale", "origin"],
+        "required": [
+          "lesson_id",
+          "title",
+          "problem_class",
+          "scope",
+          "signals",
+          "recommendations",
+          "rationale",
+          "origin"
+        ],
         "properties": {
-          "lesson_id": {"type": "string", "minLength": 1, "maxLength": 120},
-          "title": {"type": "string", "minLength": 1, "maxLength": 160},
-          "problem_class": {"type": "string", "minLength": 2, "maxLength": 80},
-          "scope": {"type": "object", "additionalProperties": false, "required": ["target_class"], "properties": {"target_class": {"type": "string", "minLength": 1, "maxLength": 100}}},
-          "signals": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"type": "string", "minLength": 1, "maxLength": 160}},
-          "recommendations": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"type": "string", "minLength": 1, "maxLength": 320}},
-          "rationale": {"type": "string", "minLength": 1, "maxLength": 600},
-          "origin": {"type": "object", "additionalProperties": false, "required": ["kind"], "properties": {"kind": {"type": "string", "enum": ["CHAT_IMPORT", "DOC_IMPORT"]}, "source_confidence": {"type": "string", "enum": ["VERIFIED", "LIKELY", "MEMORY_ONLY"]}, "source_refs": {"type": "array", "maxItems": 16, "items": {"type": "string", "maxLength": 240}}}}
+          "lesson_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "problem_class": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 80
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target_class"
+            ],
+            "properties": {
+              "target_class": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              }
+            }
+          },
+          "signals": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 24,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          "recommendations": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 320
+            }
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "origin": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "CHAT_IMPORT",
+                  "DOC_IMPORT"
+                ]
+              },
+              "source_confidence": {
+                "type": "string",
+                "enum": [
+                  "VERIFIED",
+                  "LIKELY",
+                  "MEMORY_ONLY"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "type": "string",
+                  "maxLength": 240
+                }
+              }
+            }
+          }
         }
       },
       "RecordLessonRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["candidate_ids", "lesson"],
+        "required": [
+          "candidate_ids",
+          "lesson"
+        ],
         "properties": {
-          "candidate_ids": {"type": "array", "minItems": 1, "maxItems": 16, "items": {"type": "string", "minLength": 1, "maxLength": 120}},
+          "candidate_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
           "lesson": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["title", "problem_class", "scope", "signals", "recommendations", "rationale"],
+            "required": [
+              "title",
+              "problem_class",
+              "scope",
+              "signals",
+              "recommendations",
+              "rationale"
+            ],
             "properties": {
-              "lesson_id": {"type": "string", "minLength": 1, "maxLength": 120},
-              "title": {"type": "string", "minLength": 1, "maxLength": 160},
-              "problem_class": {"type": "string", "minLength": 2, "maxLength": 80},
-              "scope": {"type": "object", "additionalProperties": false, "required": ["target_class"], "properties": {"target_class": {"type": "string", "minLength": 1, "maxLength": 100}}},
-              "signals": {"type": "array", "minItems": 1, "maxItems": 24, "items": {"type": "string", "minLength": 1, "maxLength": 160}},
-              "recommendations": {"type": "array", "minItems": 1, "maxItems": 12, "items": {"type": "string", "minLength": 1, "maxLength": 320}},
-              "rationale": {"type": "string", "minLength": 1, "maxLength": 600}
+              "lesson_id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "problem_class": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 80
+              },
+              "scope": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "target_class"
+                ],
+                "properties": {
+                  "target_class": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                }
+              },
+              "signals": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 24,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                }
+              },
+              "recommendations": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 12,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 320
+                }
+              },
+              "rationale": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              }
             }
           }
         }
@@ -460,18 +1820,60 @@
       "LessonRecommendRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["scope", "signals"],
+        "required": [
+          "scope",
+          "signals"
+        ],
         "properties": {
-          "problem_class": {"type": "string", "maxLength": 80},
-          "scope": {"type": "object", "additionalProperties": false, "required": ["target_class"], "properties": {"target_class": {"type": "string", "minLength": 1, "maxLength": 100}}},
-          "signals": {"type": "array", "minItems": 1, "maxItems": 32, "items": {"type": "string", "minLength": 1, "maxLength": 160}},
-          "limit": {"type": "integer", "minimum": 1, "maximum": 10, "default": 5},
-          "min_score": {"type": "integer", "minimum": 1, "maximum": 100, "default": 4}
+          "problem_class": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "scope": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "target_class"
+            ],
+            "properties": {
+              "target_class": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              }
+            }
+          },
+          "signals": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 32,
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            }
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "default": 5
+          },
+          "min_score": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 4
+          }
         }
       }
     },
     "securitySchemes": {
-      "Bearer": {"type": "http", "scheme": "bearer", "bearerFormat": "opaque"}
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "opaque"
+      }
     }
   }
 }
