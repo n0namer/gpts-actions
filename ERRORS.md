@@ -52,11 +52,11 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 
 ## ERR-2026-08-29-005 — Evidence citation typo in rollout plan
 
-- **Status:** OPEN / WRITEBACK_BLOCKED
+- **Status:** RESOLVED
 - **Symptom:** issue #24 initially attributed the 2012 incident-learning-cycle paper to the wrong authors.
-- **Evidence:** canonical paper is Jacobsson, Ek & Akselsson (2012), DOI `10.1016/j.jlp.2011.12.013`; issue body says `Lukic et al. 2012`.
+- **Evidence:** canonical paper is Jacobsson, Ek & Akselsson (2012), DOI `10.1016/j.jlp.2011.12.013`; issue #24 says `Lukic et al. 2012`.
 - **Cause (high confidence):** citation was written from memory before author-level verification.
-- **Impact:** weakens evidence traceability in an evidence-based plan.
-- **Fix:** correct issue #24 attribution to Jacobsson, Ek & Akselsson (2012).
+- **Impact:** weakened evidence traceability in an evidence-based plan.
+- **Fix:** issue #25 is the corrected canonical rollout plan and explicitly supersedes #24.
 - **Prevention:** verify author/title/DOI from a primary/academic source before durable citation write-back.
-- **Verification:** correction attempts via issue comment and GraphQL update returned GitHub `403 Resource not accessible by personal access token`; local ledger now preserves the correction until issue write access is available.
+- **Verification:** issue #25 contains the corrected attribution; direct edit/comment attempts on #24 were blocked by GitHub `403`, so #24 remains historical evidence only.
