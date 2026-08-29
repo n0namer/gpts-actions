@@ -279,7 +279,8 @@
                     "enum": [
                       "python_compile",
                       "node_check",
-                      "git_diff_check"
+                      "git_diff_check",
+                      "pytest_q"
                     ]
                   },
                   "path": {
