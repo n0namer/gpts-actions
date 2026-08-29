@@ -60,3 +60,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Fix:** issue #25 is the corrected canonical rollout plan and explicitly supersedes #24.
 - **Prevention:** verify author/title/DOI from a primary/academic source before durable citation write-back.
 - **Verification:** issue #25 contains the corrected attribution; direct edit/comment attempts on #24 were blocked by GitHub `403`, so #24 remains historical evidence only.
+
+## ERR-2026-08-29-006 — Knowledge authority model lagged behind System Prompt
+
+- **Status:** PARTIAL / WRITEBACK_BLOCKED
+- **Symptom:** canonical uploaded `Capability Cards` still described `PROJECT_PIPELINE` as the "primary project operating system" and `Operator Protocol` still selected default project from `PROJECT_PIPELINE/active_project_id`, conflicting with the accepted model where Project SoT owns North Star/design and PROJECT_PIPELINE owns execution metadata only.
+- **Evidence:** direct reads of `PRJ-002 OpenClaw GPT Capability Cards.docx` and `PRJ-002 GPT — Operator Protocol.docx`; GitHub code search found no writable source copy for the conflicting text.
+- **Cause (high confidence):** System Prompt evolved faster than the canonical Knowledge package; multi-owner semantic migration was not completed atomically.
+- **Impact:** runtime Knowledge could reintroduce project-authority drift even when the System Prompt is correct.
+- **Fix:** System Prompt now uses claim-typed authority and explicitly separates Project SoT / PROJECT_PIPELINE / CURRENT runtime / CURRENT callability. Exact OP/CC replacements have been identified.
+- **Prevention:** any accepted policy change must identify all canonical owners before closure; run cross-owner semantic search after System Prompt changes.
+- **Verification:** `gpts-system-prompt.md` SHA `68ede86b9837991fb0da23583bc9b59433cdf9dc`, size 7997 bytes. OP/CC publication remains blocked because the uploaded DOCX sources are read-only here and no GPT-Knowledge write connector is exposed.
