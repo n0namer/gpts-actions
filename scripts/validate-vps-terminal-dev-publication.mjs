@@ -20,6 +20,7 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "inspectContainer",
   "containerLogs",
   "execContainer",
+  "octocodeResearch",
   "exec",
   "startSession",
   "getSession",
