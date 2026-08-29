@@ -10,6 +10,10 @@ Runtime/service repositories remain the implementation source of truth for code,
 
 `server-ops` is the operational router and records pointers, topology, runbooks and incidents. It does not store duplicate OpenAPI payloads.
 
+## Error memory
+
+Each managed project repo keeps root `ERRORS.md` as its local evidence-backed error ledger. Read it before serious work in that repo; multi-repo work reads each affected repo. If missing, create it. Append/dedupe material verified errors with symptom, evidence, cause/confidence, fix, prevention and verification; never store secrets. Review recurring entries at phase boundaries and promote portable cross-repo lessons to their canonical owner without deleting local evidence.
+
 ## Runtime discovery and routing
 
 This repository is a publication catalog, **not a routing allowlist**.
