@@ -82,3 +82,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Fix:** update the existing canonical Google Drive documents in place once a CURRENT Google Drive/Docs write capability is exposed; do not create duplicate canonical files.
 - **Prevention:** before any durable document mutation, resolve canonical owner + CURRENT writable route first; if owner is known but not writable, classify CAPABILITY_GAP/WRITEBACK_BLOCKED before generating replacement artifacts.
 - **Verification:** blocker remains until the canonical Google Drive docs are reread after in-place write.
+
+## ERR-2026-08-29-008 — Reporting preference was acknowledged but not applied
+
+- **Status:** RESOLVED
+- **Symptom:** user gave a concrete durable reporting rule for direct project-resource links, but I only acknowledged it and stopped instead of updating the governing prompt.
+- **Evidence:** user immediately challenged the stop; no prompt mutation had occurred before that correction.
+- **Cause (high confidence):** treated a durable behavioral contract as conversational style rather than implementation work.
+- **Impact:** future project explanations could regress to vague navigation instead of actionable deep links.
+- **Fix:** added prompt rule: project help gives verified deep links to named resources, prefers `from/to/do`, and never invents URLs.
+- **Prevention:** when the user defines a reusable operating/reporting rule and mutation is authorized, update the canonical behavioral owner before merely acknowledging it.
+- **Verification:** `gpts-system-prompt.md` SHA `00f5ccb638a50ab42df98b6b68737db4bb4612de`, repository size 7986 bytes.
