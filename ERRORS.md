@@ -49,3 +49,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Fix:** canonical tests must run on exact source before deploy when present; missing runner is a validation blocker, then deployed revision must match tested source, followed by logs/traces + smoke/E2E.
 - **Prevention:** use `exact source → canonical tests → exact tested deploy → runtime evidence → E2E` as the default code-change chain.
 - **Verification:** rule is present in current `<execution>`.
+
+## ERR-2026-08-29-005 — Evidence citation typo in rollout plan
+
+- **Status:** OPEN / WRITEBACK_BLOCKED
+- **Symptom:** issue #24 initially attributed the 2012 incident-learning-cycle paper to the wrong authors.
+- **Evidence:** canonical paper is Jacobsson, Ek & Akselsson (2012), DOI `10.1016/j.jlp.2011.12.013`; issue body says `Lukic et al. 2012`.
+- **Cause (high confidence):** citation was written from memory before author-level verification.
+- **Impact:** weakens evidence traceability in an evidence-based plan.
+- **Fix:** correct issue #24 attribution to Jacobsson, Ek & Akselsson (2012).
+- **Prevention:** verify author/title/DOI from a primary/academic source before durable citation write-back.
+- **Verification:** correction attempts via issue comment and GraphQL update returned GitHub `403 Resource not accessible by personal access token`; local ledger now preserves the correction until issue write access is available.
