@@ -71,3 +71,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Fix:** System Prompt now uses claim-typed authority and explicitly separates Project SoT / PROJECT_PIPELINE / CURRENT runtime / CURRENT callability. Exact OP/CC replacements have been identified.
 - **Prevention:** any accepted policy change must identify all canonical owners before closure; run cross-owner semantic search after System Prompt changes.
 - **Verification:** `gpts-system-prompt.md` SHA `68ede86b9837991fb0da23583bc9b59433cdf9dc`, size 7997 bytes. OP/CC publication remains blocked because the uploaded DOCX sources are read-only here and no GPT-Knowledge write connector is exposed.
+
+## ERR-2026-08-29-007 — Edited local copies instead of canonical Google Drive owners
+
+- **Status:** OPEN / CAPABILITY_GAP / WRITEBACK_BLOCKED
+- **Symptom:** while resolving ERR-006, replacement DOCX files were produced in local sandbox storage even though the canonical Knowledge owners are Google Drive/Google Docs documents.
+- **Evidence:** user correction; current callable surface exposes GitHub/file tools but no Google Drive/Docs search+write Action for this session.
+- **Cause (high confidence):** write-back routing stopped at an accessible copy instead of verifying the canonical owner was writable before mutation.
+- **Impact:** local replacements do not update canonical Knowledge and must not be reported as completed migration.
+- **Fix:** update the existing canonical Google Drive documents in place once a CURRENT Google Drive/Docs write capability is exposed; do not create duplicate canonical files.
+- **Prevention:** before any durable document mutation, resolve canonical owner + CURRENT writable route first; if owner is known but not writable, classify CAPABILITY_GAP/WRITEBACK_BLOCKED before generating replacement artifacts.
+- **Verification:** blocker remains until the canonical Google Drive docs are reread after in-place write.
