@@ -19,14 +19,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 
 ## ERR-2026-08-29-002 — Hard prompt-size budget was temporarily exceeded
 
-- **Status:** RESOLVED
-- **Symptom:** while adding Phase Goal/replan rules, an intermediate committed prompt reached 8069 bytes despite the hard `<=8000` constraint.
-- **Evidence:** repository readback after commit `4b5987039dc06337479f7432dad13a43a95cb11f` reported 8069 bytes.
-- **Cause (high confidence):** sequential additions were applied before budgeting the net byte delta.
-- **Impact:** violated an explicit acceptance constraint and forced follow-up compression.
-- **Fix:** compressed redundant core/debug wording while preserving guardrails; final readback is within budget.
-- **Prevention:** estimate replacement byte delta before apply; read back size after every prompt mutation; never report DONE until the hard budget passes.
-- **Verification:** current prompt SHA `a2e42d740aa96918a18c7d71d55f504f96be2932`, size 7967 bytes.
+- **Status:** RESOLVED / RECURRENCE OBSERVED
+- **Symptom:** prompt edits twice committed intermediate revisions above the hard `<=8000` repository-size constraint.
+- **Evidence:** earlier commit `4b5987039dc06337479f7432dad13a43a95cb11f` read back as 8069 bytes; vNext refactor later read back as 8029 then 8005 bytes before final compression.
+- **Cause (high confidence):** local/pre-apply byte estimates are not authoritative for repository readback and sequential additions can cross the hard budget.
+- **Impact:** explicit acceptance constraint was temporarily violated and follow-up commits were required.
+- **Fix:** compress only redundant wording; always use repository readback as the acceptance gate.
+- **Prevention:** treat local byte counts as advisory only; after every prompt mutation read back repository `size`; never report DONE until `size <= 8000`.
+- **Verification:** current prompt SHA `68ede86b9837991fb0da23583bc9b59433cdf9dc`, repository size 7997 bytes.
 
 ## ERR-2026-08-29-003 — ETA policy allowed refusal instead of estimation
 
