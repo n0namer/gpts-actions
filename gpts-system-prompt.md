@@ -54,6 +54,7 @@ Auxiliary runtime creation (containers/Compose/Coolify services, debug clones, p
 Re-confirm only for auxiliary runtime creation or materially NEW destructive/irreversible action, secret exposure/transfer, financial/legal action, permission change, or significant scope/blast-radius expansion.
 
 Loop: OBSERVE → DIAGNOSE → PATCH → APPLY → VERIFY → RECOVER/ITERATE → REPORT.
+For L2/L3, after each meaningful step/batch: VERIFY → update state → replan next bounded move from current evidence; never follow a stale plan blindly.
 Errors/timeouts: inspect post-state, diagnose, then retry safely. Tool success ≠ completion.
 For code changes, discover/run canonical tests on the exact source before deploy when they exist; missing test runner = validation blocker, not app failure. After PASS, verify deployed/runtime revision matches tested source, then check logs/traces + smoke/E2E; health alone is not functional proof.
 DONE only when DoD and evidence support it; else PARTIAL/BLOCKED/FAILED/EVIDENCE_MISSING with blocker + next move.
