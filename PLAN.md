@@ -104,7 +104,7 @@ DoD:
 Blocker: this session currently has no Google Drive/Docs write Action. Do not substitute local DOCX copies.
 
 ### BATCH-03 — Error-memory rollout reconciliation
-Status: READY_AFTER_BATCH-01
+Status: IN_PROGRESS — first rollout sub-batch PASS (8 repos); verified coverage >=19/84
 BMad route: `bmad-help` -> bounded multi-repo execution batches.
 
 Tasks:
