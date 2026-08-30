@@ -31,7 +31,7 @@ Evidence at reconciliation:
 - `README.md` declares this repo the Action publication SoT and explicitly says publication is not a routing allowlist.
 - `ERRORS.md` contains eight evidence-backed incidents/lessons. Repeated prompt-budget overruns prove a machine anti-drift gate is needed.
 - GitHub issue #26 is OPEN: canonical Google Drive `Operator Protocol` / `Capability Cards` still require authority-model synchronization and canonical reread. Local replacement copies are not authoritative.
-- GitHub issue #25 is OPEN: its historical target `83` is stale. CURRENT inventory is 86 owned repos, 84 with default branches and 2 without; verified ledger coverage is at least 19/84 after the first current rollout batch.
+- GitHub issue #25 is OPEN: its historical target `83` is stale. CURRENT inventory is 86 owned repos, 84 with default branches and 2 without; verified ledger coverage is at least 27/84 after two current rollout sub-batches.
 - No `PLAN.md` existed before this reconciliation; it now exists on `main` and README links to it.
 - Anti-drift validator: `scripts/validate-system-prompt.mjs`; workflow: `.github/workflows/system-prompt-anti-drift.yml`.
 - GitHub Actions validation is currently infrastructure-blocked: run `33320654932` and one explicit retry `33320815477` both failed before any step with `runner_id=0` / `steps=[]`; this is not evidence that the validator logic failed.
