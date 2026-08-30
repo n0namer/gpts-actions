@@ -2,6 +2,8 @@
 
 Public, publication-safe OpenAPI contracts for custom GPT/OpenAI Actions.
 
+Project North Star, current phase, 30-minute DoD batches, blockers, and anti-drift checkpoints live in [`PLAN.md`](PLAN.md). Read it before substantial project work.
+
 ## Source-of-truth model
 
 This repository is the **publication source of truth** for Action schemas that may be loaded from a public Raw URL.
