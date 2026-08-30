@@ -1,0 +1,28 @@
+name: System Prompt Anti-Drift
+
+on:
+  push:
+    paths:
+      - gpts-system-prompt.md
+      - scripts/validate-system-prompt.mjs
+      - .github/workflows/system-prompt-anti-drift.yml
+  pull_request:
+    paths:
+      - gpts-system-prompt.md
+      - scripts/validate-system-prompt.mjs
+      - .github/workflows/system-prompt-anti-drift.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Validate system prompt invariants
+        run: node scripts/validate-system-prompt.mjs
