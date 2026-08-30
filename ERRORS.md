@@ -93,3 +93,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Fix:** added prompt rule: project help gives verified deep links to named resources, prefers `from/to/do`, and never invents URLs.
 - **Prevention:** when the user defines a reusable operating/reporting rule and mutation is authorized, update the canonical behavioral owner before merely acknowledging it.
 - **Verification:** `gpts-system-prompt.md` SHA `00f5ccb638a50ab42df98b6b68737db4bb4612de`, repository size 7986 bytes.
+
+## ERR-2026-08-30-009 — GitHub Actions jobs fail before runner assignment
+
+- **Status:** OPEN / VALIDATION_BLOCKER
+- **Symptom:** new `System Prompt Anti-Drift` workflow failed twice before executing any step.
+- **Evidence:** runs `33320654932` and `33320815477`; both jobs report `runner_id=0`, empty `runner_name`, and `steps=[]`. The second run was the single explicit retry.
+- **Cause (medium confidence):** hosted GitHub Actions runner assignment/service failure; validator logic was never executed, so application/test failure is not established.
+- **Impact:** repository CI cannot currently prove the prompt anti-drift validator PASS/FAIL.
+- **Fix:** preserve the validator/workflow; do not retry-loop. Re-run when runner service is available or validate exact source through an existing approved validation environment.
+- **Prevention:** distinguish pre-runner CI infrastructure failure from test failure using job step/runner evidence; identical retry budget remains one.
+- **Verification:** BATCH-01 stays `PARTIAL / VALIDATION_BLOCKER` in `PLAN.md` until the validator actually executes.
