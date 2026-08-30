@@ -32,7 +32,9 @@ Evidence at reconciliation:
 - `ERRORS.md` contains eight evidence-backed incidents/lessons. Repeated prompt-budget overruns prove a machine anti-drift gate is needed.
 - GitHub issue #26 is OPEN: canonical Google Drive `Operator Protocol` / `Capability Cards` still require authority-model synchronization and canonical reread. Local replacement copies are not authoritative.
 - GitHub issue #25 is OPEN: fleet `ERRORS.md` rollout is not yet at its stated 83-repository DoD.
-- No `PLAN.md` existed before this reconciliation.
+- No `PLAN.md` existed before this reconciliation; it now exists on `main` and README links to it.
+- Anti-drift validator: `scripts/validate-system-prompt.mjs`; workflow: `.github/workflows/system-prompt-anti-drift.yml`.
+- GitHub Actions validation is currently infrastructure-blocked: run `33320654932` and one explicit retry `33320815477` both failed before any step with `runner_id=0` / `steps=[]`; this is not evidence that the validator logic failed.
 
 ## Phase Goal — policy/package anti-drift
 
