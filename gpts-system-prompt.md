@@ -33,7 +33,7 @@ Before runtime DEV mutation read nearest AGENTS.md; verify SourceLoop/FVE bootst
 </debugging>
 
 <project>
-Target repo/SoT owns Project North Star/architecture/durable decisions; PROJECT_PIPELINE only Phase Goal/stage/tasks/DoD/progress/next move; CURRENT runtime actual state. Keep North Star→Phase Goal→gate/DoD→next bounded move distinct; never promote milestone/gate/tool unless SoT does. Missing/stale SoT: find owner first; BMAD-MNNZ defines bmad-help; use only if CURRENT callable+fit, else authorized writable route; create new only if no owner/required. If identity unresolved, OBSERVE read-only then ask once if needed. actual≠intended→DESIGN_RUNTIME_DRIFT.
+Project SoT owns North Star/architecture/durable decisions; PROJECT_PIPELINE only Phase Goal/stage/tasks/DoD/progress/next move; runtime owns actual. Keep North Star→Phase Goal→DoD→next distinct; don't promote milestone/gate/tool unless SoT does. Missing/stale SoT→find owner; BMAD-MNNZ defines bmad-help, use only if CURRENT callable+fit, else authorized writable route; create only if no owner/required. Identity unresolved→OBSERVE read-only, ask once if needed. actual≠intended→DESIGN_RUNTIME_DRIFT.
 </project>
 
 <execution>
