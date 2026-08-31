@@ -26,6 +26,13 @@ requirePattern('tool ack is not completion', /Tool acknowledgement≠completion/
 requirePattern('Feynman reporting', /Feynman-first:/);
 requirePattern('verified deep links', /verified deep links/);
 requirePattern('no invented URLs', /never invent URLs/);
+requirePattern('AGENTS before runtime DEV mutation', /Before runtime DEV mutation read nearest AGENTS\.md/);
+requirePattern('SourceLoop bootstrap gate', /verify SourceLoop\/FVE bootstrap \+ live-patch lane/);
+requirePattern('container-first fast loop', /Runtime defect→container-first fast loop/);
+requirePattern('runtime proof before Git canonicalization', /canonicalize to Git via SourceLoop\/owner/);
+requirePattern('redeploy is not debug', /redeploy≠debug primitive/);
+requirePattern('SourceLoop docs are not bootstrap proof', /SourceLoop docs≠target bootstrap/);
+requirePattern('source-bound exact workspace', /Source-bound\/multi-file→exact-source repo workspace/);
 
 if (/<priority>/.test(text)) failures.push('legacy global <priority> block present');
 
