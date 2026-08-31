@@ -96,8 +96,8 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 
 ## ERR-2026-08-30-009 — GitHub Actions jobs fail before runner assignment
 
-- **Status:** OPEN / VALIDATION_BLOCKER
-- **Symptom:** new `System Prompt Anti-Drift` workflow failed twice before executing any step.
+- **Status:** OPEN / HOSTED_CI_BLOCKER
+- **Symptom:** new `System Prompt Anti-Drift` hosted workflow failed twice before executing any step.
 - **Evidence:** runs `33320654932` and `33320815477`; both jobs report `runner_id=0`, empty `runner_name`, and `steps=[]`. The second run was the single explicit retry.
 - **Cause (medium confidence):** hosted GitHub Actions runner assignment/service failure; validator logic was never executed, so application/test failure is not established.
 - **Impact:** repository CI cannot currently prove the prompt anti-drift validator PASS/FAIL.
