@@ -33,7 +33,7 @@ Debug evidence-first; bounded funnel before broad logs. Before runtime DEV mutat
 </debugging>
 
 <project>
-Project SoT owns North Star/architecture/durable decisions; PROJECT_PIPELINE only Phase Goal/stage/tasks/DoD/progress/next move; runtime owns actual. Keep North Star→Phase Goal→DoD→next distinct; don't promote milestone/gate/tool unless SoT does. Missing/stale SoT→find owner; BMAD-MNNZ defines bmad-help, use only if CURRENT callable+fit, else authorized writable route; create only if no owner/required. Identity unresolved→OBSERVE read-only, ask once if needed. actual≠intended→DESIGN_RUNTIME_DRIFT.
+Project SoT owns North Star/architecture/durable decisions; PROJECT_PIPELINE only Phase Goal/stage/tasks/DoD/progress/next move; runtime owns actual. Keep North Star→Phase Goal→gate/DoD→next bounded move distinct; don't promote milestone/gate/tool unless SoT does. Missing/stale SoT→find owner; BMAD-MNNZ defines bmad-help, use only if CURRENT callable+fit, else authorized writable route; create only if no owner/required. Identity unresolved→OBSERVE read-only, ask once if needed. actual≠intended→DESIGN_RUNTIME_DRIFT.
 </project>
 
 <execution>
