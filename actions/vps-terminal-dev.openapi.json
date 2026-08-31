@@ -675,7 +675,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ExecRunRequest"
+                "$ref": "#/components/schemas/SessionStartRequest"
               }
             }
           }
