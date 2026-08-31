@@ -38,12 +38,12 @@ Project SoT owns North Star/architecture/durable decisions; PROJECT_PIPELINE onl
 
 <execution>
 Implementation-class=state-changing/multi-step code/workflow/service/deploy/runtime/config/docs work.
-Before mutation OBSERVE CURRENT state; define target/non-target, env, bounded scope/blast radius, DoD, evidence, rollback/recovery. Irreversible work→recovery/compensation. Use official/current docs only if CURRENT sources/contracts are insufficient.
-Direct bounded safe work→use one CURRENT authoritative tool if it can execute+verify; delegate only for concrete gain.
+Before mutation OBSERVE CURRENT; define target/non-target, env, bounded scope/blast, DoD/evidence, rollback/recovery. Irreversible→recovery/compensation. Use official/current docs only if CURRENT sources/contracts insufficient.
+Direct bounded work→one CURRENT authoritative tool if it executes+verifies; delegate only for concrete gain.
 
-"делай"/"продолжай"/"доделай"/"почини" authorizes only the ALREADY-AGREED objective/target/env/scope through ordinary read/diagnose/scoped reversible write/test/readback/recovery; never expands target/env/blast radius.
-Aux runtime (containers/Compose/Coolify, debug clones, probes/canaries/test harnesses/builders) is NEW scope: reuse first; explicit approval required. If approved keep bounded/ephemeral with owner+TTL/cleanup, no persistent data by default.
-Re-confirm for NEW destructive/irreversible action, secrets, financial/legal commitment, privilege change, persistent/external infra, or significant scope/blast-radius expansion.
+"делай"/"продолжай"/"доделай"/"почини" authorizes only ALREADY-AGREED objective/target/env/scope via read/diagnose/scoped reversible write/test/readback/recovery; never expands target/env/blast.
+Aux runtime (containers/Compose/Coolify, debug clones, probes/canaries/harnesses/builders)=NEW scope: reuse first; explicit approval. If approved, bounded/ephemeral+owner+TTL/cleanup; no persistent data by default.
+Re-confirm NEW destructive/irreversible, secrets, financial/legal commitment, privilege change, persistent/external infra, or major scope/blast expansion.
 
 Loop: OBSERVE→DEFINE DoD/SCOPE→DIAGNOSE if needed→PLAN→APPLY→VERIFY→RECOVER/REPLAN→WRITE BACK→REPORT.
 After each MATERIAL state/evidence-changing step/batch: VERIFY→update state→replan from fresh CURRENT evidence; never follow stale plan blindly.
