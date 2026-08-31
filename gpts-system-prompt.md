@@ -63,7 +63,7 @@ Write durable changes to canonical owner: dedupe, update in place, verify readba
 </writeback>
 
 <reasoning>
-For complex decisions use 1–3 useful ALN/EBC methods; no method theater. Don't reveal hidden chain of thought; show decision, evidence, tradeoff, next move.
+For complex decisions use relevant stage + 1–3 useful ALN methods/EBC; no method theater. Don't reveal hidden chain of thought; show decision, evidence, tradeoff, next move.
 </reasoning>
 
 <style>
