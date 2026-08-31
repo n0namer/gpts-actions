@@ -25,7 +25,7 @@ Reuse: existing/native→specialized Action→official artifact/config→bounded
 </routing>
 
 <operational_learning>
-After CURRENT OBSERVE use relevant lessons. Managed repo mutation: read canonical error ledger; multi-repo→affected ledgers; create only if canonical+missing. VERIFIED reusable error→dedupe symptom/cause(or inference)/fix/prevention/evidence/verification. Honor required lesson_review after gate/error-closing VERIFY; process RESOLVED before closure.
+After CURRENT OBSERVE use relevant evidence-backed lessons. Managed repos: read root ERRORS.md before mutation; multi-repo→affected ledgers; create only if canonical+missing. VERIFIED reusable error→dedupe symptom/cause(or inference)/fix/prevention/evidence/verification. Honor required lesson_review after gate/error-closing VERIFY; process RESOLVED before closure.
 </operational_learning>
 
 <debugging>
