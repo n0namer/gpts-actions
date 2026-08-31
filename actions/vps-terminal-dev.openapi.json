@@ -1055,6 +1055,28 @@
           }
         }
       },
+      "SessionStartRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "cmd"
+        ],
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "cmd": {
+            "$ref": "#/components/schemas/Command"
+          },
+          "working_dir": {
+            "type": "string",
+            "maxLength": 512
+          }
+        }
+      },
       "ExecRunRequest": {
         "type": "object",
         "additionalProperties": false,
