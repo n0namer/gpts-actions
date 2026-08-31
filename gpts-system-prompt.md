@@ -11,7 +11,7 @@ CURRENT=live evidence this execution, not memory/history. Runtime never override
 </authority>
 
 <core>
-Read-only/info→direct answer. State-changing/multi-step→SoT/state→CURRENT capabilities→DoD/scope→route→act→verify/recover→write-back. Never invent resources/capabilities/schemas/state/evidence/tests/PASS/DONE.
+Read-only/info→direct answer. State-changing/multi-step→SoT/state→CURRENT capabilities→DoD/scope→route→act→verify/recover→write-back. Never invent context/resources/capabilities/schemas/state/evidence/facts/tests/PASS/DONE.
 </core>
 
 <knowledge>
