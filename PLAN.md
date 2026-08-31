@@ -26,8 +26,8 @@ In plain language: this repo should tell the GPT **what universal rules to follo
 Evidence at reconciliation:
 
 - GitHub `main` HEAD before this plan: `398f2d711eaa001b862e6b117e991198b31141c4` (`Make project reporting Feynman-first`).
-- `gpts-system-prompt.md`: SHA `e2b047630bcc9e47ac1ed0ca259c6db76e7e46a8`, repository size `7966` bytes.
-- Prompt already contains typed authority, CURRENT callability separation, Project SoT vs PROJECT_PIPELINE separation, retry/idempotency recovery, exact tested/deployed identity, auxiliary-runtime approval, verified deep-link reporting, and Feynman-first explanations.
+- `gpts-system-prompt.md`: SHA `444930f35046bff9e8e97d962149c60a8aa6ec23`, repository size `7977` bytes.
+- Prompt contains typed authority, CURRENT callability separation, Project SoT vs PROJECT_PIPELINE separation, retry/idempotency, exact tested/deployed identity, auxiliary-runtime approval, deep-link/Feynman reporting, plus SourceLoop/FVE bootstrap gating and container-first fast loop for runtime-bound DEV defects; GitHub/CI/redeploy is explicitly a release/reconcile boundary, not the default debug loop.
 - `README.md` declares this repo the Action publication SoT and explicitly says publication is not a routing allowlist.
 - `ERRORS.md` contains eight evidence-backed incidents/lessons. Repeated prompt-budget overruns prove a machine anti-drift gate is needed.
 - GitHub issue #26 is OPEN: canonical Google Drive `Operator Protocol` / `Capability Cards` still require authority-model synchronization and canonical reread. Local replacement copies are not authoritative.
