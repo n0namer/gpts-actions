@@ -134,6 +134,10 @@ function selfTest(schema) {
   duplicate.paths["/synthetic-duplicate"] = { get: { operationId: "health" } };
   if (validateSchema(duplicate).ok) failures.push("duplicate operationId mutation was not detected");
 
+  const unsupportedSessionTimeout = clone(schema);
+  unsupportedSessionTimeout.components.schemas.SessionStartRequest.properties.timeout_ms = { type: "integer" };
+  if (validateSchema(unsupportedSessionTimeout).ok) failures.push("unsupported startSession timeout_ms mutation was not detected");
+
   return failures;
 }
 
