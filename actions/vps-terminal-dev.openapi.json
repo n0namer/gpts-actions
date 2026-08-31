@@ -794,84 +794,11 @@
         "operationId": "terminateSession",
         "summary": "Terminate a managed DEV session",
         "parameters": [
-          {
-            "name": "sessionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
+          {"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string"}}
         ],
         "responses": {
-          "200": {
-            "description": "Terminated"
-          },
-          "409": {
-            "description": "Blocked"
-          }
-        }
-      }
-    },
-    "/v1/lesson-review": {
-      "get": {
-        "operationId": "getLessonReview",
-        "summary": "Check whether resolved DEV errors should be promoted to reusable VERIFIED lessons",
-        "responses": {
-          "200": {
-            "description": "Lesson review reminder and resolved candidates"
-          }
-        }
-      }
-    },
-    "/v1/lesson-candidates": {
-      "get": {
-        "operationId": "listLessonCandidates",
-        "summary": "List durable DEV incident/solution candidates",
-        "parameters": [
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "OPEN",
-                "RESOLVED",
-                "RECORDED"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Candidate queue"
-          }
-        }
-      }
-    },
-    "/v1/lesson-review/record": {
-      "post": {
-        "operationId": "recordLesson",
-        "summary": "Record a VERIFIED reusable lesson from resolved DEV candidates",
-        "description": "Use only resolved candidates. Generalize a portable behavior pattern; evidence is bound server-side. Lessons are advisory and never authorize mutation.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RecordLessonRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "VERIFIED lesson recorded"
-          },
-          "400": {
-            "description": "Invalid or unresolved candidate"
-          }
+          "200": {"description": "Terminated"},
+          "409": {"description": "Blocked"}
         }
       }
     },
