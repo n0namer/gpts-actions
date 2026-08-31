@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.1",
-    "description": "DEV ONLY. Isolated VPS Terminal Action for the dedicated Coolify development environment. Never use this Action as production authority or for production mutations. Exposes core terminal diagnostics plus Wave-2 guidance, enforced mediation evidence, durable lesson review/retrieval and public-token approval preparation/status. Validator execution and approval-decision endpoints intentionally remain outside this single-bearer GPT Action because the server requires separate credentials."
+    "version": "0.7.0-dev.2",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface capped at 30 operations. Keeps high-value health, runtime-file ACI, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Lower-priority Coolify administration and lesson-write/review endpoints remain backend capabilities but are intentionally omitted from this GPT Action. Existing bounded enum dispatch remains where the backend already exposes it (for example Octocode tool selection); this schema does not invent a generic unmediated dispatcher."
   },
   "servers": [
     {
