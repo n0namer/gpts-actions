@@ -103,4 +103,4 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Impact:** repository CI cannot currently prove the prompt anti-drift validator PASS/FAIL.
 - **Fix:** preserve the validator/workflow; do not retry-loop. Re-run when runner service is available or validate exact source through an existing approved validation environment.
 - **Prevention:** distinguish pre-runner CI infrastructure failure from test failure using job step/runner evidence; identical retry budget remains one.
-- **Verification:** BATCH-01 stays `PARTIAL / VALIDATION_BLOCKER` in `PLAN.md` until the validator actually executes.
+- **Verification:** exact-source validator later executed in Coding Station and PASSed with `SYSTEM_PROMPT_ANTI_DRIFT_PASS bytes=7979`; hosted GitHub Actions runner assignment remains open separately.
