@@ -88,6 +88,18 @@ export function validateSchema(schema) {
     }
   }
 
+  const sessionStartRef = schema?.paths?.["/v1/sessions"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (sessionStartRef !== "#/components/schemas/SessionStartRequest") {
+    errors.push("startSession must use SessionStartRequest");
+  }
+  const sessionStart = schema?.components?.schemas?.SessionStartRequest;
+  if (!sessionStart || sessionStart?.additionalProperties !== false) {
+    errors.push("SessionStartRequest must exist and fail closed on unknown fields");
+  }
+  if (Object.prototype.hasOwnProperty.call(sessionStart?.properties || {}, "timeout_ms")) {
+    errors.push("SessionStartRequest must not expose unsupported timeout_ms");
+  }
+
   const bearer = schema?.components?.securitySchemes?.Bearer;
   if (bearer?.type !== "http" || bearer?.scheme !== "bearer") {
     errors.push("single-bearer public security scheme is missing or changed");
@@ -122,6 +134,10 @@ function selfTest(schema) {
   duplicate.paths["/synthetic-duplicate"] = { get: { operationId: "health" } };
   if (validateSchema(duplicate).ok) failures.push("duplicate operationId mutation was not detected");
 
+  const unsupportedSessionTimeout = clone(schema);
+  unsupportedSessionTimeout.components.schemas.SessionStartRequest.properties.timeout_ms = { type: "integer" };
+  if (validateSchema(unsupportedSessionTimeout).ok) failures.push("unsupported startSession timeout_ms mutation was not detected");
+
   return failures;
 }
 
@@ -146,5 +162,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 4
+  mutation_self_tests: 5
 }, null, 2));
