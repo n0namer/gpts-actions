@@ -104,3 +104,14 @@ Each entry records: `ID/date/status`, symptom, evidence, cause + confidence, imp
 - **Fix:** preserve the validator/workflow; do not retry-loop. Re-run when runner service is available or validate exact source through an existing approved validation environment.
 - **Prevention:** distinguish pre-runner CI infrastructure failure from test failure using job step/runner evidence; identical retry budget remains one.
 - **Verification:** exact-source validator later executed in Coding Station and PASSed with `SYSTEM_PROMPT_ANTI_DRIFT_PASS bytes=7979`; hosted GitHub Actions runner assignment remains open separately.
+
+## ERR-2026-08-31-010 — Prompt compaction weakened unrelated guardrails
+
+- **Status:** RESOLVED
+- **Symptom:** while freeing bytes for SourceLoop/container-first policy, wording compression removed or weakened unrelated runtime safeguards: generic evidence-first debugging, bounded-funnel/log correlation, no-mutate-only-diagnosis, target-observability-first, `context/facts` no-invention scope, evidence-backed root `ERRORS.md` learning, and stage-aware ALN wording.
+- **Evidence:** exact Git comparison from pre-SourceLoop commit `47244fc22954cd65cf5505fc80e88a8bd180e48e` to the compacted prompt; user requested regression review. One restoration intermediate also read back at 8007 bytes.
+- **Cause (high confidence):** byte-budget optimization was performed locally by prose replacement without a complete semantic regression checklist over unaffected invariants.
+- **Impact:** new SourceLoop policy could have shipped while silently weakening established safety/debugging/learning behavior.
+- **Fix:** restored all material weakened invariants, compressed only semantically redundant wording elsewhere, updated validator to guard restored semantics and new SourceLoop rules.
+- **Prevention:** every prompt-budget edit must compare against the last accepted prompt by semantic invariant, not only byte count; validator must guard unaffected critical rules as well as the newly added rule.
+- **Verification:** current prompt SHA `6ae7c2ef876f4c915402d3aa9e5b87a7bbcd5d54`, size 7979 bytes; exact-source validator PASSed with `SYSTEM_PROMPT_ANTI_DRIFT_PASS bytes=7979` and validator syntax check PASSed.
