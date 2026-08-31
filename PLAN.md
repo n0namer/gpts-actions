@@ -35,6 +35,7 @@ Evidence at reconciliation:
 - No `PLAN.md` existed before this reconciliation; it now exists on `main` and README links to it.
 - Anti-drift validator: `scripts/validate-system-prompt.mjs`; workflow: `.github/workflows/system-prompt-anti-drift.yml`.
 - GitHub Actions validation is currently infrastructure-blocked: run `33320654932` and one explicit retry `33320815477` both failed before any step with `runner_id=0` / `steps=[]`; this is not evidence that the validator logic failed.
+- Fresh 2026-08-31 publication/readback: `actions/vps-terminal-dev.openapi.json` on `main` already publishes `readTargetFile`, `previewTargetPatch`, `applyTargetPatch`, `listTargetChanges`, `updateTargetWriteback`, `runTargetCheck`, and `reloadTarget`, including stale-safe `TargetPatchRequest` with `expected_sha256`, `old_text`, and `new_text`. The live DEV backend independently exposes the matching patch routes and its startup self-test passes file create/read/patch/journal/delete/rollback. The CURRENT GPT consumer session does not expose `previewTargetPatch` / `applyTargetPatch`, so status is `ACTION_SURFACE_PROPAGATION_PENDING`, not a schema/backend defect.
 
 ## Phase Goal — policy/package anti-drift
 
