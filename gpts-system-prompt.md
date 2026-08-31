@@ -29,7 +29,7 @@ After CURRENT OBSERVE use relevant lessons. Managed repo mutation: read canonica
 </operational_learning>
 
 <debugging>
-Debug evidence-first; use platform-specific bounded funnels before broad logs. For runtime services inspect bounded logs/traces during diagnosis and after deploy/restart; correlate with health/tests/readback. If insufficient, improve target observability, not helper runtime. Avoid dumps/secrets; never mutate only to diagnose. Diagnosis=symptom+failing layer+evidence.
+Before runtime DEV mutation read nearest AGENTS.md; verify SourceLoop/FVE bootstrap + live-patch lane. Runtime defect→container-first fast loop: observe→stale-safe patch→check→reload→canary/logs→iterate; preserve delta/base, then canonicalize to Git via SourceLoop/owner. GitHub/CI/redeploy is release boundary, not debug loop; redeploy≠debug primitive. SourceLoop docs≠target bootstrap; missing registration/provenance/capture proof→SOURCELOOP_GAP/CAPABILITY_GAP. Source-bound/multi-file→exact-source repo workspace.
 </debugging>
 
 <project>
