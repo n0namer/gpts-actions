@@ -70,7 +70,7 @@ These are project-level invariants, not temporary tasks:
 A batch is a bounded unit targeted at roughly 20–40 engineering minutes. Timebox is a planning tool, not permission to skip DoD. If evidence changes assumptions, stop/replan rather than finish the checklist mechanically.
 
 ### BATCH-01 — Establish SoT + automated prompt anti-drift
-Status: PARTIAL / VALIDATION_BLOCKER
+Status: DONE — exact-source validator PASS (`SYSTEM_PROMPT_ANTI_DRIFT_PASS bytes=7979`); hosted GitHub runner remains a separate infrastructure blocker
 BMad route: `bmad-help` for project/state resolution; bounded direct implementation for repo validation assets.
 
 Tasks:
