@@ -11,8 +11,6 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "readTargetFile",
   "previewTargetPatch",
   "applyTargetPatch",
-  "listTargetChanges",
-  "updateTargetWriteback",
   "runTargetCheck",
   "reloadTarget",
   "getOperatorGuidance",
@@ -27,25 +25,16 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "readSession",
   "writeSession",
   "terminateSession",
-  "getLessonReview",
-  "listLessonCandidates",
-  "recordLesson",
   "listLessons",
-  "recordProposedLesson",
   "getLesson",
   "recommendLessons",
   "getSelfProtection",
-  "prepareChange",
-  "approvalStatus",
   "prepareDebugClone",
   "executeApprovedDebugClone",
-  "listCoolifyProjects",
-  "getCoolifyProject",
-  "listCoolifyEnvironments",
-  "prepareCoolifyProjectCreate",
-  "prepareCoolifyEnvironmentCreate",
-  "executeApprovedCoolifyProjectCreate",
-  "executeApprovedCoolifyEnvironmentCreate"
+  "prepareChange",
+  "approvalStatus",
+  "targetLogs",
+  "targetStats"
 ];
 
 const FORBIDDEN_PUBLIC_PATHS = [
