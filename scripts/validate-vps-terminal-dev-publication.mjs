@@ -88,6 +88,18 @@ export function validateSchema(schema) {
     }
   }
 
+  const sessionStartRef = schema?.paths?.["/v1/sessions"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (sessionStartRef !== "#/components/schemas/SessionStartRequest") {
+    errors.push("startSession must use SessionStartRequest");
+  }
+  const sessionStart = schema?.components?.schemas?.SessionStartRequest;
+  if (!sessionStart || sessionStart?.additionalProperties !== false) {
+    errors.push("SessionStartRequest must exist and fail closed on unknown fields");
+  }
+  if (Object.prototype.hasOwnProperty.call(sessionStart?.properties || {}, "timeout_ms")) {
+    errors.push("SessionStartRequest must not expose unsupported timeout_ms");
+  }
+
   const bearer = schema?.components?.securitySchemes?.Bearer;
   if (bearer?.type !== "http" || bearer?.scheme !== "bearer") {
     errors.push("single-bearer public security scheme is missing or changed");
