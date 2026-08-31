@@ -114,9 +114,9 @@ function selfTest(schema) {
   delete missing.paths["/v1/approval/status"];
   if (validateSchema(missing).ok) failures.push("missing required-public-operation mutation was not detected");
 
-  const missingCoolify = clone(schema);
-  delete missingCoolify.paths["/v1/approval/coolify/project/execute"];
-  if (validateSchema(missingCoolify).ok) failures.push("missing typed Coolify operation mutation was not detected");
+  const missingTargetStats = clone(schema);
+  delete missingTargetStats.paths["/v1/target/stats"];
+  if (validateSchema(missingTargetStats).ok) failures.push("missing required targetStats operation mutation was not detected");
 
   const duplicate = clone(schema);
   duplicate.paths["/synthetic-duplicate"] = { get: { operationId: "health" } };
