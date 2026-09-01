@@ -1,7 +1,8 @@
 # PLAN.md — gpts-actions Project SoT
 
 Status: ACTIVE
-Last reconciled: 2026-08-30
+Last reconciled: 2026-09-01
+Current execution focus: restore the AgentField Actions/JIT execution channel for the existing AgentField DEV without changing SWE-AF product/runtime, Universal Solver runtime, or using GitHub redeploy as the debug loop.
 Canonical project planning/decision owner for this repository. `README.md` owns publication usage/reference docs; `ERRORS.md` owns local error evidence; runtime evidence owns actual deployed/callable state.
 
 ## Project North Star
