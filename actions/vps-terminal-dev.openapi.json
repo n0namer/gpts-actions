@@ -1174,6 +1174,26 @@
           }
         ]
       },
+      "TargetFileCreateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target_id", "path", "content"],
+        "properties": {
+          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
+          "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^/"},
+          "content": {"type": "string", "maxLength": 4096}
+        }
+      },
+      "TargetFileDeleteRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target_id", "path", "expected_sha256"],
+        "properties": {
+          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
+          "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^/"},
+          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
+        }
+      },
       "TargetPatchRequest": {
         "type": "object",
         "additionalProperties": false,
