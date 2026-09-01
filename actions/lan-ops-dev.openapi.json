@@ -187,7 +187,14 @@
         "x-openai-isConsequential": true,
         "parameters": [
           {
-            "$ref": "#/components/parameters/SessionId"
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "description": "Managed DEV terminal session identifier returned by startLanDevTerminalSession.",
+            "schema": {
+              "type": "string",
+              "pattern": "^sess_[A-Za-z0-9]{8,64}$"
+            }
           }
         ],
         "requestBody": {
