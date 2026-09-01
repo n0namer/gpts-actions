@@ -137,6 +137,50 @@ DoD:
 - no publication status promoted to CURRENT callability;
 - blockers classified precisely.
 
+### BATCH-05 — Restore AgentField Actions/JIT execution channel
+Status: IN_PROGRESS — runtime gateway and AgentField DEV are healthy enough to localize the current failure before HTTP gateway ingress; CURRENT Action calls return `no available server`.
+BMad route: `bmad-help` -> debugging/implementation path; use container-first Fast Verified Engineering and patch only the JIT/Action connector plane.
+
+Scope / non-targets:
+- target: AgentField Actions/JIT connector path serving `https://agentfield-actions.srv1904412.hstgr.cloud`;
+- existing AgentField DEV application: `edshqtkwskg3lrczekhcmd71`;
+- existing gateway service: `fef1mmt9x9q1dcv0pb00svxi`;
+- do not change SWE-AF product/runtime, Universal Solver runtime, or GitHub source as a code-debug/redeploy loop.
+
+CURRENT evidence (2026-09-01):
+- AgentField Action `agentfieldHealth` and `discoverAgentfieldCapabilities` both fail with `no available server` before an AgentField HTTP response is produced;
+- live gateway container `gateway-fef1mmt9x9q1dcv0pb00svxi` is running with restart_count=0 on private port 8080 and has no source mount;
+- gateway PID 1 is inline Python listening on `0.0.0.0:8080`; `/health` is local and independent of upstream auth;
+- client Action auth remains separate from upstream auth; upstream requests receive `X-API-Key` from `AGENTFIELD_UPSTREAM_API_KEY`;
+- gateway upstream target is the current control-plane container on port 8080;
+- AgentField control-plane/workforce logs already evidenced successful `swe-planner`/`swe-pro` node registration/initialization;
+- publication schema `actions/agentfield-control-plane.openapi.json` exists on `main` (SHA `af6462313f0dc68edd3f4ec7baa7b6fa278fea99`) and publishes server `https://agentfield-actions.srv1904412.hstgr.cloud` plus the required health/discovery/execution/status/log operations;
+- a separate working JIT Action on the same host proves that Coolify `fqdn=null` alone is not sufficient to explain `no available server`.
+
+Working diagnosis:
+- current defect is localized to external JIT/backend server routing/registration between the GPT Action connector and the existing gateway; it is not the previously observed upstream `401` and is not yet evidence of an AgentField/SWE runtime defect.
+
+Tasks (20/80 order):
+1. identify the authoritative JIT/backend routing owner and compare its live registration/availability state with one working Action connector;
+2. repair only the missing/stale AgentField backend binding/registration, preferring an in-place reversible runtime/config patch over new infrastructure;
+3. verify the JIT layer sees an available AgentField backend before functional execution;
+4. run the full AgentField smoke DoD below;
+5. write back verified cause/fix/evidence to this PLAN and add/update `ERRORS.md` only if the failure pattern is reusable and verified.
+
+DoD:
+- `agentfieldHealth` PASS;
+- `discoverAgentfieldCapabilities` PASS;
+- `listAgentfieldNodes` shows `swe-planner` active/ready;
+- one harmless SWE reasoner execution is accepted and completes;
+- `getAgentfieldExecution` returns terminal status/result;
+- `getAgentfieldExecutionLogs` (or equivalent bounded execution evidence) PASSes for that execution;
+- no SWE-AF source/runtime, Universal Solver runtime, or GitHub code redeploy was used to obtain the fix.
+
+Rollback/recovery:
+- preserve the current running gateway and AgentField DEV as fallback;
+- mutate only the exact JIT/connector-plane state proven stale/missing;
+- after any ambiguous mutation, reread backend availability before retrying; identical mutation retry budget is one unless new evidence changes the route.
+
 ## Anti-drift checkpoint used after every batch
 
 Before selecting the next batch, answer from fresh evidence:
