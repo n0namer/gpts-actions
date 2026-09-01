@@ -157,8 +157,13 @@ CURRENT evidence (2026-09-01):
 - publication schema `actions/agentfield-control-plane.openapi.json` exists on `main` (SHA `af6462313f0dc68edd3f4ec7baa7b6fa278fea99`) and publishes server `https://agentfield-actions.srv1904412.hstgr.cloud` plus the required health/discovery/execution/status/log operations;
 - a separate working JIT Action on the same host proves that Coolify `fqdn=null` alone is not sufficient to explain `no available server`.
 
-Working diagnosis:
-- current defect is localized to external JIT/backend server routing/registration between the GPT Action connector and the existing gateway; it is not the previously observed upstream `401` and is not yet evidence of an AgentField/SWE runtime defect.
+Working diagnosis / verified delta:
+- external DNS and TLS are healthy and resolve the Action hostname to VPS `2.24.1.151`;
+- before repair, independent external `GET /health` returned Traefik `503` body `no available server`; exact generated Coolify Compose for service `fef1mmt9x9q1dcv0pb00svxi` had no Traefik router/service labels and the proxy dynamic-file inventory had no AgentField route;
+- the bounded connector-plane repair restored HTTP/HTTPS Traefik labels for the existing gateway only; Coolify materialized new gateway generation `b1fe2eb4099045a6dbdcb45eb1de58bdc03f04cf3f3d9dfb6fab2ef5f105afaa` with new compose config hash `6732c0c0cd9b40e0cf26face12fb3e0a80191c172d14468a176b2386e5b7ce01`;
+- post-repair independent external `GET /health` returns HTTP `200` with `{"status":"healthy","gateway":"ok"}`; AgentField DEV/SWE runtime was not changed;
+- despite that ingress PASS, repeated CURRENT `agentfieldHealth` / discovery calls through the loaded `agentfield_actions` JIT consumer still return `no available server`; therefore a second consumer/JIT binding or propagation layer remains unresolved and must not be conflated with the now-closed Traefik sub-defect;
+- BMAD runtime is affected by the same JIT availability condition, so this batch follows `bmad-quick-dev` + review/trace semantics manually from canonical BMAD guidance rather than claiming a BMAD execution.
 
 Tasks (20/80 order):
 1. identify the authoritative JIT/backend routing owner and compare its live registration/availability state with one working Action connector;
