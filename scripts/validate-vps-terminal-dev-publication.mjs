@@ -9,6 +9,8 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "ready",
   "version",
   "readTargetFile",
+  "createTargetFile",
+  "deleteTargetFile",
   "previewTargetPatch",
   "applyTargetPatch",
   "runTargetCheck",
