@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.4",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface capped at 30 operations. Keeps high-value health, target stats/logs, runtime-file ACI, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Runtime-file journal/write-back, lower-priority Coolify administration, and lesson-write/review endpoints remain backend capabilities but are intentionally omitted from this GPT Action. Existing bounded enum dispatch remains where the backend already exposes it (for example Octocode tool selection); this schema does not invent a generic unmediated dispatcher."
+    "version": "0.7.0-dev.5",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 32 high-value operations. Adds stale-safe create/delete for regular files through the existing Runtime File ACI canary primitive: create is O_EXCL/no-overwrite, root-bounded and limited to 4 KiB; delete requires the exact expected SHA-256. Keeps health, target stats/logs, runtime-file ACI, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Runtime-file journal/write-back, lower-priority Coolify administration, and lesson-write/review endpoints remain backend capabilities but are intentionally omitted."
   },
   "servers": [
     {
