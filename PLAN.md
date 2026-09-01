@@ -138,7 +138,7 @@ DoD:
 - blockers classified precisely.
 
 ### BATCH-05 — Restore AgentField Actions/JIT execution channel
-Status: IN_PROGRESS — runtime gateway and AgentField DEV are healthy enough to localize the current failure before HTTP gateway ingress; CURRENT Action calls return `no available server`.
+Status: IN_PROGRESS / INGRESS_SUBGATE_PASS — public Traefik ingress was repaired and externally verifies HTTP 200, but the CURRENT `agentfield_actions` JIT consumer still returns `no available server`; full Action DoD remains open.
 BMad route: `bmad-help` -> debugging/implementation path; use container-first Fast Verified Engineering and patch only the JIT/Action connector plane.
 
 Scope / non-targets:
