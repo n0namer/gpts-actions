@@ -128,6 +128,51 @@
         }
       }
     },
+    "/v1/target/file/canary": {
+      "post": {
+        "operationId": "createTargetFile",
+        "summary": "Create a new regular file in an allowed DEV live-patch root without overwrite",
+        "description": "Uses the existing Runtime File ACI create-only primitive. The server requires canary_file capability, an absolute root-bounded path, content of at most 4 KiB, O_EXCL/no-overwrite semantics and SHA-256 readback.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetFileCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "File created with SHA-256 readback"},
+          "400": {"description": "Invalid path or request"},
+          "403": {"description": "Create-file capability not allowed"},
+          "409": {"description": "Path already exists or policy conflict"}
+        }
+      },
+      "delete": {
+        "operationId": "deleteTargetFile",
+        "summary": "Delete an owned DEV file only when its SHA-256 still matches",
+        "description": "Uses the existing Runtime File ACI stale-safe delete primitive. The server requires canary_file capability, an allowed root-bounded regular file and the exact current SHA-256; symlinks and stale content are rejected.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetFileDeleteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "File deleted and absence verified"},
+          "400": {"description": "Invalid path or SHA-256"},
+          "403": {"description": "Delete-file capability not allowed"},
+          "404": {"description": "File not found"},
+          "409": {"description": "SHA-256 is stale or policy conflict"}
+        }
+      }
+    },
     "/v1/target/file/patch/preview": {
       "post": {
         "operationId": "previewTargetPatch",
