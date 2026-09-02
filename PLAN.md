@@ -138,8 +138,8 @@ DoD:
 - blockers classified precisely.
 
 ### BATCH-05 — Restore AgentField Actions/JIT execution channel
-Status: IN_PROGRESS / INGRESS_SUBGATE_PASS — public Traefik ingress was repaired and externally verifies HTTP 200, but the CURRENT `agentfield_actions` JIT consumer still returns `no available server`; full Action DoD remains open.
-BMad route: `bmad-help` -> debugging/implementation path; use container-first Fast Verified Engineering and patch only the JIT/Action connector plane.
+Status: IN_PROGRESS / TRANSPORT_PASS / CONTRACT_COMPATIBILITY_BLOCKED — public ingress and CURRENT Action transport are healthy; health/discovery PASS, while stale `/api/ui/v1/...` diagnostic routes and an unavailable writable live-patch target keep the full Action DoD open.
+BMad route: `bmad-help` -> `bmad-quick-dev` (QQ, plan-code-review) for the single goal “restore the existing AgentField Action connector compatibility without changing SWE-AF/Universal Solver or using GitHub redeploy as the debug loop”. Canonical BMAD-MNNZ is workflow-only; this `PLAN.md` remains the project SoT.
 
 Scope / non-targets:
 - target: AgentField Actions/JIT connector path serving `https://agentfield-actions.srv1904412.hstgr.cloud`;
