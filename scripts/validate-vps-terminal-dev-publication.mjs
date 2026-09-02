@@ -165,6 +165,14 @@ function selfTest(schema) {
   unsupportedSessionTimeout.components.schemas.SessionStartRequest.properties.timeout_ms = { type: "integer" };
   if (validateSchema(unsupportedSessionTimeout).ok) failures.push("unsupported startSession timeout_ms mutation was not detected");
 
+  const widenedFileEnum = clone(schema);
+  widenedFileEnum.components.schemas.FileActionRequest.properties.operation.enum.push("shell");
+  if (validateSchema(widenedFileEnum).ok) failures.push("widened fileAction operation enum was not detected");
+
+  const genericFileArgs = clone(schema);
+  genericFileArgs.components.schemas.FileActionRequest.properties.args = { type: "object" };
+  if (validateSchema(genericFileArgs).ok) failures.push("generic fileAction args escape was not detected");
+
   return failures;
 }
 
