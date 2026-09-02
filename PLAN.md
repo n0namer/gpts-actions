@@ -167,8 +167,8 @@ Working diagnosis / verified delta:
 - before repair, independent external `GET /health` returned Traefik `503` body `no available server`; exact generated Coolify Compose for service `fef1mmt9x9q1dcv0pb00svxi` had no Traefik router/service labels and the proxy dynamic-file inventory had no AgentField route;
 - the bounded connector-plane repair restored HTTP/HTTPS Traefik labels for the existing gateway only; Coolify materialized new gateway generation `b1fe2eb4099045a6dbdcb45eb1de58bdc03f04cf3f3d9dfb6fab2ef5f105afaa` with new compose config hash `6732c0c0cd9b40e0cf26face12fb3e0a80191c172d14468a176b2386e5b7ce01`;
 - post-repair independent external `GET /health` returns HTTP `200` with `{"status":"healthy","gateway":"ok"}`; AgentField DEV/SWE runtime was not changed;
-- despite that ingress PASS, repeated CURRENT `agentfieldHealth` / discovery calls through the loaded `agentfield_actions` JIT consumer still return `no available server`; therefore a second consumer/JIT binding or propagation layer remains unresolved and must not be conflated with the now-closed Traefik sub-defect;
-- BMAD runtime is affected by the same JIT availability condition, so this batch follows `bmad-quick-dev` + review/trace semantics manually from canonical BMAD guidance rather than claiming a BMAD execution.
+- subsequent CURRENT Action readback superseded the earlier post-ingress observation: `agentfieldHealth` and discovery now PASS through the loaded `agentfield_actions` consumer, so no second JIT-binding defect is currently evidenced;
+- BMAD `bmad-help` was activated from canonical BMAD-MNNZ and routed this implementation-stage single-goal repair to `bmad-quick-dev` (QQ, plan-code-review). The project has no local BMAD installation/config evidence, so canonical BMAD rules govern workflow while project artifacts remain in this repo.
 
 Tasks (20/80 order):
 1. identify the authoritative JIT/backend routing owner and compare its live registration/availability state with one working Action connector;
