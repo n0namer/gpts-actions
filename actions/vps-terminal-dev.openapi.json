@@ -1031,60 +1031,25 @@
           }
         ]
       },
-      "TargetFileCreateRequest": {
+      "FileActionRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["target_id", "path", "content"],
+        "required": ["operation", "target_id", "path"],
+        "description": "Closed file-action envelope. read may use start_line/line_count/max_bytes; create requires content; preview_patch and apply_patch require expected_sha256/old_text/new_text; delete requires expected_sha256. The server rejects fields that do not belong to the selected operation.",
         "properties": {
+          "operation": {
+            "type": "string",
+            "enum": ["read", "create", "preview_patch", "apply_patch", "delete"]
+          },
           "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
           "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^/"},
-          "content": {"type": "string", "maxLength": 4096}
-        }
-      },
-      "TargetFileDeleteRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["target_id", "path", "expected_sha256"],
-        "properties": {
-          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
-          "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^/"},
-          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}
-        }
-      },
-      "TargetPatchRequest": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "target_id",
-          "path",
-          "expected_sha256",
-          "old_text",
-          "new_text"
-        ],
-        "properties": {
-          "target_id": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 128
-          },
-          "path": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 512
-          },
-          "expected_sha256": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{64}$"
-          },
-          "old_text": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 12000
-          },
-          "new_text": {
-            "type": "string",
-            "maxLength": 12000
-          }
+          "start_line": {"type": "integer", "minimum": 1, "default": 1},
+          "line_count": {"type": "integer", "minimum": 1, "maximum": 200, "default": 120},
+          "max_bytes": {"type": "integer", "minimum": 256, "maximum": 12000, "default": 8192},
+          "content": {"type": "string", "maxLength": 4096},
+          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+          "old_text": {"type": "string", "minLength": 1, "maxLength": 12000},
+          "new_text": {"type": "string", "maxLength": 12000}
         }
       },
       "TargetWritebackRequest": {
