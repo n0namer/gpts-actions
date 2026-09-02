@@ -137,6 +137,21 @@ DoD:
 - no publication status promoted to CURRENT callability;
 - blockers classified precisely.
 
+### BATCH-04A — VPS Terminal DEV compact file Action surface
+Status: **PUBLICATION_DONE / CONSUMER_REFRESH_PENDING**
+BMad route: `bmad-quick-dev` procedure for one bounded brownfield publication goal; implementation happened in the existing DEV workbench, followed by exact SourceLoop capture.
+
+Evidence:
+- container baseline validator PASS at 32 operations;
+- `actions/vps-terminal-dev.openapi.json` edited in `workbench:/workspace/gpts-actions` to `v0.7.0-dev.6` with 28 operations;
+- five dedicated file operationIds were replaced by one `fileAction` using closed enum `read|create|preview_patch|apply_patch|delete`;
+- `FileActionRequest` is `additionalProperties=false`, exposes no generic `args`, and the backend already performs branch-specific field validation/mediation/readback on `/v1/target/file/action`;
+- publication validator now requires the exact 28-operation inventory, enforces the `<=30` budget, exact five-value file enum, no generic `args`, and runs 7 mutation self-tests;
+- container validation PASS: `operation_count=28`, `required_public_operations=28`, `mutation_self_tests=7`; `git diff --check` PASS; dirty set was exactly schema + validator;
+- exact tested delta was captured to `main@f42a4e9137d0c761b5c972fec0277e0f9e5d9c81`; canonical schema/validator reread verified. No runtime redeploy occurred. Independent Coding Station rerun is currently infrastructure-blocked by Gateway Timeout, not a schema failure.
+
+DoD for publication: **PASS**. Remaining acceptance boundary is consumer propagation: refresh/import this schema, prove CURRENT callable surface contains `fileAction` and no five legacy file operationIds, then run bounded live file E2E. Publication itself is not callability.
+
 ### BATCH-05 — Restore AgentField Actions/JIT execution channel
 Status: IN_PROGRESS / TRANSPORT_PASS / CONTRACT_COMPATIBILITY_BLOCKED — public ingress and CURRENT Action transport are healthy; health/discovery PASS, while stale `/api/ui/v1/...` diagnostic routes and an unavailable writable live-patch target keep the full Action DoD open.
 BMad route: `bmad-help` -> `bmad-quick-dev` (QQ, plan-code-review) for the single goal “restore the existing AgentField Action connector compatibility without changing SWE-AF/Universal Solver or using GitHub redeploy as the debug loop”. Canonical BMAD-MNNZ is workflow-only; this `PLAN.md` remains the project SoT.
