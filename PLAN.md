@@ -147,8 +147,13 @@ Scope / non-targets:
 - existing gateway service: `fef1mmt9x9q1dcv0pb00svxi`;
 - do not change SWE-AF product/runtime, Universal Solver runtime, or GitHub source as a code-debug/redeploy loop.
 
-CURRENT evidence (2026-09-01):
-- AgentField Action `agentfieldHealth` and `discoverAgentfieldCapabilities` both fail with `no available server` before an AgentField HTTP response is produced;
+CURRENT evidence (reconciled 2026-09-02 from live readback):
+- AgentField Action `agentfieldHealth` PASSes and `discoverAgentfieldCapabilities` PASSes; discovery shows `swe-planner` and `swe-pro` active, so the earlier `no available server` claim is stale and the transport/JIT availability subgate is closed;
+- `listAgentfieldNodes` and node-detail diagnostics reach AgentField but fail on removed `/api/ui/v1/nodes/...` routes; execution logs/debug details likewise fail on removed `/api/ui/v1/executions/...` routes, proving the remaining connector defect is API-contract compatibility rather than transport;
+- harmless `swe-planner.plan` execution `exec_20260901_140305_ubbppu2e` was accepted by the Action channel but later failed inside the SWE pipeline after `opencode run` made no progress for 300 seconds; that SWE/OpenCode timeout is a separate defect and remains outside this connector-only batch;
+- the existing gateway has no source mount and runs inline Python as PID 1, so the compatibility change must be a bounded runtime/config hotfix rather than GitHub-code/redeploy debugging;
+- `vps-terminal-dev` and PROD both expose the self target `vps-terminal-dev-gateway`, but its live-patch root is `/app/gateway`; `/app/config/targets.json` is outside that root. DEV mediation blocks generic registry mutation, while PROD can execute against the self target but direct write to `/app/config/targets.json` fails `EROFS` because the config is in the read-only image layer;
+- therefore the nearest required implementation step is a one-time bootstrap of a writable, exact target-registry path (or equivalent typed target-registry mutation) in the existing VPS Terminal control plane, then register the existing AgentField gateway as a live-patch target and apply the compatibility mapping there.
 - live gateway container `gateway-fef1mmt9x9q1dcv0pb00svxi` is running with restart_count=0 on private port 8080 and has no source mount;
 - gateway PID 1 is inline Python listening on `0.0.0.0:8080`; `/health` is local and independent of upstream auth;
 - client Action auth remains separate from upstream auth; upstream requests receive `X-API-Key` from `AGENTFIELD_UPSTREAM_API_KEY`;
