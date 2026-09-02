@@ -61,7 +61,7 @@
       "post": {
         "operationId": "fileAction",
         "summary": "Run one bounded DEV file operation",
-        "description": "Closed file-operation family. operation must be one of read, create, preview_patch, apply_patch, delete. The server performs branch-specific required/forbidden-field validation and preserves the existing root, capability, stale-SHA, mediation and readback guards. No arbitrary args or shell command is accepted.",
+        "description": "Closed file-operation family: read, create, preview_patch, apply_patch, delete. The server enforces branch-specific fields plus root, capability, stale-SHA, mediation and readback guards. No arbitrary args or shell command is accepted.",
         "requestBody": {
           "required": true,
           "content": {
