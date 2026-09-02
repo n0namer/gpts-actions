@@ -170,11 +170,11 @@ Working diagnosis / verified delta:
 - subsequent CURRENT Action readback superseded the earlier post-ingress observation: `agentfieldHealth` and discovery now PASS through the loaded `agentfield_actions` consumer, so no second JIT-binding defect is currently evidenced;
 - BMAD `bmad-help` was activated from canonical BMAD-MNNZ and routed this implementation-stage single-goal repair to `bmad-quick-dev` (QQ, plan-code-review). The project has no local BMAD installation/config evidence, so canonical BMAD rules govern workflow while project artifacts remain in this repo.
 
-Tasks (20/80 order):
-1. identify the authoritative JIT/backend routing owner and compare its live registration/availability state with one working Action connector;
-2. repair only the missing/stale AgentField backend binding/registration, preferring an in-place reversible runtime/config patch over new infrastructure;
-3. verify the JIT layer sees an available AgentField backend before functional execution;
-4. run the full AgentField smoke DoD below;
+Tasks (20/80 order, reconciled):
+1. bootstrap one exact writable target-registry path (or typed registry mutation) in the existing VPS Terminal control plane; do not broaden `/app/config` generally;
+2. register the existing AgentField gateway as a live-patch target and verify target readback before mutation;
+3. map only the verified stale Action diagnostic routes to CURRENT AgentField `/api/v1/...` equivalents, using source/API evidence for every mapping;
+4. verify health/discovery remain PASS, then nodes/details and bounded execution status/log evidence; keep the separate SWE/OpenCode timeout outside this connector batch;
 5. write back verified cause/fix/evidence to this PLAN and add/update `ERRORS.md` only if the failure pattern is reusable and verified.
 
 DoD:
