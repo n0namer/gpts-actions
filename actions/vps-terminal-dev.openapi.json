@@ -57,171 +57,28 @@
         }
       }
     },
-    "/v1/target/file": {
-      "get": {
-        "operationId": "readTargetFile",
-        "summary": "Read bounded UTF-8 from a DEV live-patch target with SHA-256 evidence",
-        "parameters": [
-          {
-            "name": "target_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 128
-            }
-          },
-          {
-            "name": "path",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "maxLength": 512
-            }
-          },
-          {
-            "name": "start_line",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "default": 1
-            }
-          },
-          {
-            "name": "line_count",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 200,
-              "default": 120
-            }
-          },
-          {
-            "name": "max_bytes",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 256,
-              "maximum": 12000,
-              "default": 8192
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "File range and SHA-256"
-          },
-          "403": {
-            "description": "Live patch not allowed"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        }
-      }
-    },
-    "/v1/target/file/canary": {
+    "/v1/target/file/action": {
       "post": {
-        "operationId": "createTargetFile",
-        "summary": "Create a new regular file in an allowed DEV live-patch root without overwrite",
-        "description": "Uses the existing Runtime File ACI create-only primitive. The server requires canary_file capability, an absolute root-bounded path, content of at most 4 KiB, O_EXCL/no-overwrite semantics and SHA-256 readback.",
+        "operationId": "fileAction",
+        "summary": "Run one bounded DEV file operation",
+        "description": "Closed file-operation family. operation must be one of read, create, preview_patch, apply_patch, delete. The server performs branch-specific required/forbidden-field validation and preserves the existing root, capability, stale-SHA, mediation and readback guards. No arbitrary args or shell command is accepted.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TargetFileCreateRequest"
+                "$ref": "#/components/schemas/FileActionRequest"
               }
             }
           }
         },
         "responses": {
-          "200": {"description": "File created with SHA-256 readback"},
-          "400": {"description": "Invalid path or request"},
-          "403": {"description": "Create-file capability not allowed"},
-          "409": {"description": "Path already exists or policy conflict"}
-        }
-      },
-      "delete": {
-        "operationId": "deleteTargetFile",
-        "summary": "Delete an owned DEV file only when its SHA-256 still matches",
-        "description": "Uses the existing Runtime File ACI stale-safe delete primitive. The server requires canary_file capability, an allowed root-bounded regular file and the exact current SHA-256; symlinks and stale content are rejected.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TargetFileDeleteRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {"description": "File deleted and absence verified"},
-          "400": {"description": "Invalid path or SHA-256"},
-          "403": {"description": "Delete-file capability not allowed"},
-          "404": {"description": "File not found"},
-          "409": {"description": "SHA-256 is stale or policy conflict"}
-        }
-      }
-    },
-    "/v1/target/file/patch/preview": {
-      "post": {
-        "operationId": "previewTargetPatch",
-        "summary": "Preview exact stale-safe DEV live patch without writing",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TargetPatchRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Patch preview"
-          },
-          "409": {
-            "description": "Stale or ambiguous patch"
-          }
-        }
-      }
-    },
-    "/v1/target/file/patch": {
-      "post": {
-        "operationId": "applyTargetPatch",
-        "summary": "Apply exact DEV live patch and create durable vtchg journal evidence",
-        "description": "Atomically applies a stale-safe exact patch through RuntimeFileACI. Successful writes return capture_required=true and git_writeback_status=PENDING in the durable vtchg record.",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TargetPatchRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Applied patch plus durable capture record"
-          },
-          "409": {
-            "description": "Stale or ambiguous patch"
-          },
-          "502": {
-            "description": "Readback verification failed"
-          }
+          "200": {"description": "Bounded file operation result"},
+          "400": {"description": "Invalid operation, field set or request"},
+          "403": {"description": "Target capability or policy denied"},
+          "404": {"description": "Target or file not found"},
+          "409": {"description": "Stale SHA, existing path or policy conflict"},
+          "502": {"description": "Readback verification failed"}
         }
       }
     },
