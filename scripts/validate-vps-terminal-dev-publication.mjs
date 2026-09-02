@@ -76,6 +76,35 @@ export function validateSchema(schema) {
   for (const id of REQUIRED_PUBLIC_OPERATION_IDS) {
     if (!idCounts.has(id)) errors.push(`required public operation missing: ${id}`);
   }
+  const requiredIds = new Set(REQUIRED_PUBLIC_OPERATION_IDS);
+  for (const id of ids) {
+    if (!requiredIds.has(id)) errors.push(`unexpected public operation: ${id}`);
+  }
+  if (operations.length !== REQUIRED_PUBLIC_OPERATION_IDS.length) {
+    errors.push(`unexpected public operation count: ${operations.length} (expected ${REQUIRED_PUBLIC_OPERATION_IDS.length})`);
+  }
+  if (operations.length > 30) errors.push(`public operation budget exceeded: ${operations.length} > 30`);
+
+  const fileActionRef = schema?.paths?.["/v1/target/file/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (fileActionRef !== "#/components/schemas/FileActionRequest") {
+    errors.push("fileAction must use FileActionRequest");
+  }
+  const fileAction = schema?.components?.schemas?.FileActionRequest;
+  const expectedFileOps = ["read", "create", "preview_patch", "apply_patch", "delete"];
+  if (!fileAction || fileAction?.additionalProperties !== false) {
+    errors.push("FileActionRequest must exist and fail closed on unknown fields");
+  }
+  const actualFileOps = fileAction?.properties?.operation?.enum;
+  if (JSON.stringify(actualFileOps) !== JSON.stringify(expectedFileOps)) {
+    errors.push(`FileActionRequest operation enum changed: ${JSON.stringify(actualFileOps)}`);
+  }
+  const requiredFileFields = new Set(fileAction?.required || []);
+  for (const field of ["operation", "target_id", "path"]) {
+    if (!requiredFileFields.has(field)) errors.push(`FileActionRequest required field missing: ${field}`);
+  }
+  if (Object.prototype.hasOwnProperty.call(fileAction?.properties || {}, "args")) {
+    errors.push("FileActionRequest must not expose generic args");
+  }
 
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
