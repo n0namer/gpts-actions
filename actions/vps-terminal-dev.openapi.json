@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.5",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 32 high-value operations. Adds stale-safe create/delete for regular files through the existing Runtime File ACI canary primitive: create is O_EXCL/no-overwrite, root-bounded and limited to 4 KiB; delete requires the exact expected SHA-256. Keeps health, target stats/logs, runtime-file ACI, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Runtime-file journal/write-back, lower-priority Coolify administration, and lesson-write/review endpoints remain backend capabilities but are intentionally omitted."
+    "version": "0.7.0-dev.6",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 28 high-value operations. Five bounded file capabilities are multiplexed through one fileAction closed enum: read, create, preview_patch, apply_patch, delete. The backend keeps branch-specific validation, stale-SHA/root/capability guards, mediation and readback; no generic args or shell dispatcher is exposed. Keeps health, target stats/logs, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Runtime-file journal/write-back, lower-priority Coolify administration, and lesson-write/review endpoints remain backend capabilities but are intentionally omitted."
   },
   "servers": [
     {
