@@ -153,7 +153,7 @@ Evidence:
 DoD for publication: **PASS**. Remaining acceptance boundary is consumer propagation: refresh/import this schema, prove CURRENT callable surface contains `fileAction` and no five legacy file operationIds, then run bounded live file E2E. Publication itself is not callability.
 
 ### BATCH-05 — Restore AgentField Actions/JIT execution channel
-Status: IN_PROGRESS / TRANSPORT_PASS / CONTRACT_COMPATIBILITY_BLOCKED — public ingress and CURRENT Action transport are healthy; health/discovery PASS, while stale `/api/ui/v1/...` diagnostic routes and an unavailable writable live-patch target keep the full Action DoD open.
+Status: **PAUSED_BY_CURRENT_PRIORITY / TRANSPORT_PASS / CONTRACT_COMPATIBILITY_BLOCKED** — preserved as a separate workstream while VPS Terminal compact-schema consumer propagation is completed first. Public ingress and CURRENT Action transport are healthy; health/discovery PASS, while stale `/api/ui/v1/...` diagnostic routes and an unavailable writable live-patch target keep the full AgentField DoD open.
 BMad route: `bmad-help` -> `bmad-quick-dev` (QQ, plan-code-review) for the single goal “restore the existing AgentField Action connector compatibility without changing SWE-AF/Universal Solver or using GitHub redeploy as the debug loop”. Canonical BMAD-MNNZ is workflow-only; this `PLAN.md` remains the project SoT.
 
 Scope / non-targets:
