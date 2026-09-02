@@ -2,7 +2,7 @@
 
 Status: ACTIVE
 Last reconciled: 2026-09-02
-Current execution focus: compress the VPS Terminal DEV GPT Action publication from 32 to 28 operations by replacing five dedicated file operations with one bounded `fileAction` closed-enum family. Schema/publication comes first; AgentField connector repair is paused as a separate workstream. Runtime implementation is already proven in DEV and GitHub remains publication/write-back, not the coding/debug loop.
+Current execution focus: **VPS Terminal DEV compact Action publication is DONE; consumer refresh is next.** Canonical `v0.7.0-dev.6` publishes 28 operations, replacing five dedicated file operations with one bounded `fileAction` closed-enum family. The next gate is GPT consumer schema refresh/import plus live `fileAction` E2E. AgentField connector repair remains paused as a separate workstream. Runtime implementation was already proven in DEV; GitHub was exact publication/write-back only, with no edit->redeploy coding loop.
 Canonical project planning/decision owner for this repository. `README.md` owns publication usage/reference docs; `ERRORS.md` owns local error evidence; runtime evidence owns actual deployed/callable state.
 
 ## Project North Star
