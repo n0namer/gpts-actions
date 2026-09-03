@@ -213,6 +213,14 @@ function selfTest(schema) {
   genericRegistryArgs.components.schemas.TargetRegistryActionRequest.properties.args = { type: "object" };
   if (validateSchema(genericRegistryArgs).ok) failures.push("generic targetRegistryAction args escape was not detected");
 
+  const missingSourceLoop = clone(schema);
+  delete missingSourceLoop.paths["/v1/source-loop/action"];
+  if (validateSchema(missingSourceLoop).ok) failures.push("missing sourceLoopAction was not detected");
+
+  const genericSourceLoopBranch = clone(schema);
+  genericSourceLoopBranch.components.schemas.SourceLoopCandidateRequest.additionalProperties = true;
+  if (validateSchema(genericSourceLoopBranch).ok) failures.push("generic sourceLoopAction candidate branch was not detected");
+
   return failures;
 }
 
