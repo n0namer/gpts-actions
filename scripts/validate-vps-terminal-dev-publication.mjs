@@ -129,6 +129,15 @@ export function validateSchema(schema) {
     errors.push(`TargetRegistry writeback resolver enum changed: ${JSON.stringify(resolverEnum)}`);
   }
 
+  const sourceLoopRef = schema?.paths?.["/v1/source-loop/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (sourceLoopRef !== "#/components/schemas/SourceLoopActionRequest") errors.push("sourceLoopAction must use SourceLoopActionRequest");
+  const sourceLoop = schema?.components?.schemas?.SourceLoopActionRequest;
+  const expectedSourceLoopRefs = ["SourceLoopListRequest","SourceLoopArtifactRequest","SourceLoopCandidateRequest","SourceLoopAcceptRequest","SourceLoopRejectRequest"].map(x=>`#/components/schemas/${x}`);
+  if (JSON.stringify((sourceLoop?.oneOf||[]).map(x=>x?.$ref)) !== JSON.stringify(expectedSourceLoopRefs)) errors.push("SourceLoopActionRequest oneOf branches changed");
+  for (const name of expectedSourceLoopRefs.map(x=>x.split("/").pop())) {
+    if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
+  }
+
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
     for (const published of publishedPaths) {
