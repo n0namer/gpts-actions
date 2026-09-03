@@ -1073,6 +1073,74 @@
           "new_text": {"type": "string", "maxLength": 12000}
         }
       },
+      "TargetRegistryActionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation"],
+        "description": "Closed registry envelope. read accepts only operation. upsert requires expected_sha256 and target; the server rejects branch-incompatible fields.",
+        "properties": {
+          "operation": {"type": "string", "enum": ["read", "upsert"]},
+          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+          "target": {"$ref": "#/components/schemas/TargetRegistryEntry"}
+        }
+      },
+      "TargetRegistryEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target_id", "environment", "risk", "revision", "write_policy", "selector", "capabilities"],
+        "properties": {
+          "target_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,119}$"},
+          "display_name": {"type": "string", "maxLength": 160},
+          "client_id": {"type": "string", "maxLength": 80},
+          "runtime": {"type": "string", "maxLength": 80},
+          "environment": {"type": "string", "enum": ["development", "production"]},
+          "region": {"type": "string", "maxLength": 64},
+          "risk": {"type": "string", "enum": ["low", "production"]},
+          "revision": {"type": "integer", "minimum": 1, "maximum": 1000000},
+          "write_policy": {"type": "string", "enum": ["auto", "explicit"]},
+          "backend_url": {"type": "string", "maxLength": 240},
+          "workspace_root": {"type": "string", "maxLength": 300, "pattern": "^/"},
+          "selector": {"$ref": "#/components/schemas/TargetRegistrySelector"},
+          "capabilities": {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": {"type": "string", "enum": ["terminal", "sessions", "semantic", "logs", "process", "network", "stats", "live_patch", "canary_file", "debug_clone", "reload"]}},
+          "checks": {"$ref": "#/components/schemas/TargetRegistryChecks"},
+          "live_patch_roots": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "maxLength": 300, "pattern": "^/"}},
+          "live_patch_runtime": {"type": "string", "enum": ["node", "python"]},
+          "reload_mode": {"type": "string", "enum": ["container_restart"]},
+          "writeback": {"$ref": "#/components/schemas/TargetRegistryWriteback"}
+        }
+      },
+      "TargetRegistrySelector": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label"],
+        "properties": {
+          "label": {"type": "string", "maxLength": 240},
+          "image_prefix": {"type": "string", "maxLength": 200},
+          "compose_project_env": {"type": "string", "pattern": "^[A-Z_][A-Z0-9_]{0,63}$"}
+        }
+      },
+      "TargetRegistryChecks": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "python_compile": {"const": true},
+          "node_check": {"const": true},
+          "git_diff_check": {"const": true},
+          "pytest_q": {"const": true}
+        }
+      },
+      "TargetRegistryWriteback": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "runtime_root", "base_resolver"],
+        "properties": {
+          "repository": {"type": "string", "minLength": 1, "maxLength": 200},
+          "branch": {"type": "string", "minLength": 1, "maxLength": 120, "default": "main"},
+          "runtime_root": {"type": "string", "maxLength": 300, "pattern": "^/"},
+          "repo_root": {"type": "string", "maxLength": 300},
+          "base_resolver": {"type": "object", "additionalProperties": false, "required": ["type"], "properties": {"type": {"type": "string", "enum": ["container_image_tag_sha", "configured_sha"]}}}
+        }
+      },
       "TargetWritebackRequest": {
         "type": "object",
         "additionalProperties": false,
