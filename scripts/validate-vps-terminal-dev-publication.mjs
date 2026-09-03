@@ -9,6 +9,7 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "ready",
   "version",
   "targetRegistryAction",
+  "sourceLoopAction",
   "fileAction",
   "runTargetCheck",
   "reloadTarget",
@@ -128,6 +129,15 @@ export function validateSchema(schema) {
     errors.push(`TargetRegistry writeback resolver enum changed: ${JSON.stringify(resolverEnum)}`);
   }
 
+  const sourceLoopRef = schema?.paths?.["/v1/source-loop/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (sourceLoopRef !== "#/components/schemas/SourceLoopActionRequest") errors.push("sourceLoopAction must use SourceLoopActionRequest");
+  const sourceLoop = schema?.components?.schemas?.SourceLoopActionRequest;
+  const expectedSourceLoopRefs = ["SourceLoopListRequest","SourceLoopArtifactRequest","SourceLoopCandidateRequest","SourceLoopAcceptRequest","SourceLoopRejectRequest"].map(x=>`#/components/schemas/${x}`);
+  if (JSON.stringify((sourceLoop?.oneOf||[]).map(x=>x?.$ref)) !== JSON.stringify(expectedSourceLoopRefs)) errors.push("SourceLoopActionRequest oneOf branches changed");
+  for (const name of expectedSourceLoopRefs.map(x=>x.split("/").pop())) {
+    if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
+  }
+
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
     for (const published of publishedPaths) {
@@ -203,6 +213,14 @@ function selfTest(schema) {
   genericRegistryArgs.components.schemas.TargetRegistryActionRequest.properties.args = { type: "object" };
   if (validateSchema(genericRegistryArgs).ok) failures.push("generic targetRegistryAction args escape was not detected");
 
+  const missingSourceLoop = clone(schema);
+  delete missingSourceLoop.paths["/v1/source-loop/action"];
+  if (validateSchema(missingSourceLoop).ok) failures.push("missing sourceLoopAction was not detected");
+
+  const genericSourceLoopBranch = clone(schema);
+  genericSourceLoopBranch.components.schemas.SourceLoopCandidateRequest.additionalProperties = true;
+  if (validateSchema(genericSourceLoopBranch).ok) failures.push("generic sourceLoopAction candidate branch was not detected");
+
   return failures;
 }
 
@@ -227,5 +245,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 9
+  mutation_self_tests: 11
 }, null, 2));

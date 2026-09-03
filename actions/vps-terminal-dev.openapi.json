@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.7",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations. Adds one closed targetRegistryAction family (read|upsert) over the existing mediated TargetRegistry ACI so GPT can inspect and stale-safely update allowlisted DEV target definitions without shell/config-file bypass. Five bounded file capabilities remain multiplexed through fileAction. Backend branch validation, stale-SHA/root/capability guards, mediation and readback remain authoritative; no generic args or shell dispatcher is exposed. Runtime-file journal/write-back lifecycle and lower-priority administration remain intentionally omitted from this publication."
+    "version": "0.7.0-dev.8",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 30 high-value operations. Adds closed semantic families targetRegistryAction(read|upsert) and sourceLoopAction(list|artifact|candidate|accept|reject) over existing mediated backend contracts. Backend stale-SHA, allowlist, provenance, writeback-transition, mediation and readback guards remain authoritative; no generic args, shell dispatcher or mega-operation is exposed. Public operation budget is now full at 30/30; future UX simplification must consolidate existing families rather than add low-value operations."
   },
   "servers": [
     {
@@ -75,6 +75,19 @@
           "400": {"description": "Invalid operation or target entry"},
           "403": {"description": "Target id/risk/policy denied"},
           "409": {"description": "Stale registry SHA or policy conflict"}
+        }
+      }
+    },
+    "/v1/source-loop/action": {
+      "post": {
+        "operationId": "sourceLoopAction",
+        "summary": "Inspect or advance one SourceLoop capture/write-back record",
+        "description": "Closed SourceLoop family: list|artifact|candidate|accept|reject. Read branches expose journal/artifact evidence; write branches reuse the existing mediated TARGET_WRITEBACK_STATUS transition contract. No arbitrary status, path, command or generic args are accepted.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SourceLoopActionRequest"}}}},
+        "responses": {
+          "200": {"description": "SourceLoop list, artifact or verified transition result"},
+          "400": {"description": "Invalid operation or branch-specific fields"},
+          "409": {"description": "Invalid or stale write-back transition"}
         }
       }
     },
@@ -1140,6 +1153,48 @@
           "repo_root": {"type": "string", "maxLength": 300},
           "base_resolver": {"type": "object", "additionalProperties": false, "required": ["type"], "properties": {"type": {"type": "string", "enum": ["container_image_tag_sha", "configured_sha"]}}}
         }
+      },
+      "SourceLoopActionRequest": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/SourceLoopListRequest"},
+          {"$ref": "#/components/schemas/SourceLoopArtifactRequest"},
+          {"$ref": "#/components/schemas/SourceLoopCandidateRequest"},
+          {"$ref": "#/components/schemas/SourceLoopAcceptRequest"},
+          {"$ref": "#/components/schemas/SourceLoopRejectRequest"}
+        ]
+      },
+      "SourceLoopListRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation"],
+        "properties": {
+          "operation": {"const": "list"},
+          "target_id": {"type": "string", "maxLength": 120},
+          "change_id": {"type": "string", "maxLength": 120},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 200}
+        }
+      },
+      "SourceLoopArtifactRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id"],
+        "properties": {"operation": {"const": "artifact"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120}}
+      },
+      "SourceLoopCandidateRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id", "branch", "commit_sha", "pr_number"],
+        "properties": {
+          "operation": {"const": "candidate"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120},
+          "branch": {"type": "string", "minLength": 1, "maxLength": 200},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"},
+          "pr_number": {"type": "integer", "minimum": 1}, "reason": {"type": "string", "maxLength": 500}
+        }
+      },
+      "SourceLoopAcceptRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id", "merged_sha"],
+        "properties": {
+          "operation": {"const": "accept"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120},
+          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"}, "reason": {"type": "string", "maxLength": 500}
+        }
+      },
+      "SourceLoopRejectRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id"],
+        "properties": {"operation": {"const": "reject"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120}, "reason": {"type": "string", "maxLength": 500}}
       },
       "TargetWritebackRequest": {
         "type": "object",
