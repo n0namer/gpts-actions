@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.6",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 28 high-value operations. Five bounded file capabilities are multiplexed through one fileAction closed enum: read, create, preview_patch, apply_patch, delete. The backend keeps branch-specific validation, stale-SHA/root/capability guards, mediation and readback; no generic args or shell dispatcher is exposed. Keeps health, target stats/logs, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Runtime-file journal/write-back, lower-priority Coolify administration, and lesson-write/review endpoints remain backend capabilities but are intentionally omitted."
+    "version": "0.7.0-dev.7",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations. Adds one closed targetRegistryAction family (read|upsert) over the existing mediated TargetRegistry ACI so GPT can inspect and stale-safely update allowlisted DEV target definitions without shell/config-file bypass. Five bounded file capabilities remain multiplexed through fileAction. Backend branch validation, stale-SHA/root/capability guards, mediation and readback remain authoritative; no generic args or shell dispatcher is exposed. Runtime-file journal/write-back lifecycle and lower-priority administration remain intentionally omitted from this publication."
   },
   "servers": [
     {
@@ -54,6 +54,27 @@
           "503": {
             "description": "Startup self-test not ready"
           }
+        }
+      }
+    },
+    "/v1/target-registry/action": {
+      "post": {
+        "operationId": "targetRegistryAction",
+        "summary": "Read or stale-safely upsert one allowlisted DEV target registry entry",
+        "description": "Closed target-registry family: read|upsert. read returns the current durable registry plus SHA-256. upsert requires that exact expected_sha256 and a complete bounded target entry. Server-side allowlist, environment/risk policy, field validation, atomic write, mediation and readback remain authoritative; no arbitrary config patch or generic args are exposed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/TargetRegistryActionRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Registry read or verified upsert result"},
+          "400": {"description": "Invalid operation or target entry"},
+          "403": {"description": "Target id/risk/policy denied"},
+          "409": {"description": "Stale registry SHA or policy conflict"}
         }
       }
     },
@@ -1050,6 +1071,74 @@
           "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
           "old_text": {"type": "string", "minLength": 1, "maxLength": 12000},
           "new_text": {"type": "string", "maxLength": 12000}
+        }
+      },
+      "TargetRegistryActionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation"],
+        "description": "Closed registry envelope. read accepts only operation. upsert requires expected_sha256 and target; the server rejects branch-incompatible fields.",
+        "properties": {
+          "operation": {"type": "string", "enum": ["read", "upsert"]},
+          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+          "target": {"$ref": "#/components/schemas/TargetRegistryEntry"}
+        }
+      },
+      "TargetRegistryEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["target_id", "environment", "risk", "revision", "write_policy", "selector", "capabilities"],
+        "properties": {
+          "target_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,119}$"},
+          "display_name": {"type": "string", "maxLength": 160},
+          "client_id": {"type": "string", "maxLength": 80},
+          "runtime": {"type": "string", "maxLength": 80},
+          "environment": {"type": "string", "enum": ["development", "production"]},
+          "region": {"type": "string", "maxLength": 64},
+          "risk": {"type": "string", "enum": ["low", "production"]},
+          "revision": {"type": "integer", "minimum": 1, "maximum": 1000000},
+          "write_policy": {"type": "string", "enum": ["auto", "explicit"]},
+          "backend_url": {"type": "string", "maxLength": 240},
+          "workspace_root": {"type": "string", "maxLength": 300, "pattern": "^/"},
+          "selector": {"$ref": "#/components/schemas/TargetRegistrySelector"},
+          "capabilities": {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": {"type": "string", "enum": ["terminal", "sessions", "semantic", "logs", "process", "network", "stats", "live_patch", "canary_file", "debug_clone", "reload"]}},
+          "checks": {"$ref": "#/components/schemas/TargetRegistryChecks"},
+          "live_patch_roots": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "maxLength": 300, "pattern": "^/"}},
+          "live_patch_runtime": {"type": "string", "enum": ["node", "python"]},
+          "reload_mode": {"type": "string", "enum": ["container_restart"]},
+          "writeback": {"$ref": "#/components/schemas/TargetRegistryWriteback"}
+        }
+      },
+      "TargetRegistrySelector": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label"],
+        "properties": {
+          "label": {"type": "string", "maxLength": 240},
+          "image_prefix": {"type": "string", "maxLength": 200},
+          "compose_project_env": {"type": "string", "pattern": "^[A-Z_][A-Z0-9_]{0,63}$"}
+        }
+      },
+      "TargetRegistryChecks": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "python_compile": {"const": true},
+          "node_check": {"const": true},
+          "git_diff_check": {"const": true},
+          "pytest_q": {"const": true}
+        }
+      },
+      "TargetRegistryWriteback": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "runtime_root", "base_resolver"],
+        "properties": {
+          "repository": {"type": "string", "minLength": 1, "maxLength": 200},
+          "branch": {"type": "string", "minLength": 1, "maxLength": 120, "default": "main"},
+          "runtime_root": {"type": "string", "maxLength": 300, "pattern": "^/"},
+          "repo_root": {"type": "string", "maxLength": 300},
+          "base_resolver": {"type": "object", "additionalProperties": false, "required": ["type"], "properties": {"type": {"type": "string", "enum": ["container_image_tag_sha", "configured_sha"]}}}
         }
       },
       "TargetWritebackRequest": {

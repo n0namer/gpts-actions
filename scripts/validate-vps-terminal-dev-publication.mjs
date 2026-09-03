@@ -8,6 +8,7 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "health",
   "ready",
   "version",
+  "targetRegistryAction",
   "fileAction",
   "runTargetCheck",
   "reloadTarget",
@@ -106,6 +107,27 @@ export function validateSchema(schema) {
     errors.push("FileActionRequest must not expose generic args");
   }
 
+  const targetRegistryRef = schema?.paths?.["/v1/target-registry/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (targetRegistryRef !== "#/components/schemas/TargetRegistryActionRequest") {
+    errors.push("targetRegistryAction must use TargetRegistryActionRequest");
+  }
+  const targetRegistryAction = schema?.components?.schemas?.TargetRegistryActionRequest;
+  const expectedRegistryOps = ["read", "upsert"];
+  if (!targetRegistryAction || targetRegistryAction?.additionalProperties !== false) {
+    errors.push("TargetRegistryActionRequest must exist and fail closed on unknown fields");
+  }
+  if (JSON.stringify(targetRegistryAction?.properties?.operation?.enum) !== JSON.stringify(expectedRegistryOps)) {
+    errors.push(`TargetRegistryActionRequest operation enum changed: ${JSON.stringify(targetRegistryAction?.properties?.operation?.enum)}`);
+  }
+  if (!new Set(targetRegistryAction?.required || []).has("operation")) errors.push("TargetRegistryActionRequest operation must be required");
+  if (Object.prototype.hasOwnProperty.call(targetRegistryAction?.properties || {}, "args")) errors.push("TargetRegistryActionRequest must not expose generic args");
+  const targetEntry = schema?.components?.schemas?.TargetRegistryEntry;
+  if (!targetEntry || targetEntry?.additionalProperties !== false) errors.push("TargetRegistryEntry must fail closed on unknown fields");
+  const resolverEnum = schema?.components?.schemas?.TargetRegistryWriteback?.properties?.base_resolver?.properties?.type?.enum;
+  if (JSON.stringify(resolverEnum) !== JSON.stringify(["container_image_tag_sha", "configured_sha"])) {
+    errors.push(`TargetRegistry writeback resolver enum changed: ${JSON.stringify(resolverEnum)}`);
+  }
+
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
     for (const published of publishedPaths) {
@@ -173,6 +195,14 @@ function selfTest(schema) {
   genericFileArgs.components.schemas.FileActionRequest.properties.args = { type: "object" };
   if (validateSchema(genericFileArgs).ok) failures.push("generic fileAction args escape was not detected");
 
+  const widenedRegistryEnum = clone(schema);
+  widenedRegistryEnum.components.schemas.TargetRegistryActionRequest.properties.operation.enum.push("delete");
+  if (validateSchema(widenedRegistryEnum).ok) failures.push("widened targetRegistryAction operation enum was not detected");
+
+  const genericRegistryArgs = clone(schema);
+  genericRegistryArgs.components.schemas.TargetRegistryActionRequest.properties.args = { type: "object" };
+  if (validateSchema(genericRegistryArgs).ok) failures.push("generic targetRegistryAction args escape was not detected");
+
   return failures;
 }
 
@@ -197,5 +227,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 7
+  mutation_self_tests: 9
 }, null, 2));
