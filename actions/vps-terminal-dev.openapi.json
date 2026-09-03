@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.7",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations. Adds one closed targetRegistryAction family (read|upsert) over the existing mediated TargetRegistry ACI so GPT can inspect and stale-safely update allowlisted DEV target definitions without shell/config-file bypass. Five bounded file capabilities remain multiplexed through fileAction. Backend branch validation, stale-SHA/root/capability guards, mediation and readback remain authoritative; no generic args or shell dispatcher is exposed. Runtime-file journal/write-back lifecycle and lower-priority administration remain intentionally omitted from this publication."
+    "version": "0.7.0-dev.8",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 30 high-value operations. Adds closed semantic families targetRegistryAction(read|upsert) and sourceLoopAction(list|artifact|candidate|accept|reject) over existing mediated backend contracts. Backend stale-SHA, allowlist, provenance, writeback-transition, mediation and readback guards remain authoritative; no generic args, shell dispatcher or mega-operation is exposed. Public operation budget is now full at 30/30; future UX simplification must consolidate existing families rather than add low-value operations."
   },
   "servers": [
     {
