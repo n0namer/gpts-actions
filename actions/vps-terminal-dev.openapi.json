@@ -57,6 +57,27 @@
         }
       }
     },
+    "/v1/target-registry/action": {
+      "post": {
+        "operationId": "targetRegistryAction",
+        "summary": "Read or stale-safely upsert one allowlisted DEV target registry entry",
+        "description": "Closed target-registry family: read|upsert. read returns the current durable registry plus SHA-256. upsert requires that exact expected_sha256 and a complete bounded target entry. Server-side allowlist, environment/risk policy, field validation, atomic write, mediation and readback remain authoritative; no arbitrary config patch or generic args are exposed.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/TargetRegistryActionRequest"}
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Registry read or verified upsert result"},
+          "400": {"description": "Invalid operation or target entry"},
+          "403": {"description": "Target id/risk/policy denied"},
+          "409": {"description": "Stale registry SHA or policy conflict"}
+        }
+      }
+    },
     "/v1/target/file/action": {
       "post": {
         "operationId": "fileAction",
