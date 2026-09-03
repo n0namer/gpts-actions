@@ -8,6 +8,7 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "health",
   "ready",
   "version",
+  "targetRegistryAction",
   "fileAction",
   "runTargetCheck",
   "reloadTarget",
