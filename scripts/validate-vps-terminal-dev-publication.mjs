@@ -195,6 +195,14 @@ function selfTest(schema) {
   genericFileArgs.components.schemas.FileActionRequest.properties.args = { type: "object" };
   if (validateSchema(genericFileArgs).ok) failures.push("generic fileAction args escape was not detected");
 
+  const widenedRegistryEnum = clone(schema);
+  widenedRegistryEnum.components.schemas.TargetRegistryActionRequest.properties.operation.enum.push("delete");
+  if (validateSchema(widenedRegistryEnum).ok) failures.push("widened targetRegistryAction operation enum was not detected");
+
+  const genericRegistryArgs = clone(schema);
+  genericRegistryArgs.components.schemas.TargetRegistryActionRequest.properties.args = { type: "object" };
+  if (validateSchema(genericRegistryArgs).ok) failures.push("generic targetRegistryAction args escape was not detected");
+
   return failures;
 }
 
