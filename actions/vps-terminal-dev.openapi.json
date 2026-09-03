@@ -1154,6 +1154,48 @@
           "base_resolver": {"type": "object", "additionalProperties": false, "required": ["type"], "properties": {"type": {"type": "string", "enum": ["container_image_tag_sha", "configured_sha"]}}}
         }
       },
+      "SourceLoopActionRequest": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/SourceLoopListRequest"},
+          {"$ref": "#/components/schemas/SourceLoopArtifactRequest"},
+          {"$ref": "#/components/schemas/SourceLoopCandidateRequest"},
+          {"$ref": "#/components/schemas/SourceLoopAcceptRequest"},
+          {"$ref": "#/components/schemas/SourceLoopRejectRequest"}
+        ]
+      },
+      "SourceLoopListRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation"],
+        "properties": {
+          "operation": {"const": "list"},
+          "target_id": {"type": "string", "maxLength": 120},
+          "change_id": {"type": "string", "maxLength": 120},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 200}
+        }
+      },
+      "SourceLoopArtifactRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id"],
+        "properties": {"operation": {"const": "artifact"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120}}
+      },
+      "SourceLoopCandidateRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id", "branch", "commit_sha", "pr_number"],
+        "properties": {
+          "operation": {"const": "candidate"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120},
+          "branch": {"type": "string", "minLength": 1, "maxLength": 200},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"},
+          "pr_number": {"type": "integer", "minimum": 1}, "reason": {"type": "string", "maxLength": 500}
+        }
+      },
+      "SourceLoopAcceptRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id", "merged_sha"],
+        "properties": {
+          "operation": {"const": "accept"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120},
+          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"}, "reason": {"type": "string", "maxLength": 500}
+        }
+      },
+      "SourceLoopRejectRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "change_id"],
+        "properties": {"operation": {"const": "reject"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120}, "reason": {"type": "string", "maxLength": 500}}
+      },
       "TargetWritebackRequest": {
         "type": "object",
         "additionalProperties": false,
