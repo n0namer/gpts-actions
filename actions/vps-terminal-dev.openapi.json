@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.6",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 28 high-value operations. Five bounded file capabilities are multiplexed through one fileAction closed enum: read, create, preview_patch, apply_patch, delete. The backend keeps branch-specific validation, stale-SHA/root/capability guards, mediation and readback; no generic args or shell dispatcher is exposed. Keeps health, target stats/logs, validation/reload, guidance, container/terminal/session, lesson retrieval, self-protection and approval operations. Runtime-file journal/write-back, lower-priority Coolify administration, and lesson-write/review endpoints remain backend capabilities but are intentionally omitted."
+    "version": "0.7.0-dev.7",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations. Adds one closed targetRegistryAction family (read|upsert) over the existing mediated TargetRegistry ACI so GPT can inspect and stale-safely update allowlisted DEV target definitions without shell/config-file bypass. Five bounded file capabilities remain multiplexed through fileAction. Backend branch validation, stale-SHA/root/capability guards, mediation and readback remain authoritative; no generic args or shell dispatcher is exposed. Runtime-file journal/write-back lifecycle and lower-priority administration remain intentionally omitted from this publication."
   },
   "servers": [
     {
