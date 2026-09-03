@@ -107,6 +107,27 @@ export function validateSchema(schema) {
     errors.push("FileActionRequest must not expose generic args");
   }
 
+  const targetRegistryRef = schema?.paths?.["/v1/target-registry/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (targetRegistryRef !== "#/components/schemas/TargetRegistryActionRequest") {
+    errors.push("targetRegistryAction must use TargetRegistryActionRequest");
+  }
+  const targetRegistryAction = schema?.components?.schemas?.TargetRegistryActionRequest;
+  const expectedRegistryOps = ["read", "upsert"];
+  if (!targetRegistryAction || targetRegistryAction?.additionalProperties !== false) {
+    errors.push("TargetRegistryActionRequest must exist and fail closed on unknown fields");
+  }
+  if (JSON.stringify(targetRegistryAction?.properties?.operation?.enum) !== JSON.stringify(expectedRegistryOps)) {
+    errors.push(`TargetRegistryActionRequest operation enum changed: ${JSON.stringify(targetRegistryAction?.properties?.operation?.enum)}`);
+  }
+  if (!new Set(targetRegistryAction?.required || []).has("operation")) errors.push("TargetRegistryActionRequest operation must be required");
+  if (Object.prototype.hasOwnProperty.call(targetRegistryAction?.properties || {}, "args")) errors.push("TargetRegistryActionRequest must not expose generic args");
+  const targetEntry = schema?.components?.schemas?.TargetRegistryEntry;
+  if (!targetEntry || targetEntry?.additionalProperties !== false) errors.push("TargetRegistryEntry must fail closed on unknown fields");
+  const resolverEnum = schema?.components?.schemas?.TargetRegistryWriteback?.properties?.base_resolver?.properties?.type?.enum;
+  if (JSON.stringify(resolverEnum) !== JSON.stringify(["container_image_tag_sha", "configured_sha"])) {
+    errors.push(`TargetRegistry writeback resolver enum changed: ${JSON.stringify(resolverEnum)}`);
+  }
+
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
     for (const published of publishedPaths) {
