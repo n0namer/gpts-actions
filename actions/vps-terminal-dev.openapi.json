@@ -78,6 +78,19 @@
         }
       }
     },
+    "/v1/source-loop/action": {
+      "post": {
+        "operationId": "sourceLoopAction",
+        "summary": "Inspect or advance one SourceLoop capture/write-back record",
+        "description": "Closed SourceLoop family: list|artifact|candidate|accept|reject. Read branches expose journal/artifact evidence; write branches reuse the existing mediated TARGET_WRITEBACK_STATUS transition contract. No arbitrary status, path, command or generic args are accepted.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SourceLoopActionRequest"}}}},
+        "responses": {
+          "200": {"description": "SourceLoop list, artifact or verified transition result"},
+          "400": {"description": "Invalid operation or branch-specific fields"},
+          "409": {"description": "Invalid or stale write-back transition"}
+        }
+      }
+    },
     "/v1/target/file/action": {
       "post": {
         "operationId": "fileAction",
