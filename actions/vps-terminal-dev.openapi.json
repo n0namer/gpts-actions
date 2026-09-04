@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.9",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations and one reserved slot. Consolidates the three read-only container operations into closed `containerObserve(list|inspect|logs)` while keeping destructive `removeExitedContainer` separate. The destructive path requires exact full container ID, server-side exited/no-mount preconditions, force=false, volume removal disabled, mediated execution and verified absence readback. Existing targetRegistryAction/sourceLoopAction/fileAction families remain closed; no generic args, shell dispatcher or mega-operation is exposed."
+    "version": "0.7.0-dev.10",
+    "description": "DEV ONLY. GPT Actions-compatible 29-operation VPS Terminal surface with one reserved slot. Semantic families stay typed at runtime; public request schemas avoid unsupported oneOf bodies. Destructive removeExitedContainer remains separate and exact-ID/evidence-gated."
   },
   "servers": [
     {
