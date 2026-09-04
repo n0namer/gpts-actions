@@ -239,8 +239,8 @@ function selfTest(schema) {
   if (validateSchema(missingContainerObserve).ok) failures.push("missing containerObserve was not detected");
 
   const genericContainerObserve = clone(schema);
-  genericContainerObserve.components.schemas.ContainerObserveLogsRequest.additionalProperties = true;
-  if (validateSchema(genericContainerObserve).ok) failures.push("generic containerObserve branch was not detected");
+  genericContainerObserve.components.schemas.ContainerObserveRequest.additionalProperties = true;
+  if (validateSchema(genericContainerObserve).ok) failures.push("generic containerObserve request was not detected");
 
   const weakenedRemoveId = clone(schema);
   weakenedRemoveId.components.schemas.RemoveExitedContainerRequest.properties.container_id.pattern = ".+";
