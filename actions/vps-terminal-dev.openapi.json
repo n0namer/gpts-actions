@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.9",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations and one reserved slot. Consolidates the three read-only container operations into closed `containerObserve(list|inspect|logs)` while keeping destructive `removeExitedContainer` separate. The destructive path requires exact full container ID, server-side exited/no-mount preconditions, force=false, volume removal disabled, mediated execution and verified absence readback. Existing targetRegistryAction/sourceLoopAction/fileAction families remain closed; no generic args, shell dispatcher or mega-operation is exposed."
+    "version": "0.7.0-dev.10",
+    "description": "DEV ONLY. GPT Actions-compatible 29-operation VPS Terminal surface with one reserved slot. Semantic families stay typed at runtime; public request schemas avoid unsupported oneOf bodies. Destructive removeExitedContainer remains separate and exact-ID/evidence-gated."
   },
   "servers": [
     {
@@ -61,7 +61,7 @@
       "post": {
         "operationId": "targetRegistryAction",
         "summary": "Read or stale-safely upsert one allowlisted DEV target registry entry",
-        "description": "Closed target-registry family: read|upsert. read returns the current durable registry plus SHA-256. upsert requires that exact expected_sha256 and a complete bounded target entry. Server-side allowlist, environment/risk policy, field validation, atomic write, mediation and readback remain authoritative; no arbitrary config patch or generic args are exposed.",
+        "description": "Closed family: read|upsert. read returns registry + SHA-256; upsert requires that expected_sha256 and a complete bounded target entry. Server allowlist, risk/environment policy, atomic write, mediation and readback remain authoritative. No arbitrary config patch or generic args.",
         "requestBody": {
           "required": true,
           "content": {
@@ -841,11 +841,22 @@
         }
       },
       "ContainerObserveRequest": {
-        "oneOf": [
-          {"$ref": "#/components/schemas/ContainerObserveListRequest"},
-          {"$ref": "#/components/schemas/ContainerObserveInspectRequest"},
-          {"$ref": "#/components/schemas/ContainerObserveLogsRequest"}
-        ]
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation"],
+        "properties": {
+          "operation": {"type": "string", "enum": ["list", "inspect", "logs"]},
+          "container": {"type": "string", "minLength": 1, "maxLength": 160, "description": "Required for inspect and logs."},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 50, "default": 12, "description": "list only"},
+          "cursor": {"type": "string", "maxLength": 4096, "description": "list only"},
+          "all": {"type": "boolean", "default": false, "description": "list only"},
+          "status": {"type": "string", "maxLength": 200, "description": "list only"},
+          "label": {"type": "string", "maxLength": 200, "description": "list only"},
+          "name": {"type": "string", "maxLength": 160, "description": "list only"},
+          "tail": {"type": "integer", "minimum": 1, "maximum": 2000, "default": 200, "description": "logs only"},
+          "since": {"type": "integer", "minimum": 0, "description": "logs only"},
+          "limit_bytes": {"type": "integer", "minimum": 1024, "maximum": 262144, "default": 65536, "description": "logs only"}
+        }
       },
       "ContainerObserveListRequest": {
         "type": "object", "additionalProperties": false, "required": ["operation"],
@@ -1062,13 +1073,20 @@
         }
       },
       "SourceLoopActionRequest": {
-        "oneOf": [
-          {"$ref": "#/components/schemas/SourceLoopListRequest"},
-          {"$ref": "#/components/schemas/SourceLoopArtifactRequest"},
-          {"$ref": "#/components/schemas/SourceLoopCandidateRequest"},
-          {"$ref": "#/components/schemas/SourceLoopAcceptRequest"},
-          {"$ref": "#/components/schemas/SourceLoopRejectRequest"}
-        ]
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["operation"],
+        "properties": {
+          "operation": {"type": "string", "enum": ["list", "artifact", "candidate", "accept", "reject"]},
+          "target_id": {"type": "string", "maxLength": 120, "description": "list only"},
+          "change_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for artifact/candidate/accept/reject; optional list filter."},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 200, "description": "list only"},
+          "branch": {"type": "string", "minLength": 1, "maxLength": 200, "description": "candidate only"},
+          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$", "description": "candidate only"},
+          "pr_number": {"type": "integer", "minimum": 1, "description": "candidate only"},
+          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$", "description": "accept only"},
+          "reason": {"type": "string", "maxLength": 500, "description": "candidate/accept/reject optional reason"}
+        }
       },
       "SourceLoopListRequest": {
         "type": "object", "additionalProperties": false, "required": ["operation"],
