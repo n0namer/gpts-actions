@@ -137,20 +137,19 @@ DoD:
 - no publication status promoted to CURRENT callability;
 - blockers classified precisely.
 
-### BATCH-04A — VPS Terminal DEV compact file Action surface
-Status: **PUBLICATION_DONE / CONSUMER_REFRESH_PENDING**
-BMad route: `bmad-quick-dev` procedure for one bounded brownfield publication goal; implementation happened in the existing DEV workbench, followed by exact SourceLoop capture.
+### BATCH-04A — VPS Terminal DEV compact Action surface
+Status: **PUBLICATION_DONE / GPT_IMPORT_RETEST_PENDING**
+BMad route: `bmad-quick-dev` + `bmad-correct-course` for bounded publication/API compatibility changes; implementation/validation occurred in the existing DEV workbench before canonical Git write-back.
 
 Evidence:
-- container baseline validator PASS at 32 operations;
-- `actions/vps-terminal-dev.openapi.json` edited in `workbench:/workspace/gpts-actions` to `v0.7.0-dev.6` with 28 operations;
-- five dedicated file operationIds were replaced by one `fileAction` using closed enum `read|create|preview_patch|apply_patch|delete`;
-- `FileActionRequest` is `additionalProperties=false`, exposes no generic `args`, and the backend already performs branch-specific field validation/mediation/readback on `/v1/target/file/action`;
-- publication validator now requires the exact 28-operation inventory, enforces the `<=30` budget, exact five-value file enum, no generic `args`, and runs 7 mutation self-tests;
-- container validation PASS: `operation_count=28`, `required_public_operations=28`, `mutation_self_tests=7`; `git diff --check` PASS; dirty set was exactly schema + validator;
-- exact tested delta was captured to `main@f42a4e9137d0c761b5c972fec0277e0f9e5d9c81`; canonical schema/validator reread verified. No runtime redeploy occurred. Independent Coding Station rerun is currently infrastructure-blocked by Gateway Timeout, not a schema failure.
+- canonical publication is `v0.7.0-dev.10` on `main@6f7e7feca247ea2c36ba0d87dd6b99e2717d4002` with 29/30 operations and one reserved slot;
+- `fileAction`, `targetRegistryAction`, `sourceLoopAction` and `containerObserve` are semantic families; destructive `removeExitedContainer` remains a separate exact-ID/evidence-gated operation;
+- user import of `v0.7.0-dev.9` proved two GPT Actions importer constraints missing from the prior validator: operation descriptions must be <=300 chars, and a function request-body wrapper must resolve to an object schema rather than top-level `oneOf`;
+- `v0.7.0-dev.10` shortens the registry description and flattens `SourceLoopActionRequest` / `ContainerObserveRequest` to closed object envelopes with explicit operation enums; backend branch-specific validation remains authoritative and no generic `args` is exposed;
+- publication validator now checks the exact 29-operation inventory, `<=30` budget, description-length limit, closed object wrappers, family enums, exact cleanup ID and anti-escape invariants; container validation PASS is `29/29` with `15` mutation self-tests; `git diff --check` PASS;
+- canonical compare for the importer fix changed exactly schema + validator. Coding Station exact-source session creation timed out twice while station readiness remained healthy; this is validation-infrastructure evidence, not an application failure. Hosted GitHub Actions also did not start because the account is billing-locked.
 
-DoD for publication: **PASS**. Remaining acceptance boundary is consumer propagation: refresh/import this schema, prove CURRENT callable surface contains `fileAction` and no five legacy file operationIds, then run bounded live file E2E. Publication itself is not callability.
+DoD for repository publication: **PASS**. Remaining acceptance boundary is the real GPT importer/consumer: re-import `v0.7.0-dev.10`, require no importer errors, then prove the fresh consumer exposes exactly the intended 29 operations. Publication itself is not callability.
 
 ### BATCH-05 — Restore AgentField Actions/JIT execution channel
 Status: **PAUSED_BY_CURRENT_PRIORITY / TRANSPORT_PASS / CONTRACT_COMPATIBILITY_BLOCKED** — preserved as a separate workstream while VPS Terminal compact-schema consumer propagation is completed first. Public ingress and CURRENT Action transport are healthy; health/discovery PASS, while stale `/api/ui/v1/...` diagnostic routes and an unavailable writable live-patch target keep the full AgentField DoD open.
