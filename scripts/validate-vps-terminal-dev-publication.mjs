@@ -233,6 +233,22 @@ function selfTest(schema) {
   genericSourceLoopBranch.components.schemas.SourceLoopCandidateRequest.additionalProperties = true;
   if (validateSchema(genericSourceLoopBranch).ok) failures.push("generic sourceLoopAction candidate branch was not detected");
 
+  const missingContainerObserve = clone(schema);
+  delete missingContainerObserve.paths["/v1/container/observe/action"];
+  if (validateSchema(missingContainerObserve).ok) failures.push("missing containerObserve was not detected");
+
+  const genericContainerObserve = clone(schema);
+  genericContainerObserve.components.schemas.ContainerObserveLogsRequest.additionalProperties = true;
+  if (validateSchema(genericContainerObserve).ok) failures.push("generic containerObserve branch was not detected");
+
+  const weakenedRemoveId = clone(schema);
+  weakenedRemoveId.components.schemas.RemoveExitedContainerRequest.properties.container_id.pattern = ".+";
+  if (validateSchema(weakenedRemoveId).ok) failures.push("weakened removeExitedContainer exact-id guard was not detected");
+
+  const legacyContainerOperation = clone(schema);
+  legacyContainerOperation.paths["/legacy-container-list"] = { get: { operationId: "listContainers" } };
+  if (validateSchema(legacyContainerOperation).ok) failures.push("legacy container operationId was not detected");
+
   return failures;
 }
 
