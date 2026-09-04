@@ -1,8 +1,8 @@
 # PLAN.md — gpts-actions Project SoT
 
 Status: ACTIVE
-Last reconciled: 2026-09-02
-Current execution focus: **VPS Terminal DEV compact Action publication is DONE; consumer refresh is next.** Canonical `v0.7.0-dev.6` publishes 28 operations, replacing five dedicated file operations with one bounded `fileAction` closed-enum family. The next gate is GPT consumer schema refresh/import plus live `fileAction` E2E. AgentField connector repair remains paused as a separate workstream. Runtime implementation was already proven in DEV; GitHub was exact publication/write-back only, with no edit->redeploy coding loop.
+Last reconciled: 2026-09-04
+Current execution focus: **VPS Terminal DEV publication `v0.7.0-dev.10` is merged; GPT consumer re-import is the acceptance gate.** Canonical `main@6f7e7feca247ea2c36ba0d87dd6b99e2717d4002` publishes 29 operations with one reserved slot: read-only container list/inspect/logs are consolidated into `containerObserve`, destructive exact cleanup remains separate as `removeExitedContainer`, and `targetRegistryAction` / `sourceLoopAction` remain semantic families. User import evidence on `v0.7.0-dev.9` exposed GPT Actions compatibility defects (operation description >300 chars and `oneOf` request-body wrappers). `v0.7.0-dev.10` shortens descriptions and exposes the two family request bodies as closed object schemas while runtime branch validation stays authoritative. Container validator PASS is 29/29 operations with 15 mutation self-tests; consumer re-import/fresh-session callability is still pending and publication is not callability. AgentField connector repair remains paused as a separate workstream.
 Canonical project planning/decision owner for this repository. `README.md` owns publication usage/reference docs; `ERRORS.md` owns local error evidence; runtime evidence owns actual deployed/callable state.
 
 ## Project North Star
