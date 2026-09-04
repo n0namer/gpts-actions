@@ -70,6 +70,7 @@ export function validateSchema(schema) {
 
   for (const op of operations) {
     if (!op.operationId) errors.push(`missing operationId: ${op.method} ${op.route}`);
+    if (op.description.length > 300) errors.push(`operation description too long for GPT Actions: ${op.operationId} (${op.description.length})`);
   }
   for (const [id, count] of idCounts) {
     if (count !== 1) errors.push(`duplicate operationId: ${id} (${count})`);
