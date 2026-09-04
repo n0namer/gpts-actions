@@ -137,6 +137,19 @@ export function validateSchema(schema) {
     if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
   }
 
+  const containerObserveRef = schema?.paths?.["/v1/container/observe/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (containerObserveRef !== "#/components/schemas/ContainerObserveRequest") errors.push("containerObserve must use ContainerObserveRequest");
+  const observeRefs = (schema?.components?.schemas?.ContainerObserveRequest?.oneOf || []).map(x=>x?.$ref);
+  const expectedObserveRefs = ["ContainerObserveListRequest","ContainerObserveInspectRequest","ContainerObserveLogsRequest"].map(x=>`#/components/schemas/${x}`);
+  if (JSON.stringify(observeRefs) !== JSON.stringify(expectedObserveRefs)) errors.push("ContainerObserveRequest oneOf branches changed");
+  for (const name of ["ContainerObserveListRequest","ContainerObserveInspectRequest","ContainerObserveLogsRequest"]) if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
+  const removeRef = schema?.paths?.["/v1/container/remove-exited"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (removeRef !== "#/components/schemas/RemoveExitedContainerRequest") errors.push("removeExitedContainer must use RemoveExitedContainerRequest");
+  const remove = schema?.components?.schemas?.RemoveExitedContainerRequest;
+  if (!remove || remove?.additionalProperties !== false) errors.push("RemoveExitedContainerRequest must fail closed on unknown fields");
+  if (!new Set(remove?.required||[]).has("container_id")) errors.push("removeExitedContainer must require container_id");
+  if (remove?.properties?.container_id?.pattern !== "^[0-9a-fA-F]{64}$") errors.push("removeExitedContainer must require an exact full 64-hex container ID");
+
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
     for (const published of publishedPaths) {
