@@ -53,7 +53,7 @@ function operationInventory(schema) {
   for (const [route, routeItem] of Object.entries(schema?.paths || {})) {
     for (const [method, operation] of Object.entries(routeItem || {})) {
       if (!METHODS.has(method.toLowerCase()) || !operation || typeof operation !== "object") continue;
-      operations.push({ route, method: method.toUpperCase(), operationId: String(operation.operationId || "") });
+      operations.push({ route, method: method.toUpperCase(), operationId: String(operation.operationId || ""), description: String(operation.description || "") });
     }
   }
   return operations;
