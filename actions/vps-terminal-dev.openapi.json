@@ -61,7 +61,7 @@
       "post": {
         "operationId": "targetRegistryAction",
         "summary": "Read or stale-safely upsert one allowlisted DEV target registry entry",
-        "description": "Closed target-registry family: read|upsert. read returns the current durable registry plus SHA-256. upsert requires that exact expected_sha256 and a complete bounded target entry. Server-side allowlist, environment/risk policy, field validation, atomic write, mediation and readback remain authoritative; no arbitrary config patch or generic args are exposed.",
+        "description": "Closed family: read|upsert. read returns registry + SHA-256; upsert requires that expected_sha256 and a complete bounded target entry. Server allowlist, risk/environment policy, atomic write, mediation and readback remain authoritative. No arbitrary config patch or generic args.",
         "requestBody": {
           "required": true,
           "content": {
