@@ -132,18 +132,18 @@ export function validateSchema(schema) {
   const sourceLoopRef = schema?.paths?.["/v1/source-loop/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
   if (sourceLoopRef !== "#/components/schemas/SourceLoopActionRequest") errors.push("sourceLoopAction must use SourceLoopActionRequest");
   const sourceLoop = schema?.components?.schemas?.SourceLoopActionRequest;
-  const expectedSourceLoopRefs = ["SourceLoopListRequest","SourceLoopArtifactRequest","SourceLoopCandidateRequest","SourceLoopAcceptRequest","SourceLoopRejectRequest"].map(x=>`#/components/schemas/${x}`);
-  if (JSON.stringify((sourceLoop?.oneOf||[]).map(x=>x?.$ref)) !== JSON.stringify(expectedSourceLoopRefs)) errors.push("SourceLoopActionRequest oneOf branches changed");
-  for (const name of expectedSourceLoopRefs.map(x=>x.split("/").pop())) {
-    if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
-  }
+  if (sourceLoop?.type !== "object" || sourceLoop?.additionalProperties !== false) errors.push("SourceLoopActionRequest must be a closed object for GPT Actions import");
+  if (JSON.stringify(sourceLoop?.properties?.operation?.enum) !== JSON.stringify(["list","artifact","candidate","accept","reject"])) errors.push("SourceLoopActionRequest operation enum changed");
+  if (!new Set(sourceLoop?.required||[]).has("operation")) errors.push("SourceLoopActionRequest must require operation");
+  if (Object.prototype.hasOwnProperty.call(sourceLoop?.properties||{}, "args")) errors.push("SourceLoopActionRequest must not expose generic args");
 
   const containerObserveRef = schema?.paths?.["/v1/container/observe/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
   if (containerObserveRef !== "#/components/schemas/ContainerObserveRequest") errors.push("containerObserve must use ContainerObserveRequest");
-  const observeRefs = (schema?.components?.schemas?.ContainerObserveRequest?.oneOf || []).map(x=>x?.$ref);
-  const expectedObserveRefs = ["ContainerObserveListRequest","ContainerObserveInspectRequest","ContainerObserveLogsRequest"].map(x=>`#/components/schemas/${x}`);
-  if (JSON.stringify(observeRefs) !== JSON.stringify(expectedObserveRefs)) errors.push("ContainerObserveRequest oneOf branches changed");
-  for (const name of ["ContainerObserveListRequest","ContainerObserveInspectRequest","ContainerObserveLogsRequest"]) if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
+  const observe = schema?.components?.schemas?.ContainerObserveRequest;
+  if (observe?.type !== "object" || observe?.additionalProperties !== false) errors.push("ContainerObserveRequest must be a closed object for GPT Actions import");
+  if (JSON.stringify(observe?.properties?.operation?.enum) !== JSON.stringify(["list","inspect","logs"])) errors.push("ContainerObserveRequest operation enum changed");
+  if (!new Set(observe?.required||[]).has("operation")) errors.push("ContainerObserveRequest must require operation");
+  if (Object.prototype.hasOwnProperty.call(observe?.properties||{}, "args")) errors.push("ContainerObserveRequest must not expose generic args");
   const removeRef = schema?.paths?.["/v1/container/remove-exited"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
   if (removeRef !== "#/components/schemas/RemoveExitedContainerRequest") errors.push("removeExitedContainer must use RemoveExitedContainerRequest");
   const remove = schema?.components?.schemas?.RemoveExitedContainerRequest;
