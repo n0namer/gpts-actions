@@ -231,8 +231,8 @@ function selfTest(schema) {
   if (validateSchema(missingSourceLoop).ok) failures.push("missing sourceLoopAction was not detected");
 
   const genericSourceLoopBranch = clone(schema);
-  genericSourceLoopBranch.components.schemas.SourceLoopCandidateRequest.additionalProperties = true;
-  if (validateSchema(genericSourceLoopBranch).ok) failures.push("generic sourceLoopAction candidate branch was not detected");
+  genericSourceLoopBranch.components.schemas.SourceLoopActionRequest.additionalProperties = true;
+  if (validateSchema(genericSourceLoopBranch).ok) failures.push("generic sourceLoopAction request was not detected");
 
   const missingContainerObserve = clone(schema);
   delete missingContainerObserve.paths["/v1/container/observe/action"];
