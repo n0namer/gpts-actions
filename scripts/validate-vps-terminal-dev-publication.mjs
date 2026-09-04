@@ -14,9 +14,8 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "runTargetCheck",
   "reloadTarget",
   "getOperatorGuidance",
-  "listContainers",
-  "inspectContainer",
-  "containerLogs",
+  "containerObserve",
+  "removeExitedContainer",
   "execContainer",
   "octocodeResearch",
   "exec",
@@ -138,6 +137,19 @@ export function validateSchema(schema) {
     if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
   }
 
+  const containerObserveRef = schema?.paths?.["/v1/container/observe/action"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (containerObserveRef !== "#/components/schemas/ContainerObserveRequest") errors.push("containerObserve must use ContainerObserveRequest");
+  const observeRefs = (schema?.components?.schemas?.ContainerObserveRequest?.oneOf || []).map(x=>x?.$ref);
+  const expectedObserveRefs = ["ContainerObserveListRequest","ContainerObserveInspectRequest","ContainerObserveLogsRequest"].map(x=>`#/components/schemas/${x}`);
+  if (JSON.stringify(observeRefs) !== JSON.stringify(expectedObserveRefs)) errors.push("ContainerObserveRequest oneOf branches changed");
+  for (const name of ["ContainerObserveListRequest","ContainerObserveInspectRequest","ContainerObserveLogsRequest"]) if (schema?.components?.schemas?.[name]?.additionalProperties !== false) errors.push(`${name} must fail closed on unknown fields`);
+  const removeRef = schema?.paths?.["/v1/container/remove-exited"]?.post?.requestBody?.content?.["application/json"]?.schema?.$ref;
+  if (removeRef !== "#/components/schemas/RemoveExitedContainerRequest") errors.push("removeExitedContainer must use RemoveExitedContainerRequest");
+  const remove = schema?.components?.schemas?.RemoveExitedContainerRequest;
+  if (!remove || remove?.additionalProperties !== false) errors.push("RemoveExitedContainerRequest must fail closed on unknown fields");
+  if (!new Set(remove?.required||[]).has("container_id")) errors.push("removeExitedContainer must require container_id");
+  if (remove?.properties?.container_id?.pattern !== "^[0-9a-fA-F]{64}$") errors.push("removeExitedContainer must require an exact full 64-hex container ID");
+
   const publishedPaths = new Set(Object.keys(schema?.paths || {}));
   for (const forbidden of FORBIDDEN_PUBLIC_PATHS) {
     for (const published of publishedPaths) {
@@ -221,6 +233,22 @@ function selfTest(schema) {
   genericSourceLoopBranch.components.schemas.SourceLoopCandidateRequest.additionalProperties = true;
   if (validateSchema(genericSourceLoopBranch).ok) failures.push("generic sourceLoopAction candidate branch was not detected");
 
+  const missingContainerObserve = clone(schema);
+  delete missingContainerObserve.paths["/v1/container/observe/action"];
+  if (validateSchema(missingContainerObserve).ok) failures.push("missing containerObserve was not detected");
+
+  const genericContainerObserve = clone(schema);
+  genericContainerObserve.components.schemas.ContainerObserveLogsRequest.additionalProperties = true;
+  if (validateSchema(genericContainerObserve).ok) failures.push("generic containerObserve branch was not detected");
+
+  const weakenedRemoveId = clone(schema);
+  weakenedRemoveId.components.schemas.RemoveExitedContainerRequest.properties.container_id.pattern = ".+";
+  if (validateSchema(weakenedRemoveId).ok) failures.push("weakened removeExitedContainer exact-id guard was not detected");
+
+  const legacyContainerOperation = clone(schema);
+  legacyContainerOperation.paths["/legacy-container-list"] = { get: { operationId: "listContainers" } };
+  if (validateSchema(legacyContainerOperation).ok) failures.push("legacy container operationId was not detected");
+
   return failures;
 }
 
@@ -245,5 +273,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 11
+  mutation_self_tests: 15
 }, null, 2));

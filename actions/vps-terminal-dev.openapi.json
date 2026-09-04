@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.8",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 30 high-value operations. Adds closed semantic families targetRegistryAction(read|upsert) and sourceLoopAction(list|artifact|candidate|accept|reject) over existing mediated backend contracts. Backend stale-SHA, allowlist, provenance, writeback-transition, mediation and readback guards remain authoritative; no generic args, shell dispatcher or mega-operation is exposed. Public operation budget is now full at 30/30; future UX simplification must consolidate existing families rather than add low-value operations."
+    "version": "0.7.0-dev.9",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations and one reserved slot. Consolidates the three read-only container operations into closed `containerObserve(list|inspect|logs)` while keeping destructive `removeExitedContainer` separate. The destructive path requires exact full container ID, server-side exited/no-mount preconditions, force=false, volume removal disabled, mediated execution and verified absence readback. Existing targetRegistryAction/sourceLoopAction/fileAction families remain closed; no generic args, shell dispatcher or mega-operation is exposed."
   },
   "servers": [
     {
@@ -344,151 +344,22 @@
         }
       }
     },
-    "/v1/containers": {
-      "get": {
-        "operationId": "listContainers",
-        "summary": "List DEV Docker containers with bounded pagination",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 50,
-              "default": 12
-            }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "all",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "default": false
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "label",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Container inventory"
-          }
-        }
+    "/v1/container/observe/action": {
+      "post": {
+        "operationId": "containerObserve",
+        "summary": "List, inspect, or read logs for DEV containers",
+        "description": "Closed read-only container family. Branch schemas preserve the prior list/inspect/logs bounds and redaction semantics; no exec or mutation branch exists.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ContainerObserveRequest"}}}},
+        "responses": {"200": {"description": "Bounded container observation"}, "400": {"description": "Invalid operation or branch fields"}, "404": {"description": "Container not found"}}
       }
     },
-    "/v1/containers/{container}": {
-      "get": {
-        "operationId": "inspectContainer",
-        "summary": "Inspect a DEV container with redacted details",
-        "parameters": [
-          {
-            "name": "container",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Container details"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        }
-      }
-    },
-    "/v1/containers/{container}/logs": {
-      "get": {
-        "operationId": "containerLogs",
-        "summary": "Read bounded DEV container logs",
-        "parameters": [
-          {
-            "name": "container",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "tail",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 2000,
-              "default": 200
-            }
-          },
-          {
-            "name": "since",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "limit_bytes",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "integer",
-              "minimum": 1024,
-              "maximum": 262144,
-              "default": 65536
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Logs"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not found"
-          }
-        }
+    "/v1/container/remove-exited": {
+      "post": {
+        "operationId": "removeExitedContainer",
+        "summary": "Remove one exact exited DEV Docker container without deleting volumes",
+        "description": "Destructive typed cleanup only for a full 64-hex container ID. Server re-inspects immediately before delete, requires exited/not-running/not-restarting and zero mounts/binds, calls Docker delete with force=false and volume removal disabled, then requires verified absence readback.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RemoveExitedContainerRequest"}}}},
+        "responses": {"200": {"description": "Container removed and absence verified"}, "400": {"description": "Invalid/non-exact container ID"}, "409": {"description": "Container is not safely removable"}}
       }
     },
     "/v1/containers/{container}/exec": {
@@ -968,6 +839,42 @@
           "type": "string",
           "maxLength": 2048
         }
+      },
+      "ContainerObserveRequest": {
+        "oneOf": [
+          {"$ref": "#/components/schemas/ContainerObserveListRequest"},
+          {"$ref": "#/components/schemas/ContainerObserveInspectRequest"},
+          {"$ref": "#/components/schemas/ContainerObserveLogsRequest"}
+        ]
+      },
+      "ContainerObserveListRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation"],
+        "properties": {
+          "operation": {"const": "list"},
+          "limit": {"type": "integer", "minimum": 1, "maximum": 50, "default": 12},
+          "cursor": {"type": "string", "maxLength": 4096},
+          "all": {"type": "boolean", "default": false},
+          "status": {"type": "string", "maxLength": 200},
+          "label": {"type": "string", "maxLength": 200},
+          "name": {"type": "string", "maxLength": 160}
+        }
+      },
+      "ContainerObserveInspectRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "container"],
+        "properties": {"operation": {"const": "inspect"}, "container": {"type": "string", "minLength": 1, "maxLength": 160}}
+      },
+      "ContainerObserveLogsRequest": {
+        "type": "object", "additionalProperties": false, "required": ["operation", "container"],
+        "properties": {
+          "operation": {"const": "logs"}, "container": {"type": "string", "minLength": 1, "maxLength": 160},
+          "tail": {"type": "integer", "minimum": 1, "maximum": 2000, "default": 200},
+          "since": {"type": "integer", "minimum": 0},
+          "limit_bytes": {"type": "integer", "minimum": 1024, "maximum": 262144, "default": 65536}
+        }
+      },
+      "RemoveExitedContainerRequest": {
+        "type": "object", "additionalProperties": false, "required": ["container_id"],
+        "properties": {"container_id": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}}
       },
       "CommandRequest": {
         "type": "object",
