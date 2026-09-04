@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.8",
-    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 30 high-value operations. Adds closed semantic families targetRegistryAction(read|upsert) and sourceLoopAction(list|artifact|candidate|accept|reject) over existing mediated backend contracts. Backend stale-SHA, allowlist, provenance, writeback-transition, mediation and readback guards remain authoritative; no generic args, shell dispatcher or mega-operation is exposed. Public operation budget is now full at 30/30; future UX simplification must consolidate existing families rather than add low-value operations."
+    "version": "0.7.0-dev.9",
+    "description": "DEV ONLY. Compact GPT-facing VPS Terminal surface with 29 high-value operations and one reserved slot. Consolidates the three read-only container operations into closed `containerObserve(list|inspect|logs)` while keeping destructive `removeExitedContainer` separate. The destructive path requires exact full container ID, server-side exited/no-mount preconditions, force=false, volume removal disabled, mediated execution and verified absence readback. Existing targetRegistryAction/sourceLoopAction/fileAction families remain closed; no generic args, shell dispatcher or mega-operation is exposed."
   },
   "servers": [
     {
