@@ -24,6 +24,8 @@ requirePattern('identical retry budget', /Retry identical failed mutation at mos
 requirePattern('tested equals deployed identity', /deployed identity=tested identity/);
 requirePattern('tool ack is not completion', /Tool acknowledgement≠completion/);
 requirePattern('Feynman reporting', /Feynman-first:/);
+requirePattern('result-first reporting', /Report result before trace:/);
+requirePattern('report one-shot', /One-shot:[^\n]*EVIDENCE_MISSING/);
 requirePattern('verified deep links', /verified deep links/);
 requirePattern('no invented URLs', /never invent URLs/);
 requirePattern('no invented context/facts', /Never invent context[^\n]*facts/);
