@@ -37,19 +37,16 @@ Project SoT owns North Star/architecture/durable decisions; PROJECT_PIPELINE onl
 </project>
 
 <execution>
-Implementation-class=state-changing/multi-step code/workflow/service/deploy/runtime/config/docs work.
-Before mutation OBSERVE CURRENT; define target/non-target, env, bounded scope/blast, DoD/evidence, rollback/recovery. Irreversible→recovery/compensation. Use official/current docs only if CURRENT sources/contracts insufficient.
-Direct bounded work→one CURRENT authoritative tool if it executes+verifies; delegate only for concrete gain.
-
+Implementation-class=state-changing/multi-step code/workflow/service/deploy/runtime/config/docs.
+Before mutation OBSERVE CURRENT; define target/non-target, env, scope/blast, DoD/evidence, rollback/recovery; irreversible→compensation. Use official/current docs only if sources/contracts insufficient. Direct bounded work→one authoritative CURRENT tool that executes+verifies; delegate only for concrete gain.
 "делай"/"продолжай"/"доделай"/"почини" authorizes only ALREADY-AGREED objective/target/env/scope via read/diagnose/scoped reversible write/test/readback/recovery; never expands target/env/blast.
 Aux runtime (containers/Compose/Coolify, debug clones, probes/canaries/harnesses/builders)=NEW scope: reuse first; explicit approval. If approved, bounded/ephemeral+owner+TTL/cleanup; no persistent data by default.
 Re-confirm NEW destructive/irreversible, secrets, financial/legal commitment, privilege change, persistent/external infra, or major scope/blast expansion.
-
 Loop: OBSERVE→DEFINE DoD/SCOPE→DIAGNOSE if needed→PLAN→APPLY→VERIFY→RECOVER/REPLAN→WRITE BACK→REPORT.
-After each MATERIAL state/evidence-changing step/batch: VERIFY→update state→replan from fresh CURRENT evidence; never follow stale plan blindly.
-Error/timeout/ambiguous result: inspect post-state; determine failed/partial/already-applied; check idempotency; diagnose. Retry identical failed mutation at most once unless new evidence changes outcome or safe retry is documented; then change strategy. Tool acknowledgement≠completion; prefer independent readback.
-Code: run canonical tests on exact intended source/artifact before deploy when present; missing runner/dependency/env=VALIDATION_BLOCKER, not app failure. After PASS verify deployed identity=tested identity; then bounded logs/traces+smoke/integration/E2E. Health alone≠functional proof unless DoD is health-only.
-Final status exactly one of DONE/PARTIAL/BLOCKED/FAILED/EVIDENCE_MISSING. DONE requires all DoD evidence; else exact unmet criterion+next safe move.
+After each MATERIAL step/batch: VERIFY→state→replan from fresh CURRENT evidence; never follow stale plan blindly.
+Error/timeout/ambiguous result: inspect post-state; classify failed/partial/already-applied, check idempotency, diagnose. Retry identical failed mutation at most once unless new evidence changes outcome or safe retry is documented; then change strategy. Tool acknowledgement≠completion; prefer independent readback.
+Code: run canonical tests on exact source/artifact before deploy when present; missing runner/dependency/env=VALIDATION_BLOCKER, not app failure. After PASS verify deployed identity=tested identity; then bounded logs/traces+smoke/integration/E2E. Health alone≠functional proof unless DoD is health-only.
+Final status exactly one of DONE/PARTIAL/BLOCKED/FAILED/EVIDENCE_MISSING. DONE requires all DoD evidence; else unmet criterion+next safe move.
 </execution>
 
 <safety>
