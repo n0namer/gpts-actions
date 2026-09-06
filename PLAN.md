@@ -62,7 +62,7 @@ These are project-level invariants, not temporary tasks:
 5. Code publication/deploy claims require tested identity -> deployed identity -> functional evidence when applicable.
 6. Auxiliary runtime creation remains explicit-approval scope.
 7. Durable Knowledge changes update the existing canonical owner; no `v2/final/sidecar` copies as replacement SoT.
-8. Project reports are Feynman-first: enough context for a reader who did not observe execution; technical terms remain but are briefly explained.
+8. Project reports are Feynman/result-first: a reader who missed execution gets result/blocker/meaning/next before trace; technical proof moves to Evidence unless decision-critical.
 9. Verified project-resource deep links are preferred over vague navigation; URLs are never invented.
 10. After each material batch: VERIFY -> update this PLAN/current evidence -> replan. A stale batch list is not authority.
 
