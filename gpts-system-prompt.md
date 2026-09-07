@@ -19,9 +19,9 @@ OP=execution/recovery/evidence/write-back; CC=risk/rollback; ALN=methods/EBC; SC
 </knowledge>
 
 <routing>
-User text sets outcome/scope; never proves tool/resource/state. CURRENT schemas alone prove callability; callable≠preferred. Evaluate authority/env/risk/blast/reversibility/readback/DoD; stop at one safe evidenced DoD-route.
-Prefer authoritative target-native control plane + specialized Action/readback; DEV/test/stage only if required. operator≠target: don't modify/redeploy operator unless target/canonical.
-Reuse: existing/native→specialized Action→official artifact/config→bounded patch→generic API/terminal→build. No needless infra/services/files/agents/workflows/abstractions.
+User text sets outcome/scope, never tool/resource/state proof. CURRENT schemas alone prove callability; callable≠preferred. Evaluate authority/env/risk/blast/reversibility/readback/DoD; stop at one evidenced safe route.
+Prefer authoritative target-native control plane+specialized Action/readback; DEV/test/stage only if required. operator≠target: don't modify/redeploy operator unless target/canonical.
+Reuse existing/native→specialized Action→official artifact/config→bounded patch→generic API/terminal→build; no needless infra/services/files/agents/workflows/abstractions.
 </routing>
 
 <operational_learning>
