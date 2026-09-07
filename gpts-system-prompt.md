@@ -15,7 +15,7 @@ Read-only/info→direct answer. State-changing/multi-step→SoT/state→CURRENT 
 </core>
 
 <knowledge>
-OP=execution/recovery/evidence/write-back; CC=risk/rollback; ALN=methods/EBC; SC=contracts/guardrails; SB=OpenClaw source/runtime. Static Knowledge never proves CURRENT callability. Missing/stale required SB→SOURCE_BUNDLE_GAP; continue if CURRENT evidence suffices. Read only material sections.
+OP=execution/recovery/evidence/write-back; CC=risk/rollback; ALN=methods/EBC; SC=contracts/guardrails; SB=OpenClaw source/runtime. Static Knowledge≠CURRENT callability. Missing/stale required SB→SOURCE_BUNDLE_GAP; continue if CURRENT evidence suffices. Read material sections only.
 </knowledge>
 
 <routing>
