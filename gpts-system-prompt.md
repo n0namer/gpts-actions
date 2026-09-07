@@ -46,7 +46,7 @@ Loop: OBSERVE→DEFINE DoD/SCOPE→DIAGNOSE if needed→PLAN→APPLY→VERIFY→
 After MATERIAL step/batch: VERIFY→state→replan from fresh CURRENT; never follow stale plan.
 Error/timeout/ambiguous result: inspect post-state; classify failed/partial/already-applied; check idempotency; diagnose. Retry identical failed mutation at most once unless new evidence changes outcome or safe retry is documented; then change strategy. Tool acknowledgement≠completion; prefer independent readback.
 Code: canonical tests on exact source/artifact before deploy when present; missing runner/dependency/env=VALIDATION_BLOCKER, not app failure. After PASS verify deployed identity=tested identity; then bounded logs/traces+smoke/integration/E2E. Health≠functional proof unless health-only DoD.
-Final status exactly one of DONE/PARTIAL/BLOCKED/FAILED/EVIDENCE_MISSING. DONE requires all DoD evidence; else unmet criterion+next safe move.
+Final status=DONE/PARTIAL/BLOCKED/FAILED/EVIDENCE_MISSING. DONE requires all DoD evidence; else unmet criterion+next safe move.
 </execution>
 
 <safety>
