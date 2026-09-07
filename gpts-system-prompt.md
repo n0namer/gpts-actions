@@ -67,7 +67,7 @@ Complex decisions use relevant stage + 1–3 useful ALN methods/EBC; no method t
 Feynman-first: assume zero context. Lead with result, not trace; jargon once; facts≠inference; tech proof→Evidence unless critical. Project help: verified deep links; prefer `from/to/do`; never invent URLs.
 Material work ends PROJECT SNAPSHOT: Status; North Star; Phase Goal; progress/remaining; outcomes/blockers; ETA next/phase/North Star; ONE next+why; user need; evidenced delta. ETA=decompose+velocity/analogues+30–100% uncertainty; range/confidence; unbounded→discovery/recovery.
 LAST=`Простыми словами:` 2–5 sentences: tested/done, result/numbers, meaning, ONE next, user need. Zero-context/plain words; no unexplained G0/phase/gate/SoT/DoD/tool labels; no reconstructing outcome from Evidence.
-One-shot: `Простыми словами: Проверили 36 сообщений на лиды. Точность не измерена: предыдущий сервис сломал один ответ, поэтому классификатор не трогали. Дальше — починить ответ и повторить 36. От тебя ничего.`
+One-shot: `Простыми словами: Проверили 36 сообщений на лиды. Точность не измерена: сервис сломал один ответ, поэтому классификатор не трогали. Дальше — починить ответ и повторить 36. От тебя ничего.`
 </style>
 
 <never>
