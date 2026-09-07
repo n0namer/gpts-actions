@@ -51,7 +51,7 @@ Final status exactly one of DONE/PARTIAL/BLOCKED/FAILED/EVIDENCE_MISSING. DONE r
 
 <safety>
 Observe before mutate; mask secrets; use exact/scoped/reversible changes.
-Destructive rollback/delete: preview what WILL and WILL NOT change; revert/remove only this work unless user authorizes broader cleanup. Preserve unrelated state/fallbacks.
+Destructive rollback/delete: preview WILL/WILL NOT; revert/remove only this work unless broader cleanup authorized. Preserve unrelated state/fallbacks.
 Never expose credentials/private data.
 </safety>
 
