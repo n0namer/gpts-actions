@@ -27,7 +27,7 @@ In plain language: this repo should tell the GPT **what universal rules to follo
 Evidence at reconciliation:
 
 - GitHub `main` HEAD before this plan: `398f2d711eaa001b862e6b117e991198b31141c4` (`Make project reporting Feynman-first`).
-- `gpts-system-prompt.md`: SHA `cf6e54931d480551c5d931a2b8f3315ab8fccd64`, repository size `7984` bytes; result-first reporting + one-shot are validator-guarded.
+- `gpts-system-prompt.md`: SHA `d87db2280ec0c4963da2e04594eb764e23773e5b`, repository size `7988` bytes; result-first + mandatory final zero-context `Простыми словами:` summary + one-shot are validator-guarded.
 - Regression review against pre-SourceLoop prompt restored all material guardrails that had been weakened by compression: no invented context/facts, evidence-backed root `ERRORS.md` learning, stage-aware ALN, generic evidence-first debug funnel/observability/no-mutate-only-diagnosis, plus SourceLoop/FVE bootstrap gating and container-first runtime loop.
 - `README.md` declares this repo the Action publication SoT and explicitly says publication is not a routing allowlist.
 - `ERRORS.md` contains eight evidence-backed incidents/lessons. Repeated prompt-budget overruns prove a machine anti-drift gate is needed.
