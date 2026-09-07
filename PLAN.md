@@ -1,7 +1,7 @@
 # PLAN.md — gpts-actions Project SoT
 
 Status: ACTIVE
-Last reconciled: 2026-09-06
+Last reconciled: 2026-09-07
 Current execution focus: **VPS Terminal DEV publication `v0.7.0-dev.10` is merged; GPT consumer re-import is the acceptance gate.** Canonical `main@6f7e7feca247ea2c36ba0d87dd6b99e2717d4002` publishes 29 operations with one reserved slot: read-only container list/inspect/logs are consolidated into `containerObserve`, destructive exact cleanup remains separate as `removeExitedContainer`, and `targetRegistryAction` / `sourceLoopAction` remain semantic families. User import evidence on `v0.7.0-dev.9` exposed GPT Actions compatibility defects (operation description >300 chars and `oneOf` request-body wrappers). `v0.7.0-dev.10` shortens descriptions and exposes the two family request bodies as closed object schemas while runtime branch validation stays authoritative. Container validator PASS is 29/29 operations with 15 mutation self-tests; consumer re-import/fresh-session callability is still pending and publication is not callability. AgentField connector repair remains paused as a separate workstream.
 Canonical project planning/decision owner for this repository. `README.md` owns publication usage/reference docs; `ERRORS.md` owns local error evidence; runtime evidence owns actual deployed/callable state.
 
@@ -27,7 +27,7 @@ In plain language: this repo should tell the GPT **what universal rules to follo
 Evidence at reconciliation:
 
 - GitHub `main` HEAD before this plan: `398f2d711eaa001b862e6b117e991198b31141c4` (`Make project reporting Feynman-first`).
-- `gpts-system-prompt.md`: SHA `cf6e54931d480551c5d931a2b8f3315ab8fccd64`, repository size `7984` bytes; result-first reporting + one-shot are validator-guarded.
+- `gpts-system-prompt.md`: SHA `d87db2280ec0c4963da2e04594eb764e23773e5b`, repository size `7988` bytes; result-first + mandatory final zero-context `Простыми словами:` summary + one-shot are validator-guarded.
 - Regression review against pre-SourceLoop prompt restored all material guardrails that had been weakened by compression: no invented context/facts, evidence-backed root `ERRORS.md` learning, stage-aware ALN, generic evidence-first debug funnel/observability/no-mutate-only-diagnosis, plus SourceLoop/FVE bootstrap gating and container-first runtime loop.
 - `README.md` declares this repo the Action publication SoT and explicitly says publication is not a routing allowlist.
 - `ERRORS.md` contains eight evidence-backed incidents/lessons. Repeated prompt-budget overruns prove a machine anti-drift gate is needed.
@@ -62,7 +62,7 @@ These are project-level invariants, not temporary tasks:
 5. Code publication/deploy claims require tested identity -> deployed identity -> functional evidence when applicable.
 6. Auxiliary runtime creation remains explicit-approval scope.
 7. Durable Knowledge changes update the existing canonical owner; no `v2/final/sidecar` copies as replacement SoT.
-8. Project reports are Feynman/result-first: a reader who missed execution gets result/blocker/meaning/next before trace; technical proof moves to Evidence unless decision-critical.
+8. Project reports are Feynman/result-first and end with `Простыми словами:`: a zero-context reader gets what was tested/done, concrete result/numbers, plain meaning, ONE next, and user need; unexplained G0/phase/gate/SoT/DoD/tool labels stay out of that final block.
 9. Verified project-resource deep links are preferred over vague navigation; URLs are never invented.
 10. After each material batch: VERIFY -> update this PLAN/current evidence -> replan. A stale batch list is not authority.
 

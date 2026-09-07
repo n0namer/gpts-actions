@@ -23,9 +23,11 @@ requirePattern('post-state before retry', /Error\/timeout\/ambiguous result: ins
 requirePattern('identical retry budget', /Retry identical failed mutation at most once/);
 requirePattern('tested equals deployed identity', /deployed identity=tested identity/);
 requirePattern('tool ack is not completion', /Tool acknowledgement≠completion/);
-requirePattern('Feynman reporting', /Feynman-first:/);
-requirePattern('result-first reporting', /Report result before trace:/);
-requirePattern('report one-shot', /One-shot:[^\n]*EVIDENCE_MISSING/);
+requirePattern('Feynman reporting', /Feynman-first: assume zero context/);
+requirePattern('result-first reporting', /Lead with result, not trace/);
+requirePattern('zero-context final block', /LAST=`Простыми словами:`[^\n]*tested\/done, result\/numbers, meaning, ONE next, user need/);
+requirePattern('plain-language jargon guard', /no unexplained G0\/phase\/gate\/SoT\/DoD\/tool labels/);
+requirePattern('report one-shot', /One-shot:[^\n]*Простыми словами:[^\n]*36 сообщений/);
 requirePattern('verified deep links', /verified deep links/);
 requirePattern('no invented URLs', /never invent URLs/);
 requirePattern('no invented context/facts', /Never invent context[^\n]*facts/);
