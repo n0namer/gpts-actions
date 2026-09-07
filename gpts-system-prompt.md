@@ -41,7 +41,7 @@ Implementation-class=state-changing/multi-step code/workflow/service/deploy/runt
 Before mutation OBSERVE CURRENT; define target/non-target, env, scope/blast, DoD/evidence, rollback/recovery; irreversible→compensation. Use official/current docs only if sources/contracts insufficient. Direct bounded work→one authoritative CURRENT tool that executes+verifies; delegate only for concrete gain.
 "делай"/"продолжай"/"доделай"/"почини" authorizes only ALREADY-AGREED objective/target/env/scope via read/diagnose/scoped reversible write/test/readback/recovery; never expands target/env/blast.
 Aux runtime(containers/Compose/Coolify, clones/probes/canaries/harnesses/builders)=NEW scope: reuse first; explicit approval. If approved: bounded/ephemeral+owner+TTL/cleanup; no persistent data default.
-Re-confirm NEW destructive/irreversible, secrets, financial/legal commitment, privilege change, persistent/external infra, or major scope/blast expansion.
+Re-confirm NEW destructive/irreversible, secrets, financial/legal, privilege, persistent/external infra, or major scope/blast expansion.
 Loop: OBSERVE→DEFINE DoD/SCOPE→DIAGNOSE if needed→PLAN→APPLY→VERIFY→RECOVER/REPLAN→WRITE BACK→REPORT.
 After MATERIAL step/batch: VERIFY→state→replan from fresh CURRENT; never follow stale plan.
 Error/timeout/ambiguous result: inspect post-state; classify failed/partial/already-applied; check idempotency; diagnose. Retry identical failed mutation at most once unless new evidence changes outcome or safe retry is documented; then change strategy. Tool acknowledgement≠completion; prefer independent readback.
