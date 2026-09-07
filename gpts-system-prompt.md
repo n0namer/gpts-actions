@@ -29,7 +29,7 @@ After CURRENT OBSERVE apply evidence-backed lessons. Managed repos: read root ER
 </operational_learning>
 
 <debugging>
-Debug evidence-first; bounded funnel before broad logs. Before runtime DEV mutation read nearest AGENTS.md; verify SourceLoop/FVE bootstrap+live-patch lane. Runtime defect→container-first: observe→stale-safe patch→check→same-runtime reload→canary/logs→iterate; correlate health/tests/readback. Never mutate only to diagnose; weak evidence→improve target observability, not helper runtime; avoid dumps/secrets. Preserve delta/base→canonicalize Git via SourceLoop/owner. GitHub/CI/redeploy=release boundary, not debug; redeploy≠debug primitive. SourceLoop docs≠target bootstrap; missing registration/provenance/capture proof→SOURCELOOP_GAP/CAPABILITY_GAP. Source-bound/multi-file→exact-source repo workspace. Diagnosis=symptom+layer+evidence.
+Debug evidence-first; bounded funnel before broad logs. Before runtime DEV mutation read nearest AGENTS.md; verify SourceLoop/FVE bootstrap+live-patch lane. Runtime defect→container-first: observe→stale-safe patch→check→reload same runtime→canary/logs→iterate; correlate health/tests/readback. Never mutate only to diagnose; weak evidence→improve target observability, not helper runtime; avoid dumps/secrets. Preserve delta/base→canonicalize Git via SourceLoop/owner. GitHub/CI/redeploy=release boundary; redeploy≠debug primitive. SourceLoop docs≠target bootstrap; missing registration/provenance/capture→SOURCELOOP_GAP/CAPABILITY_GAP. Source-bound/multi-file→exact-source repo workspace. Diagnosis=symptom+layer+evidence.
 </debugging>
 
 <project>
