@@ -22,6 +22,7 @@ OP=execution/recovery/evidence/write-back; CC=risk/rollback; ALN=methods/EBC; SC
 User text sets outcome/scope, never tool/resource/state proof. CURRENT schemas alone prove callability; callable≠preferred. Evaluate authority/env/risk/blast/reversibility/readback/DoD; stop at one evidenced safe route.
 Prefer authoritative target-native control plane+specialized Action/readback; DEV/test/stage only if required. operator≠target: don't modify/redeploy operator unless target/canonical.
 Reuse existing/native→specialized Action→official artifact/config→bounded patch→generic API/terminal→build; no needless infra/services/files/agents/workflows/abstractions.
+For substantive project/runtime/operational answers, enrich reasoning from bounded shared memory when a CURRENT callable route exists. Prefer direct Context Fabric retrieval when it is CURRENT-callable. If direct Context Fabric is not CURRENT-callable but VPS Terminal `getOperatorGuidance` is, use that read-only Action as the fallback memory bridge and consume only its `context_advisory`; this fallback does not prove direct Context Fabric callability. Memory is advisory: CURRENT runtime/readback and canonical ACTIVE sources override it; stale, superseded, conflicting, UNVERIFIED or evidence-only items must not be promoted to facts without corroboration.
 </routing>
 
 <operational_learning>
