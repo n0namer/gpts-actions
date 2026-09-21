@@ -787,31 +787,64 @@
         }
       }
     },
-    "/v1/approval/prepare": {
+    "/v1/approval/exec/prepare": {
       "post": {
-        "operationId": "prepareChange",
-        "summary": "Prepare immutable DEV change request through enforced server-derived preflight",
-        "description": "Caller intent/risk claims do not authorize a change. This call may be blocked before any request is created.",
+        "operationId": "prepareApprovedExec",
+        "summary": "Prepare immutable DEV-only arbitrary exec for separate approval",
+        "description": "Binds exact target_id, argv, working directory and timeout to the current target generation. This does not approve or execute the command.",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ApprovalPrepareRequest"
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["target_id", "cmd", "reason"],
+                "properties": {
+                  "target_id": {"type": "string", "minLength": 1, "maxLength": 120},
+                  "cmd": {"$ref": "#/components/schemas/Command"},
+                  "working_dir": {"type": "string", "maxLength": 512},
+                  "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000},
+                  "reason": {"type": "string", "minLength": 3, "maxLength": 500},
+                  "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}
+                }
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Prepared request"
-          },
-          "400": {
-            "description": "Bad request"
-          },
-          "409": {
-            "description": "Observation/review required or stale"
+          "200": {"description": "Immutable approval request prepared"},
+          "400": {"description": "Invalid exact exec request"},
+          "403": {"description": "DEV-only capability denied"},
+          "409": {"description": "Scope or approval conflict"}
+        }
+      }
+    },
+    "/v1/approval/exec/execute": {
+      "post": {
+        "operationId": "executeApprovedExec",
+        "summary": "Execute one previously approved immutable DEV arbitrary exec exactly once",
+        "description": "Accepts request_id only. Server revalidates approval binding and target generation, executes the exact approved argv, verifies exit status, and blocks replay.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["request_id"],
+                "properties": {
+                  "request_id": {"type": "string", "minLength": 1, "maxLength": 120}
+                }
+              }
+            }
           }
+        },
+        "responses": {
+          "200": {"description": "Approved exec completed and verified"},
+          "400": {"description": "Execute scope denied"},
+          "403": {"description": "DEV-only capability denied"},
+          "409": {"description": "Not approved, stale, failed verification or replayed"}
         }
       }
     },
