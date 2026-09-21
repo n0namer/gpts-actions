@@ -1077,7 +1077,7 @@
         "additionalProperties": false,
         "required": ["operation"],
         "properties": {
-          "operation": {"type": "string", "enum": ["list", "artifact", "publish", "candidate", "accept", "reject"]},
+          "operation": {"type": "string", "enum": ["list", "artifact", "candidate", "accept", "reject"]},
           "target_id": {"type": "string", "maxLength": 120, "description": "list only"},
           "change_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for artifact/candidate/accept/reject; optional list filter."},
           "limit": {"type": "integer", "minimum": 1, "maximum": 200, "description": "list only"},
