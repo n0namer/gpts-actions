@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.10",
-    "description": "DEV ONLY. GPT Actions-compatible 29-operation VPS Terminal surface with one reserved slot. Semantic families stay typed at runtime; public request schemas avoid unsupported oneOf bodies. Destructive removeExitedContainer remains separate and exact-ID/evidence-gated."
+    "version": "0.7.0-dev.11",
+    "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Semantic families stay typed at runtime; public request schemas avoid unsupported oneOf bodies. DEV-only approved arbitrary exec uses prepareApprovedExec + executeApprovedExec with separate privileged approval."
   },
   "servers": [
     {
