@@ -30,7 +30,8 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "getSelfProtection",
   "prepareDebugClone",
   "executeApprovedDebugClone",
-  "prepareChange",
+  "prepareApprovedExec",
+  "executeApprovedExec",
   "approvalStatus",
   "targetLogs",
   "targetStats"
