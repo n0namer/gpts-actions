@@ -30,13 +30,15 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "getSelfProtection",
   "prepareDebugClone",
   "executeApprovedDebugClone",
-  "prepareChange",
+  "prepareApprovedExec",
+  "executeApprovedExec",
   "approvalStatus",
   "targetLogs",
   "targetStats"
 ];
 
 const FORBIDDEN_PUBLIC_PATHS = [
+  "/v1/approval/prepare",
   "/v1/approval/approve",
   "/v1/approval/debug-clone/approve",
   "/v1/approval/execute",
