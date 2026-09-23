@@ -853,7 +853,7 @@
       "post": {
         "operationId": "approvalControl",
         "summary": "Control conversational DEV approval for current requests and bounded leases",
-        "description": "Chat-native VPS Terminal authorization bridge. Explicit affirmative approval in the current conversation maps to approve_current for the exact bound pending request. Explicit affirmative approval-all intent maps to grant_lease, which issues a server-side DEV authorization lease for compatible approved exec on the same target generation for at most 1 hour and 100 auto-approvals. Inactive leases require fresh approval-all; platform-level ChatGPT confirmation behavior is separate from this contract.",
+        "description": "Chat-native VPS authorization. Explicit affirmative approval maps to approve_current for the exact bound request. Explicit approval-all maps to grant_lease: DEV-only, same target generation, max 1 hour/100 auto-approvals; inactive leases need fresh approval-all. ChatGPT platform confirmations are separate.",
         "requestBody": {
           "required": true,
           "content": {
