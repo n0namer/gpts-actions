@@ -197,7 +197,7 @@ function selfTest(schema) {
   if (validateSchema(leaked).ok) failures.push("forbidden privileged-path mutation was not detected");
 
   const missing = clone(schema);
-  delete missing.paths["/v1/approval/status"];
+  delete missing.paths["/v1/approval/exec/control"];
   if (validateSchema(missing).ok) failures.push("missing required-public-operation mutation was not detected");
 
   const missingTargetStats = clone(schema);
