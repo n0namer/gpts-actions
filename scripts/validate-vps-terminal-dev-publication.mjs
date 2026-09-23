@@ -271,17 +271,17 @@ function selfTest(schema) {
   legacyContainerOperation.paths["/legacy-container-list"] = { get: { operationId: "listContainers" } };
   if (validateSchema(legacyContainerOperation).ok) failures.push("legacy container operationId was not detected");
 
-  const consequentialApprovalControl = clone(schema);
-  consequentialApprovalControl.paths["/v1/approval/exec/control"].post["x-openai-isConsequential"] = true;
-  if (validateSchema(consequentialApprovalControl).ok) failures.push("consequential approvalControl mutation was not detected");
-
-  const missingExecuteConsequentialFlag = clone(schema);
-  delete missingExecuteConsequentialFlag.paths["/v1/approval/exec/execute"].post["x-openai-isConsequential"];
-  if (validateSchema(missingExecuteConsequentialFlag).ok) failures.push("missing executeApprovedExec consequential flag was not detected");
+  const unverifiedConfirmationMetadata = clone(schema);
+  unverifiedConfirmationMetadata.paths["/v1/approval/exec/control"].post["x-openai-isConsequential"] = false;
+  if (validateSchema(unverifiedConfirmationMetadata).ok) failures.push("unverified OpenAI confirmation metadata was not detected");
 
   const missingApprovalPhraseMapping = clone(schema);
   missingApprovalPhraseMapping.paths["/v1/approval/exec/control"].post.requestBody.content["application/json"].schema.properties.operation.description = "Current request control.";
   if (validateSchema(missingApprovalPhraseMapping).ok) failures.push("missing conversational approval phrase mapping was not detected");
+
+  const missingLeaseContract = clone(schema);
+  missingLeaseContract.paths["/v1/approval/exec/control"].post.description = "Chat-native approval control.";
+  if (validateSchema(missingLeaseContract).ok) failures.push("missing one-hour authorization lease contract was not detected");
 
   return failures;
 }
