@@ -825,8 +825,9 @@
     "/v1/approval/exec/execute": {
       "post": {
         "operationId": "executeApprovedExec",
+        "x-openai-isConsequential": false,
         "summary": "Execute one previously approved immutable DEV arbitrary exec exactly once",
-        "description": "Accepts request_id only. Server revalidates approval binding and target generation, executes the exact approved argv, verifies exit status, and blocks replay.",
+        "description": "Accepts request_id only after server-side approval. The server revalidates approval binding and target generation, executes the exact approved argv once, verifies exit status, and blocks replay.",
         "requestBody": {
           "required": true,
           "content": {
