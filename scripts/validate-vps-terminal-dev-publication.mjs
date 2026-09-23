@@ -174,13 +174,12 @@ export function validateSchema(schema) {
     errors.push("SessionStartRequest must not expose unsupported timeout_ms");
   }
 
-  const approvalPrepare = schema?.paths?.["/v1/approval/exec/prepare"]?.post;
-  const approvalExecute = schema?.paths?.["/v1/approval/exec/execute"]?.post;
   const approvalControl = schema?.paths?.["/v1/approval/exec/control"]?.post;
-  for (const [name, operation] of [["prepareApprovedExec", approvalPrepare], ["executeApprovedExec", approvalExecute], ["approvalControl", approvalControl]]) {
-    if (operation?.["x-openai-isConsequential"] !== false) {
-      errors.push(`${name} must set x-openai-isConsequential=false for chat-native approval without duplicate UI confirmation`);
-    }
+  for (const operationId of ["prepareApprovedExec", "executeApprovedExec", "approvalControl"]) {
+    const operation = operations.find((x) => x.operationId === operationId);
+    const raw = operationId === "prepareApprovedExec" ? schema?.paths?.["/v1/approval/exec/prepare"]?.post : operationId === "executeApprovedExec" ? schema?.paths?.["/v1/approval/exec/execute"]?.post : approvalControl;
+    if (Object.prototype.hasOwnProperty.call(raw || {}, "x-openai-isConsequential")) errors.push(`${operationId} must not publish unverified x-openai-isConsequential metadata`);
+    if (!operation) errors.push(`approval operation missing: ${operationId}`);
   }
   const expectedApprovalOps = ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"];
   const actualApprovalOps = approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.enum;
@@ -188,6 +187,10 @@ export function validateSchema(schema) {
   const approvalOperationDescription = String(approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.description || "");
   for (const phrase of ["approve", "approval", "одобряю", "grant_lease"]) {
     if (!approvalOperationDescription.includes(phrase)) errors.push(`approvalControl conversation mapping missing phrase: ${phrase}`);
+  }
+  const approvalControlDescription = String(approvalControl?.description || "");
+  for (const invariant of ["1 hour", "100 auto-approvals", "same target generation", "fresh approval-all", "platform confirmations are separate"]) {
+    if (!approvalControlDescription.includes(invariant)) errors.push(`approvalControl lease contract missing invariant: ${invariant}`);
   }
 
   const bearer = schema?.components?.securitySchemes?.Bearer;
