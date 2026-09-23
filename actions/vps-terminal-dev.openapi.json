@@ -849,16 +849,34 @@
         }
       }
     },
-    "/v1/approval/status": {
-      "get": {
-        "operationId": "approvalStatus",
-        "summary": "Read immutable DEV approval request status",
-        "parameters": [
-          {"name": "request_id", "in": "query", "required": true, "schema": {"type": "string", "minLength": 1}}
-        ],
+    "/v1/approval/exec/control": {
+      "post": {
+        "operationId": "approvalControl",
+        "summary": "Control conversational DEV approval for current requests and bounded leases",
+        "description": "Closed family: status|approve_current|deny_current|grant_lease|revoke_lease. approve_current and grant_lease represent an explicit user approval expressed in the current chat turn. The server fixes approved_by, derives lease scope from the immutable prepared request, binds leases to the exact target generation, and keeps arbitrary exec DEV-only.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["operation"],
+                "properties": {
+                  "operation": {"type": "string", "enum": ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"]},
+                  "request_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for request status, approve_current, deny_current and grant_lease."},
+                  "lease_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for lease status and revoke_lease."}
+                }
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {"description": "Approval status"},
-          "404": {"description": "Not found"}
+          "200": {"description": "Approval request or lease state"},
+          "400": {"description": "Invalid operation or fields"},
+          "403": {"description": "DEV-only capability denied"},
+          "404": {"description": "Request or lease not found"},
+          "409": {"description": "Approval/lease state or scope conflict"}
         }
       }
     }
