@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.12",
-    "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Conversational approval uses approvalControl for current requests and bounded leases; approved arbitrary exec remains generation-bound, single-use on execute, and DEV-only."
+    "version": "0.7.0-dev.13",
+    "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Conversational approval is chat-native: explicit approval phrases in the current conversation map to approvalControl for the bound pending request; no separate approval UI is part of the VPS Terminal contract. Approved arbitrary exec remains generation-bound, single-use on execute, and DEV-only."
   },
   "servers": [
     {
