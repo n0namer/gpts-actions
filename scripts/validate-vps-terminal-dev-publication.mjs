@@ -32,7 +32,7 @@ const REQUIRED_PUBLIC_OPERATION_IDS = [
   "executeApprovedDebugClone",
   "prepareApprovedExec",
   "executeApprovedExec",
-  "approvalStatus",
+  "approvalControl",
   "targetLogs",
   "targetStats"
 ];
