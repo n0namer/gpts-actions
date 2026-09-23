@@ -174,13 +174,12 @@ export function validateSchema(schema) {
     errors.push("SessionStartRequest must not expose unsupported timeout_ms");
   }
 
-  const approvalPrepare = schema?.paths?.["/v1/approval/exec/prepare"]?.post;
-  const approvalExecute = schema?.paths?.["/v1/approval/exec/execute"]?.post;
   const approvalControl = schema?.paths?.["/v1/approval/exec/control"]?.post;
-  for (const [name, operation] of [["prepareApprovedExec", approvalPrepare], ["executeApprovedExec", approvalExecute], ["approvalControl", approvalControl]]) {
-    if (operation?.["x-openai-isConsequential"] !== false) {
-      errors.push(`${name} must set x-openai-isConsequential=false for chat-native approval without duplicate UI confirmation`);
-    }
+  for (const operationId of ["prepareApprovedExec", "executeApprovedExec", "approvalControl"]) {
+    const operation = operations.find((x) => x.operationId === operationId);
+    const raw = operationId === "prepareApprovedExec" ? schema?.paths?.["/v1/approval/exec/prepare"]?.post : operationId === "executeApprovedExec" ? schema?.paths?.["/v1/approval/exec/execute"]?.post : approvalControl;
+    if (Object.prototype.hasOwnProperty.call(raw || {}, "x-openai-isConsequential")) errors.push(`${operationId} must not publish unverified x-openai-isConsequential metadata`);
+    if (!operation) errors.push(`approval operation missing: ${operationId}`);
   }
   const expectedApprovalOps = ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"];
   const actualApprovalOps = approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.enum;
@@ -188,6 +187,10 @@ export function validateSchema(schema) {
   const approvalOperationDescription = String(approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.description || "");
   for (const phrase of ["approve", "approval", "одобряю", "grant_lease"]) {
     if (!approvalOperationDescription.includes(phrase)) errors.push(`approvalControl conversation mapping missing phrase: ${phrase}`);
+  }
+  const approvalControlDescription = String(approvalControl?.description || "");
+  for (const invariant of ["1 hour", "100 auto-approvals", "same target generation", "fresh approval-all", "platform confirmations are separate"]) {
+    if (!approvalControlDescription.includes(invariant)) errors.push(`approvalControl lease contract missing invariant: ${invariant}`);
   }
 
   const bearer = schema?.components?.securitySchemes?.Bearer;
@@ -268,17 +271,17 @@ function selfTest(schema) {
   legacyContainerOperation.paths["/legacy-container-list"] = { get: { operationId: "listContainers" } };
   if (validateSchema(legacyContainerOperation).ok) failures.push("legacy container operationId was not detected");
 
-  const consequentialApprovalControl = clone(schema);
-  consequentialApprovalControl.paths["/v1/approval/exec/control"].post["x-openai-isConsequential"] = true;
-  if (validateSchema(consequentialApprovalControl).ok) failures.push("consequential approvalControl mutation was not detected");
-
-  const missingExecuteConsequentialFlag = clone(schema);
-  delete missingExecuteConsequentialFlag.paths["/v1/approval/exec/execute"].post["x-openai-isConsequential"];
-  if (validateSchema(missingExecuteConsequentialFlag).ok) failures.push("missing executeApprovedExec consequential flag was not detected");
+  const unverifiedConfirmationMetadata = clone(schema);
+  unverifiedConfirmationMetadata.paths["/v1/approval/exec/control"].post["x-openai-isConsequential"] = false;
+  if (validateSchema(unverifiedConfirmationMetadata).ok) failures.push("unverified OpenAI confirmation metadata was not detected");
 
   const missingApprovalPhraseMapping = clone(schema);
   missingApprovalPhraseMapping.paths["/v1/approval/exec/control"].post.requestBody.content["application/json"].schema.properties.operation.description = "Current request control.";
   if (validateSchema(missingApprovalPhraseMapping).ok) failures.push("missing conversational approval phrase mapping was not detected");
+
+  const missingLeaseContract = clone(schema);
+  missingLeaseContract.paths["/v1/approval/exec/control"].post.description = "Chat-native approval control.";
+  if (validateSchema(missingLeaseContract).ok) failures.push("missing one-hour authorization lease contract was not detected");
 
   return failures;
 }

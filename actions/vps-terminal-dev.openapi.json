@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.13",
-    "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Conversational approval is chat-native: explicit approval phrases in the current conversation map to approvalControl for the bound pending request; no separate approval UI is part of the VPS Terminal contract. Approved arbitrary exec remains generation-bound, single-use on execute, and DEV-only."
+    "version": "0.7.0-dev.14",
+    "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Explicit affirmative approval in the current conversation maps to approvalControl for the exact bound pending request. Explicit approval-all intent grants a server-side authorization lease for compatible DEV approved exec on the same target generation for at most 1 hour and 100 auto-approvals; inactive leases require fresh approval-all. Platform-level ChatGPT confirmation behavior is separate from this VPS Terminal authorization contract."
   },
   "servers": [
     {
@@ -790,7 +790,6 @@
     "/v1/approval/exec/prepare": {
       "post": {
         "operationId": "prepareApprovedExec",
-        "x-openai-isConsequential": false,
         "summary": "Prepare immutable DEV-only arbitrary exec for separate approval",
         "description": "Binds exact target_id, argv, working directory and timeout to the current target generation. This only prepares a request; it does not approve or execute the command.",
         "requestBody": {
@@ -825,7 +824,6 @@
     "/v1/approval/exec/execute": {
       "post": {
         "operationId": "executeApprovedExec",
-        "x-openai-isConsequential": false,
         "summary": "Execute one previously approved immutable DEV arbitrary exec exactly once",
         "description": "Accepts request_id only after server-side approval. The server revalidates approval binding and target generation, executes the exact approved argv once, verifies exit status, and blocks replay.",
         "requestBody": {
@@ -854,9 +852,8 @@
     "/v1/approval/exec/control": {
       "post": {
         "operationId": "approvalControl",
-        "x-openai-isConsequential": false,
         "summary": "Control conversational DEV approval for current requests and bounded leases",
-        "description": "Chat-native approval bridge. Explicit approval in the current conversation maps to approve_current for the bound pending request; explicit approval-all intent maps to grant_lease. No separate approval UI is required by this contract.",
+        "description": "Chat-native VPS authorization. Explicit approval maps to approve_current for the exact bound request. Approval-all maps to grant_lease: DEV-only, same target generation, max 1 hour/100 auto-approvals; inactive leases need fresh approval-all. ChatGPT platform confirmations are separate.",
         "requestBody": {
           "required": true,
           "content": {
