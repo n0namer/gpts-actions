@@ -174,6 +174,22 @@ export function validateSchema(schema) {
     errors.push("SessionStartRequest must not expose unsupported timeout_ms");
   }
 
+  const approvalPrepare = schema?.paths?.["/v1/approval/exec/prepare"]?.post;
+  const approvalExecute = schema?.paths?.["/v1/approval/exec/execute"]?.post;
+  const approvalControl = schema?.paths?.["/v1/approval/exec/control"]?.post;
+  for (const [name, operation] of [["prepareApprovedExec", approvalPrepare], ["executeApprovedExec", approvalExecute], ["approvalControl", approvalControl]]) {
+    if (operation?.["x-openai-isConsequential"] !== false) {
+      errors.push(`${name} must set x-openai-isConsequential=false for chat-native approval without duplicate UI confirmation`);
+    }
+  }
+  const expectedApprovalOps = ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"];
+  const actualApprovalOps = approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.enum;
+  if (JSON.stringify(actualApprovalOps) !== JSON.stringify(expectedApprovalOps)) errors.push(`approvalControl operation enum changed: ${JSON.stringify(actualApprovalOps)}`);
+  const approvalOperationDescription = String(approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.description || "");
+  for (const phrase of ["approve", "approval", "одобряю", "grant_lease"]) {
+    if (!approvalOperationDescription.includes(phrase)) errors.push(`approvalControl conversation mapping missing phrase: ${phrase}`);
+  }
+
   const bearer = schema?.components?.securitySchemes?.Bearer;
   if (bearer?.type !== "http" || bearer?.scheme !== "bearer") {
     errors.push("single-bearer public security scheme is missing or changed");
@@ -252,6 +268,18 @@ function selfTest(schema) {
   legacyContainerOperation.paths["/legacy-container-list"] = { get: { operationId: "listContainers" } };
   if (validateSchema(legacyContainerOperation).ok) failures.push("legacy container operationId was not detected");
 
+  const consequentialApprovalControl = clone(schema);
+  consequentialApprovalControl.paths["/v1/approval/exec/control"].post["x-openai-isConsequential"] = true;
+  if (validateSchema(consequentialApprovalControl).ok) failures.push("consequential approvalControl mutation was not detected");
+
+  const missingExecuteConsequentialFlag = clone(schema);
+  delete missingExecuteConsequentialFlag.paths["/v1/approval/exec/execute"].post["x-openai-isConsequential"];
+  if (validateSchema(missingExecuteConsequentialFlag).ok) failures.push("missing executeApprovedExec consequential flag was not detected");
+
+  const missingApprovalPhraseMapping = clone(schema);
+  missingApprovalPhraseMapping.paths["/v1/approval/exec/control"].post.requestBody.content["application/json"].schema.properties.operation.description = "Current request control.";
+  if (validateSchema(missingApprovalPhraseMapping).ok) failures.push("missing conversational approval phrase mapping was not detected");
+
   return failures;
 }
 
@@ -276,5 +304,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 15
+  mutation_self_tests: 18
 }, null, 2));
