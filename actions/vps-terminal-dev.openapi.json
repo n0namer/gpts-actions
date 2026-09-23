@@ -854,8 +854,9 @@
     "/v1/approval/exec/control": {
       "post": {
         "operationId": "approvalControl",
+        "x-openai-isConsequential": false,
         "summary": "Control conversational DEV approval for current requests and bounded leases",
-        "description": "Closed family: status|approve_current|deny_current|grant_lease|revoke_lease. approve_current and grant_lease represent an explicit user approval expressed in the current chat turn. The server fixes approved_by, derives lease scope from the immutable prepared request, binds leases to the exact target generation, and keeps arbitrary exec DEV-only.",
+        "description": "Chat-native approval bridge. Explicit approval in the current conversation maps to approve_current for the bound pending request; explicit approval-all intent maps to grant_lease. No separate approval UI is required by this contract.",
         "requestBody": {
           "required": true,
           "content": {
