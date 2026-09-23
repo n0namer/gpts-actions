@@ -790,8 +790,9 @@
     "/v1/approval/exec/prepare": {
       "post": {
         "operationId": "prepareApprovedExec",
+        "x-openai-isConsequential": false,
         "summary": "Prepare immutable DEV-only arbitrary exec for separate approval",
-        "description": "Binds exact target_id, argv, working directory and timeout to the current target generation. This does not approve or execute the command.",
+        "description": "Binds exact target_id, argv, working directory and timeout to the current target generation. This only prepares a request; it does not approve or execute the command.",
         "requestBody": {
           "required": true,
           "content": {
