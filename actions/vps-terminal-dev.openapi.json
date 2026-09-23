@@ -806,7 +806,8 @@
                   "working_dir": {"type": "string", "maxLength": 512},
                   "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000},
                   "reason": {"type": "string", "minLength": 3, "maxLength": 500},
-                  "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000}
+                  "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000},
+                  "approval_lease_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Optional bounded conversational approval lease returned by approvalControl grant_lease."}
                 }
               }
             }
