@@ -304,5 +304,5 @@ console.log(JSON.stringify({
   operation_count: result.operation_count,
   required_public_operations: REQUIRED_PUBLIC_OPERATION_IDS.length,
   forbidden_public_path_roots: FORBIDDEN_PUBLIC_PATHS.length,
-  mutation_self_tests: 15
+  mutation_self_tests: 18
 }, null, 2));
