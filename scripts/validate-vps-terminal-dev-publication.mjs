@@ -174,6 +174,22 @@ export function validateSchema(schema) {
     errors.push("SessionStartRequest must not expose unsupported timeout_ms");
   }
 
+  const approvalPrepare = schema?.paths?.["/v1/approval/exec/prepare"]?.post;
+  const approvalExecute = schema?.paths?.["/v1/approval/exec/execute"]?.post;
+  const approvalControl = schema?.paths?.["/v1/approval/exec/control"]?.post;
+  for (const [name, operation] of [["prepareApprovedExec", approvalPrepare], ["executeApprovedExec", approvalExecute], ["approvalControl", approvalControl]]) {
+    if (operation?.["x-openai-isConsequential"] !== false) {
+      errors.push(`${name} must set x-openai-isConsequential=false for chat-native approval without duplicate UI confirmation`);
+    }
+  }
+  const expectedApprovalOps = ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"];
+  const actualApprovalOps = approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.enum;
+  if (JSON.stringify(actualApprovalOps) !== JSON.stringify(expectedApprovalOps)) errors.push(`approvalControl operation enum changed: ${JSON.stringify(actualApprovalOps)}`);
+  const approvalOperationDescription = String(approvalControl?.requestBody?.content?.["application/json"]?.schema?.properties?.operation?.description || "");
+  for (const phrase of ["approve", "approval", "одобряю", "grant_lease"]) {
+    if (!approvalOperationDescription.includes(phrase)) errors.push(`approvalControl conversation mapping missing phrase: ${phrase}`);
+  }
+
   const bearer = schema?.components?.securitySchemes?.Bearer;
   if (bearer?.type !== "http" || bearer?.scheme !== "bearer") {
     errors.push("single-bearer public security scheme is missing or changed");
