@@ -866,7 +866,7 @@
                 "additionalProperties": false,
                 "required": ["operation"],
                 "properties": {
-                  "operation": {"type": "string", "enum": ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"]},
+                  "operation": {"type": "string", "enum": ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"], "description": "Conversation mapping: explicit approval phrases in the same chat, including approve, approved, approval, одобряю, разрешаю and подтверждаю, map to approve_current for the currently bound pending request. Explicit approval-all intent maps to grant_lease. Do not require a separate approval UI."},
                   "request_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for request status, approve_current, deny_current and grant_lease."},
                   "lease_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for lease status and revoke_lease."}
                 }
