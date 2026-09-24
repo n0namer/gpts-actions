@@ -115,7 +115,7 @@ export function validateSchema(schema) {
     errors.push("targetRegistryAction must use TargetRegistryActionRequest");
   }
   const targetRegistryAction = schema?.components?.schemas?.TargetRegistryActionRequest;
-  const expectedRegistryOps = ["read", "upsert"];
+  const expectedRegistryOps = ["read", "upsert", "prepare_upsert", "control_upsert", "execute_upsert"];
   if (!targetRegistryAction || targetRegistryAction?.additionalProperties !== false) {
     errors.push("TargetRegistryActionRequest must exist and fail closed on unknown fields");
   }
