@@ -61,7 +61,7 @@
       "post": {
         "operationId": "targetRegistryAction",
         "summary": "Read or approval-gate one stale-safe DEV target registry upsert",
-        "description": "Closed family: read|upsert|prepare_upsert|control_upsert|execute_upsert. Direct upsert remains server-allowlisted. DEV targets outside that allowlist use prepare_upsert, explicit control_upsert approval, then execute_upsert. The request binds exact target plus registry SHA; production stays hard-denied. Same targetRegistryAction operationId; no extra Action.",
+        "description": "Closed family: read|upsert|prepare_upsert|control_upsert|execute_upsert. Direct upsert stays server-allowlisted. Other DEV targets require prepare, explicit approval, then execute. The request binds the exact target and registry SHA; production remains hard-denied. No extra Action operationId.",
         "requestBody": {
           "required": true,
           "content": {
