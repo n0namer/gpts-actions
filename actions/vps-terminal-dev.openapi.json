@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.14",
+    "version": "0.7.0-dev.15",
     "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Explicit affirmative approval in the current conversation maps to approvalControl for the exact bound pending request. Explicit approval-all intent grants a server-side authorization lease for compatible DEV approved exec on the same target generation for at most 1 hour and 100 auto-approvals; inactive leases require fresh approval-all. Platform-level ChatGPT confirmation behavior is separate from this VPS Terminal authorization contract."
   },
   "servers": [
@@ -60,8 +60,8 @@
     "/v1/target-registry/action": {
       "post": {
         "operationId": "targetRegistryAction",
-        "summary": "Read or stale-safely upsert one allowlisted DEV target registry entry",
-        "description": "Closed family: read|upsert. read returns registry + SHA-256; upsert requires that expected_sha256 and a complete bounded target entry. Server allowlist, risk/environment policy, atomic write, mediation and readback remain authoritative. No arbitrary config patch or generic args.",
+        "summary": "Read or approval-gate one stale-safe DEV target registry upsert",
+        "description": "Closed family: read|upsert|prepare_upsert|control_upsert|execute_upsert. Direct upsert remains server-allowlisted. DEV targets outside that allowlist use prepare_upsert, explicit control_upsert approval, then execute_upsert. The request binds exact target plus registry SHA; production stays hard-denied. Same targetRegistryAction operationId; no extra Action.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1060,11 +1060,13 @@
         "type": "object",
         "additionalProperties": false,
         "required": ["operation"],
-        "description": "Closed registry envelope. read accepts only operation. upsert requires expected_sha256 and target; the server rejects branch-incompatible fields.",
+        "description": "Closed registry envelope. read is read-only; upsert is the existing allowlisted write; prepare_upsert/control_upsert/execute_upsert approval-gate one exact DEV registry write.",
         "properties": {
-          "operation": {"type": "string", "enum": ["read", "upsert"]},
+          "operation": {"type": "string", "enum": ["read", "upsert", "prepare_upsert", "control_upsert", "execute_upsert"]},
           "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
-          "target": {"$ref": "#/components/schemas/TargetRegistryEntry"}
+          "target": {"$ref": "#/components/schemas/TargetRegistryEntry"},
+          "request_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "control_upsert/execute_upsert only"},
+          "decision": {"type": "string", "enum": ["status", "approve", "deny"], "description": "control_upsert only"}
         }
       },
       "TargetRegistryEntry": {
