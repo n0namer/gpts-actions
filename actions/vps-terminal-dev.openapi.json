@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "VPS Terminal - Dev",
-    "version": "0.7.0-dev.15",
+    "version": "0.7.0-dev.16",
     "description": "DEV ONLY. GPT Actions-compatible 30-operation VPS Terminal surface. Explicit affirmative approval in the current conversation maps to approvalControl for the exact bound pending request. Explicit approval-all intent grants a server-side authorization lease for compatible DEV approved exec on the same target generation for at most 1 hour and 100 auto-approvals; inactive leases require fresh approval-all. Platform-level ChatGPT confirmation behavior is separate from this VPS Terminal authorization contract."
   },
   "servers": [
@@ -23,7 +23,14 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           }
         }
       }
@@ -35,10 +42,24 @@
         "security": [],
         "responses": {
           "200": {
-            "description": "Ready"
+            "description": "Ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "503": {
-            "description": "Not ready"
+            "description": "Not ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -49,10 +70,24 @@
         "summary": "Read DEV service version, guidance, mediation and durable-plane status",
         "responses": {
           "200": {
-            "description": "Version and runtime status"
+            "description": "Version and runtime status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "503": {
-            "description": "Startup self-test not ready"
+            "description": "Startup self-test not ready",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -66,15 +101,53 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {"$ref": "#/components/schemas/TargetRegistryActionRequest"}
+              "schema": {
+                "$ref": "#/components/schemas/TargetRegistryActionRequest"
+              }
             }
           }
         },
         "responses": {
-          "200": {"description": "Registry read or verified upsert result"},
-          "400": {"description": "Invalid operation or target entry"},
-          "403": {"description": "Target id/risk/policy denied"},
-          "409": {"description": "Stale registry SHA or policy conflict"}
+          "200": {
+            "description": "Registry read or verified upsert result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid operation or target entry",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Target id/risk/policy denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stale registry SHA or policy conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -83,11 +156,47 @@
         "operationId": "sourceLoopAction",
         "summary": "Inspect or advance one SourceLoop capture/write-back record",
         "description": "Closed SourceLoop family: list|artifact|candidate|accept|reject. Read branches expose journal/artifact evidence; write branches reuse the existing mediated TARGET_WRITEBACK_STATUS transition contract. No arbitrary status, path, command or generic args are accepted.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SourceLoopActionRequest"}}}},
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourceLoopActionRequest"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {"description": "SourceLoop list, artifact or verified transition result"},
-          "400": {"description": "Invalid operation or branch-specific fields"},
-          "409": {"description": "Invalid or stale write-back transition"}
+          "200": {
+            "description": "SourceLoop list, artifact or verified transition result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid operation or branch-specific fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Invalid or stale write-back transition",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -107,12 +216,66 @@
           }
         },
         "responses": {
-          "200": {"description": "Bounded file operation result"},
-          "400": {"description": "Invalid operation, field set or request"},
-          "403": {"description": "Target capability or policy denied"},
-          "404": {"description": "Target or file not found"},
-          "409": {"description": "Stale SHA, existing path or policy conflict"},
-          "502": {"description": "Readback verification failed"}
+          "200": {
+            "description": "Bounded file operation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid operation, field set or request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Target capability or policy denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Target or file not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Stale SHA, existing path or policy conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Readback verification failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -165,7 +328,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           }
         }
       }
@@ -188,7 +358,14 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           }
         }
       }
@@ -234,10 +411,34 @@
         },
         "responses": {
           "200": {
-            "description": "Validation result"
+            "description": "Validation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Preset not allowed"
+            "description": "Preset not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Target not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -269,13 +470,44 @@
         },
         "responses": {
           "200": {
-            "description": "Reloaded"
+            "description": "Reloaded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Reload not allowed"
+            "description": "Reload not allowed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Target state or reload policy conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "504": {
-            "description": "Reload timeout"
+            "description": "Reload timeout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -333,13 +565,34 @@
         },
         "responses": {
           "200": {
-            "description": "Guidance with advice and lesson matches"
+            "description": "Guidance with advice and lesson matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -349,8 +602,48 @@
         "operationId": "containerObserve",
         "summary": "List, inspect, or read logs for DEV containers",
         "description": "Closed read-only container family. Branch schemas preserve the prior list/inspect/logs bounds and redaction semantics; no exec or mutation branch exists.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ContainerObserveRequest"}}}},
-        "responses": {"200": {"description": "Bounded container observation"}, "400": {"description": "Invalid operation or branch fields"}, "404": {"description": "Container not found"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContainerObserveRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Bounded container observation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid operation or branch fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Container not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/container/remove-exited": {
@@ -358,8 +651,58 @@
         "operationId": "removeExitedContainer",
         "summary": "Remove one exact exited DEV Docker container without deleting volumes",
         "description": "Destructive typed cleanup only for a full 64-hex container ID. Server re-inspects immediately before delete, requires exited/not-running/not-restarting and zero mounts/binds, calls Docker delete with force=false and volume removal disabled, then requires verified absence readback.",
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RemoveExitedContainerRequest"}}}},
-        "responses": {"200": {"description": "Container removed and absence verified"}, "400": {"description": "Invalid/non-exact container ID"}, "409": {"description": "Container is not safely removable"}}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveExitedContainerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Container removed and absence verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid/non-exact container ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Container not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Container is not safely removable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/containers/{container}/exec": {
@@ -388,19 +731,64 @@
         },
         "responses": {
           "200": {
-            "description": "Execution result"
+            "description": "Execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "403": {
-            "description": "Denied"
+            "description": "Denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Container not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Observation or review required"
+            "description": "Observation or review required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -417,26 +805,112 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["tool", "queries"],
+                "required": [
+                  "tool",
+                  "queries"
+                ],
                 "properties": {
-                  "tool": {"type": "string", "enum": ["ghSearchCode", "ghSearchRepos", "ghSearchPullRequests", "ghSearchIssues", "ghSearchCommits", "ghGetFileContent", "ghViewRepoStructure", "npmSearch"]},
+                  "tool": {
+                    "type": "string",
+                    "enum": [
+                      "ghSearchCode",
+                      "ghSearchRepos",
+                      "ghSearchPullRequests",
+                      "ghSearchIssues",
+                      "ghSearchCommits",
+                      "ghGetFileContent",
+                      "ghViewRepoStructure",
+                      "npmSearch"
+                    ]
+                  },
                   "queries": {
-                    "oneOf": [{"type": "object"}, {"type": "array", "minItems": 1, "maxItems": 5, "items": {"type": "object"}}],
+                    "oneOf": [
+                      {
+                        "type": "object"
+                      },
+                      {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 5,
+                        "items": {
+                          "type": "object"
+                        }
+                      }
+                    ],
                     "description": "Bounded Octocode query object or 1..5 query objects. Server enforces a maximum serialized size of 1800 bytes."
                   },
-                  "timeout_ms": {"type": "integer", "minimum": 1000, "maximum": 60000, "default": 30000}
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "maximum": 60000,
+                    "default": 30000
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {"description": "Structured read-only research result"},
-          "400": {"description": "Invalid or denied tool/query input"},
-          "401": {"description": "Unauthorized"},
-          "409": {"description": "Pinned Octocode version mismatch or mediation conflict"},
-          "413": {"description": "Serialized queries exceed the server bound"},
-          "502": {"description": "Structured Octocode output invalid or truncated"}
+          "200": {
+            "description": "Structured read-only research result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or denied tool/query input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Pinned Octocode version mismatch or mediation conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Serialized queries exceed the server bound",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Structured Octocode output invalid or truncated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -456,19 +930,64 @@
         },
         "responses": {
           "200": {
-            "description": "Execution result"
+            "description": "Execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Denied by enforced mediation or scope policy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Target not found"
+            "description": "Target not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Blocked by enforced mediation/guidance"
+            "description": "Blocked by enforced mediation/guidance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -489,13 +1008,34 @@
         },
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Blocked"
+            "description": "Blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -516,10 +1056,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Session"
+            "description": "Session",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not found"
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -561,7 +1115,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Output"
+            "description": "Output",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           }
         }
       }
@@ -592,10 +1153,24 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Blocked"
+            "description": "Blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -605,11 +1180,36 @@
         "operationId": "terminateSession",
         "summary": "Terminate a managed DEV session",
         "parameters": [
-          {"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string"}}
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
-          "200": {"description": "Terminated"},
-          "409": {"description": "Blocked"}
+          "200": {
+            "description": "Terminated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Blocked",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -618,10 +1218,41 @@
         "operationId": "listLessons",
         "summary": "List durable DEV lessons",
         "parameters": [
-          {"name": "status", "in": "query", "required": false, "schema": {"type": "string", "enum": ["PROPOSED", "VERIFIED", "RETIRED"]}},
-          {"name": "problem_class", "in": "query", "required": false, "schema": {"type": "string", "maxLength": 80}}
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PROPOSED",
+                "VERIFIED",
+                "RETIRED"
+              ]
+            }
+          },
+          {
+            "name": "problem_class",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 80
+            }
+          }
         ],
-        "responses": {"200": {"description": "Lesson list"}}
+        "responses": {
+          "200": {
+            "description": "Lesson list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/v1/lessons/{lessonId}": {
@@ -642,10 +1273,24 @@
         ],
         "responses": {
           "200": {
-            "description": "Lesson"
+            "description": "Lesson",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Not found"
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -667,7 +1312,14 @@
         },
         "responses": {
           "200": {
-            "description": "Relevant lesson matches"
+            "description": "Relevant lesson matches",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           }
         }
       }
@@ -678,7 +1330,14 @@
         "summary": "Read DEV self-protection status",
         "responses": {
           "200": {
-            "description": "Self-protection status"
+            "description": "Self-protection status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           }
         }
       }
@@ -731,16 +1390,44 @@
         },
         "responses": {
           "200": {
-            "description": "Typed request awaiting approval"
+            "description": "Typed request awaiting approval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Scope denied"
+            "description": "Scope denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Source target unavailable"
+            "description": "Source target unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Policy or state conflict"
+            "description": "Policy or state conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -773,16 +1460,54 @@
         },
         "responses": {
           "200": {
-            "description": "Approved clone created and verified"
+            "description": "Approved clone created and verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Execute scope denied"
+            "description": "Execute scope denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Approval request not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "409": {
-            "description": "Not approved, stale or replayed"
+            "description": "Not approved, stale or replayed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           },
           "502": {
-            "description": "Execution/verification failure"
+            "description": "Execution/verification failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
           }
         }
       }
@@ -799,25 +1524,91 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["target_id", "cmd", "reason"],
+                "required": [
+                  "target_id",
+                  "cmd",
+                  "reason"
+                ],
                 "properties": {
-                  "target_id": {"type": "string", "minLength": 1, "maxLength": 120},
-                  "cmd": {"$ref": "#/components/schemas/Command"},
-                  "working_dir": {"type": "string", "maxLength": 512},
-                  "timeout_ms": {"type": "integer", "minimum": 100, "maximum": 120000},
-                  "reason": {"type": "string", "minLength": 3, "maxLength": 500},
-                  "ttl_ms": {"type": "integer", "minimum": 5000, "maximum": 900000},
-                  "approval_lease_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Optional bounded conversational approval lease returned by approvalControl grant_lease."}
+                  "target_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "cmd": {
+                    "$ref": "#/components/schemas/Command"
+                  },
+                  "working_dir": {
+                    "type": "string",
+                    "maxLength": 512
+                  },
+                  "timeout_ms": {
+                    "type": "integer",
+                    "minimum": 100,
+                    "maximum": 120000
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  },
+                  "ttl_ms": {
+                    "type": "integer",
+                    "minimum": 5000,
+                    "maximum": 900000
+                  },
+                  "approval_lease_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "description": "Optional bounded conversational approval lease returned by approvalControl grant_lease."
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {"description": "Immutable approval request prepared"},
-          "400": {"description": "Invalid exact exec request"},
-          "403": {"description": "DEV-only capability denied"},
-          "409": {"description": "Scope or approval conflict"}
+          "200": {
+            "description": "Immutable approval request prepared",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid exact exec request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "DEV-only capability denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Scope or approval conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -833,19 +1624,61 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["request_id"],
+                "required": [
+                  "request_id"
+                ],
                 "properties": {
-                  "request_id": {"type": "string", "minLength": 1, "maxLength": 120}
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {"description": "Approved exec completed and verified"},
-          "400": {"description": "Execute scope denied"},
-          "403": {"description": "DEV-only capability denied"},
-          "409": {"description": "Not approved, stale, failed verification or replayed"}
+          "200": {
+            "description": "Approved exec completed and verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Execute scope denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "DEV-only capability denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Not approved, stale, failed verification or replayed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -861,22 +1694,89 @@
               "schema": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["operation"],
+                "required": [
+                  "operation"
+                ],
                 "properties": {
-                  "operation": {"type": "string", "enum": ["status", "approve_current", "deny_current", "grant_lease", "revoke_lease"], "description": "Conversation mapping: only explicit affirmative approval intent in the current user turn, including approve, approved, approval, одобряю, разрешаю and подтверждаю, maps to approve_current for the currently bound pending request. Explicit affirmative approval-all intent maps to grant_lease. Negated, quoted, hypothetical or ambiguous mentions are not approval."},
-                  "request_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Exact request id returned by prepare. Required for request status, approve_current, deny_current and grant_lease. Never guess between multiple pending requests; approval requires one unambiguously bound current request."},
-                  "lease_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for lease status and revoke_lease."}
+                  "operation": {
+                    "type": "string",
+                    "enum": [
+                      "status",
+                      "approve_current",
+                      "deny_current",
+                      "grant_lease",
+                      "revoke_lease"
+                    ],
+                    "description": "Conversation mapping: only explicit affirmative approval intent in the current user turn, including approve, approved, approval, одобряю, разрешаю and подтверждаю, maps to approve_current for the currently bound pending request. Explicit affirmative approval-all intent maps to grant_lease. Negated, quoted, hypothetical or ambiguous mentions are not approval."
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "description": "Exact request id returned by prepare. Required for request status, approve_current, deny_current and grant_lease. Never guess between multiple pending requests; approval requires one unambiguously bound current request."
+                  },
+                  "lease_id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "description": "Required for lease status and revoke_lease."
+                  }
                 }
               }
             }
           }
         },
         "responses": {
-          "200": {"description": "Approval request or lease state"},
-          "400": {"description": "Invalid operation or fields"},
-          "403": {"description": "DEV-only capability denied"},
-          "404": {"description": "Request or lease not found"},
-          "409": {"description": "Approval/lease state or scope conflict"}
+          "200": {
+            "description": "Approval request or lease state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionJsonObject"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid operation or fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "DEV-only capability denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Request or lease not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Approval/lease state or scope conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionError"
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -895,49 +1795,179 @@
       "ContainerObserveRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["operation"],
+        "required": [
+          "operation"
+        ],
         "properties": {
-          "operation": {"type": "string", "enum": ["list", "inspect", "logs"]},
-          "container": {"type": "string", "minLength": 1, "maxLength": 160, "description": "Required for inspect and logs."},
-          "limit": {"type": "integer", "minimum": 1, "maximum": 50, "default": 12, "description": "list only"},
-          "cursor": {"type": "string", "maxLength": 4096, "description": "list only"},
-          "all": {"type": "boolean", "default": false, "description": "list only"},
-          "status": {"type": "string", "maxLength": 200, "description": "list only"},
-          "label": {"type": "string", "maxLength": 200, "description": "list only"},
-          "name": {"type": "string", "maxLength": 160, "description": "list only"},
-          "tail": {"type": "integer", "minimum": 1, "maximum": 2000, "default": 200, "description": "logs only"},
-          "since": {"type": "integer", "minimum": 0, "description": "logs only"},
-          "limit_bytes": {"type": "integer", "minimum": 1024, "maximum": 262144, "default": 65536, "description": "logs only"}
+          "operation": {
+            "type": "string",
+            "enum": [
+              "list",
+              "inspect",
+              "logs"
+            ]
+          },
+          "container": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160,
+            "description": "Required for inspect and logs."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 12,
+            "description": "list only"
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 4096,
+            "description": "list only"
+          },
+          "all": {
+            "type": "boolean",
+            "default": false,
+            "description": "list only"
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "list only"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200,
+            "description": "list only"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "list only"
+          },
+          "tail": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 200,
+            "description": "logs only"
+          },
+          "since": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "logs only"
+          },
+          "limit_bytes": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 262144,
+            "default": 65536,
+            "description": "logs only"
+          }
         }
       },
       "ContainerObserveListRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation"
+        ],
         "properties": {
-          "operation": {"const": "list"},
-          "limit": {"type": "integer", "minimum": 1, "maximum": 50, "default": 12},
-          "cursor": {"type": "string", "maxLength": 4096},
-          "all": {"type": "boolean", "default": false},
-          "status": {"type": "string", "maxLength": 200},
-          "label": {"type": "string", "maxLength": 200},
-          "name": {"type": "string", "maxLength": 160}
+          "operation": {
+            "const": "list"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 12
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "all": {
+            "type": "boolean",
+            "default": false
+          },
+          "status": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 160
+          }
         }
       },
       "ContainerObserveInspectRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation", "container"],
-        "properties": {"operation": {"const": "inspect"}, "container": {"type": "string", "minLength": 1, "maxLength": 160}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "container"
+        ],
+        "properties": {
+          "operation": {
+            "const": "inspect"
+          },
+          "container": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          }
+        }
       },
       "ContainerObserveLogsRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation", "container"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "container"
+        ],
         "properties": {
-          "operation": {"const": "logs"}, "container": {"type": "string", "minLength": 1, "maxLength": 160},
-          "tail": {"type": "integer", "minimum": 1, "maximum": 2000, "default": 200},
-          "since": {"type": "integer", "minimum": 0},
-          "limit_bytes": {"type": "integer", "minimum": 1024, "maximum": 262144, "default": 65536}
+          "operation": {
+            "const": "logs"
+          },
+          "container": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 160
+          },
+          "tail": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2000,
+            "default": 200
+          },
+          "since": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit_bytes": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 262144,
+            "default": 65536
+          }
         }
       },
       "RemoveExitedContainerRequest": {
-        "type": "object", "additionalProperties": false, "required": ["container_id"],
-        "properties": {"container_id": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "container_id"
+        ],
+        "properties": {
+          "container_id": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{64}$"
+          }
+        }
       },
       "CommandRequest": {
         "type": "object",
@@ -1038,142 +2068,513 @@
       "FileActionRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["operation", "target_id", "path"],
+        "required": [
+          "operation",
+          "target_id",
+          "path"
+        ],
         "description": "Closed file-action envelope. read may use start_line/line_count/max_bytes; create requires content; preview_patch and apply_patch require expected_sha256/old_text/new_text; delete requires expected_sha256. The server rejects fields that do not belong to the selected operation.",
         "properties": {
           "operation": {
             "type": "string",
-            "enum": ["read", "create", "preview_patch", "apply_patch", "delete"]
+            "enum": [
+              "read",
+              "create",
+              "preview_patch",
+              "apply_patch",
+              "delete"
+            ]
           },
-          "target_id": {"type": "string", "minLength": 1, "maxLength": 128},
-          "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^/"},
-          "start_line": {"type": "integer", "minimum": 1, "default": 1},
-          "line_count": {"type": "integer", "minimum": 1, "maximum": 200, "default": 120},
-          "max_bytes": {"type": "integer", "minimum": 256, "maximum": 12000, "default": 8192},
-          "content": {"type": "string", "maxLength": 4096},
-          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
-          "old_text": {"type": "string", "minLength": 1, "maxLength": 12000},
-          "new_text": {"type": "string", "maxLength": 12000}
+          "target_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^/"
+          },
+          "start_line": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          },
+          "line_count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "default": 120
+          },
+          "max_bytes": {
+            "type": "integer",
+            "minimum": 256,
+            "maximum": 12000,
+            "default": 8192
+          },
+          "content": {
+            "type": "string",
+            "maxLength": 4096
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{64}$"
+          },
+          "old_text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 12000
+          },
+          "new_text": {
+            "type": "string",
+            "maxLength": 12000
+          }
         }
       },
       "TargetRegistryActionRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["operation"],
+        "required": [
+          "operation"
+        ],
         "description": "Closed registry envelope. read is read-only; upsert is the existing allowlisted write; prepare_upsert/control_upsert/execute_upsert approval-gate one exact DEV registry write.",
         "properties": {
-          "operation": {"type": "string", "enum": ["read", "upsert", "prepare_upsert", "control_upsert", "execute_upsert"]},
-          "expected_sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
-          "target": {"$ref": "#/components/schemas/TargetRegistryEntry"},
-          "request_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "control_upsert/execute_upsert only"},
-          "decision": {"type": "string", "enum": ["status", "approve", "deny"], "description": "control_upsert only"}
+          "operation": {
+            "type": "string",
+            "enum": [
+              "read",
+              "upsert",
+              "prepare_upsert",
+              "control_upsert",
+              "execute_upsert"
+            ]
+          },
+          "expected_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{64}$"
+          },
+          "target": {
+            "$ref": "#/components/schemas/TargetRegistryEntry"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "control_upsert/execute_upsert only"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "status",
+              "approve",
+              "deny"
+            ],
+            "description": "control_upsert only"
+          }
         }
       },
       "TargetRegistryEntry": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["target_id", "environment", "risk", "revision", "write_policy", "selector", "capabilities"],
+        "required": [
+          "target_id",
+          "environment",
+          "risk",
+          "revision",
+          "write_policy",
+          "selector",
+          "capabilities"
+        ],
         "properties": {
-          "target_id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,119}$"},
-          "display_name": {"type": "string", "maxLength": 160},
-          "client_id": {"type": "string", "maxLength": 80},
-          "runtime": {"type": "string", "maxLength": 80},
-          "environment": {"type": "string", "enum": ["development", "production"]},
-          "region": {"type": "string", "maxLength": 64},
-          "risk": {"type": "string", "enum": ["low", "production"]},
-          "revision": {"type": "integer", "minimum": 1, "maximum": 1000000},
-          "write_policy": {"type": "string", "enum": ["auto", "explicit"]},
-          "backend_url": {"type": "string", "maxLength": 240},
-          "workspace_root": {"type": "string", "maxLength": 300, "pattern": "^/"},
-          "selector": {"$ref": "#/components/schemas/TargetRegistrySelector"},
-          "capabilities": {"type": "array", "minItems": 1, "maxItems": 16, "uniqueItems": true, "items": {"type": "string", "enum": ["terminal", "sessions", "semantic", "logs", "process", "network", "stats", "live_patch", "canary_file", "debug_clone", "reload"]}},
-          "checks": {"$ref": "#/components/schemas/TargetRegistryChecks"},
-          "live_patch_roots": {"type": "array", "maxItems": 8, "uniqueItems": true, "items": {"type": "string", "maxLength": 300, "pattern": "^/"}},
-          "live_patch_runtime": {"type": "string", "enum": ["node", "python"]},
-          "reload_mode": {"type": "string", "enum": ["container_restart"]},
-          "writeback": {"$ref": "#/components/schemas/TargetRegistryWriteback"}
+          "target_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{1,119}$"
+          },
+          "display_name": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "client_id": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "runtime": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "development",
+              "production"
+            ]
+          },
+          "region": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "risk": {
+            "type": "string",
+            "enum": [
+              "low",
+              "production"
+            ]
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
+          "write_policy": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "explicit"
+            ]
+          },
+          "backend_url": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "workspace_root": {
+            "type": "string",
+            "maxLength": 300,
+            "pattern": "^/"
+          },
+          "selector": {
+            "$ref": "#/components/schemas/TargetRegistrySelector"
+          },
+          "capabilities": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "terminal",
+                "sessions",
+                "semantic",
+                "logs",
+                "process",
+                "network",
+                "stats",
+                "live_patch",
+                "canary_file",
+                "debug_clone",
+                "reload"
+              ]
+            }
+          },
+          "checks": {
+            "$ref": "#/components/schemas/TargetRegistryChecks"
+          },
+          "live_patch_roots": {
+            "type": "array",
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "maxLength": 300,
+              "pattern": "^/"
+            }
+          },
+          "live_patch_runtime": {
+            "type": "string",
+            "enum": [
+              "node",
+              "python"
+            ]
+          },
+          "reload_mode": {
+            "type": "string",
+            "enum": [
+              "container_restart"
+            ]
+          },
+          "writeback": {
+            "$ref": "#/components/schemas/TargetRegistryWriteback"
+          }
         }
       },
       "TargetRegistrySelector": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["label"],
+        "required": [
+          "label"
+        ],
         "properties": {
-          "label": {"type": "string", "maxLength": 240},
-          "image_prefix": {"type": "string", "maxLength": 200},
-          "compose_project_env": {"type": "string", "pattern": "^[A-Z_][A-Z0-9_]{0,63}$"}
+          "label": {
+            "type": "string",
+            "maxLength": 240
+          },
+          "image_prefix": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "compose_project_env": {
+            "type": "string",
+            "pattern": "^[A-Z_][A-Z0-9_]{0,63}$"
+          }
         }
       },
       "TargetRegistryChecks": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "python_compile": {"const": true},
-          "node_check": {"const": true},
-          "git_diff_check": {"const": true},
-          "pytest_q": {"const": true}
+          "python_compile": {
+            "const": true
+          },
+          "node_check": {
+            "const": true
+          },
+          "git_diff_check": {
+            "const": true
+          },
+          "pytest_q": {
+            "const": true
+          }
         }
       },
       "TargetRegistryWriteback": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["repository", "runtime_root", "base_resolver"],
+        "required": [
+          "repository",
+          "runtime_root",
+          "base_resolver"
+        ],
         "properties": {
-          "repository": {"type": "string", "minLength": 1, "maxLength": 200},
-          "branch": {"type": "string", "minLength": 1, "maxLength": 120, "default": "main"},
-          "runtime_root": {"type": "string", "maxLength": 300, "pattern": "^/"},
-          "repo_root": {"type": "string", "maxLength": 300},
-          "base_resolver": {"type": "object", "additionalProperties": false, "required": ["type"], "properties": {"type": {"type": "string", "enum": ["container_image_tag_sha", "configured_sha"]}}}
+          "repository": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "default": "main"
+          },
+          "runtime_root": {
+            "type": "string",
+            "maxLength": 300,
+            "pattern": "^/"
+          },
+          "repo_root": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "base_resolver": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "container_image_tag_sha",
+                  "configured_sha"
+                ]
+              }
+            }
+          }
         }
       },
       "SourceLoopActionRequest": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["operation"],
+        "required": [
+          "operation"
+        ],
         "properties": {
-          "operation": {"type": "string", "enum": ["list", "artifact", "candidate", "accept", "reject"]},
-          "target_id": {"type": "string", "maxLength": 120, "description": "list only"},
-          "change_id": {"type": "string", "minLength": 1, "maxLength": 120, "description": "Required for artifact/candidate/accept/reject; optional list filter."},
-          "limit": {"type": "integer", "minimum": 1, "maximum": 200, "description": "list only"},
-          "branch": {"type": "string", "minLength": 1, "maxLength": 200, "description": "candidate only"},
-          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$", "description": "candidate only"},
-          "pr_number": {"type": "integer", "minimum": 1, "description": "candidate only"},
-          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$", "description": "accept only"},
-          "reason": {"type": "string", "maxLength": 500, "description": "candidate/accept/reject optional reason"}
+          "operation": {
+            "type": "string",
+            "enum": [
+              "list",
+              "artifact",
+              "candidate",
+              "accept",
+              "reject"
+            ]
+          },
+          "target_id": {
+            "type": "string",
+            "maxLength": 120,
+            "description": "list only"
+          },
+          "change_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "description": "Required for artifact/candidate/accept/reject; optional list filter."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "list only"
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200,
+            "description": "candidate only"
+          },
+          "commit_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{40}$",
+            "description": "candidate only"
+          },
+          "pr_number": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "candidate only"
+          },
+          "merged_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{40}$",
+            "description": "accept only"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "candidate/accept/reject optional reason"
+          }
         }
       },
       "SourceLoopListRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation"
+        ],
         "properties": {
-          "operation": {"const": "list"},
-          "target_id": {"type": "string", "maxLength": 120},
-          "change_id": {"type": "string", "maxLength": 120},
-          "limit": {"type": "integer", "minimum": 1, "maximum": 200}
+          "operation": {
+            "const": "list"
+          },
+          "target_id": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "change_id": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200
+          }
         }
       },
       "SourceLoopArtifactRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation", "change_id"],
-        "properties": {"operation": {"const": "artifact"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "change_id"
+        ],
+        "properties": {
+          "operation": {
+            "const": "artifact"
+          },
+          "change_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
       },
       "SourceLoopCandidateRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation", "change_id", "branch", "commit_sha", "pr_number"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "change_id",
+          "branch",
+          "commit_sha",
+          "pr_number"
+        ],
         "properties": {
-          "operation": {"const": "candidate"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120},
-          "branch": {"type": "string", "minLength": 1, "maxLength": 200},
-          "commit_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"},
-          "pr_number": {"type": "integer", "minimum": 1}, "reason": {"type": "string", "maxLength": 500}
+          "operation": {
+            "const": "candidate"
+          },
+          "change_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "branch": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "commit_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{40}$"
+          },
+          "pr_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          }
         }
       },
       "SourceLoopAcceptRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation", "change_id", "merged_sha"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "change_id",
+          "merged_sha"
+        ],
         "properties": {
-          "operation": {"const": "accept"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120},
-          "merged_sha": {"type": "string", "pattern": "^[0-9a-fA-F]{40}$"}, "reason": {"type": "string", "maxLength": 500}
+          "operation": {
+            "const": "accept"
+          },
+          "change_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "merged_sha": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{40}$"
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          }
         }
       },
       "SourceLoopRejectRequest": {
-        "type": "object", "additionalProperties": false, "required": ["operation", "change_id"],
-        "properties": {"operation": {"const": "reject"}, "change_id": {"type": "string", "minLength": 1, "maxLength": 120}, "reason": {"type": "string", "maxLength": 500}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "operation",
+          "change_id"
+        ],
+        "properties": {
+          "operation": {
+            "const": "reject"
+          },
+          "change_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
       },
       "TargetWritebackRequest": {
         "type": "object",
@@ -1551,6 +2952,37 @@
             "minimum": 1,
             "maximum": 100,
             "default": 4
+          }
+        }
+      },
+      "ActionJsonObject": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "ActionError": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
           }
         }
       }
