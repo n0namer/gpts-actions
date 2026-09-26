@@ -45,6 +45,22 @@ requirePattern('redeploy is not debug', /redeploy≠debug primitive/);
 requirePattern('SourceLoop docs are not bootstrap proof', /SourceLoop docs≠target bootstrap/);
 requirePattern('source-bound exact workspace', /Source-bound\/multi-file→exact-source repo workspace/);
 
+requirePattern('CrewSync coordination not SoT', /CrewSync=coordination plane[^\n]*not Project\/Git SoT/);
+requirePattern('Crew CURRENT callability gate', /CURRENT schema alone proves callability/);
+requirePattern('stable Crew session', /one stable Crew session\/work session/);
+requirePattern('exact JIT project claim', /Exact project-prefixed JIT claim/);
+requirePattern('single claimed work task', /one claimed task/);
+requirePattern('Crew lease renewal', /Lease=900s; renew before long work; lost lease→stop writes/);
+requirePattern('claims differ from locks', /Claims != locks/);
+requirePattern('empty locks are not conflict proof', /`locks=\[\]` does not prove no conflict/);
+requirePattern('shared active writer conflict', /live claimed write-task on same repo\/resource conflicts/);
+requirePattern('coordinator authority evidence', /Coordinator authority requires explicit user assignment, Project SoT, resource owner or other authority/);
+requirePattern('controlled handoff', /Controlled handoff: freeze writer/);
+requirePattern('fresh reread after handoff', /fresh-rereads HEAD\/files\/SourceLoop\/runtime\/tasks\/locks/);
+requirePattern('single writer integration lock', /takes narrow integration lock/);
+requirePattern('no global claim next task', /never global `claim_next_task` on multi-project bus/);
+requirePattern('Crew complete is not Project DONE', /Crew complete != Project DONE/);
+
 if (/<priority>/.test(text)) failures.push('legacy global <priority> block present');
 
 if (failures.length) {
