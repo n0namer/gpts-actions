@@ -47,6 +47,11 @@ requirePattern('source-bound exact workspace', /Source-bound\/multi-file→exact
 
 requirePattern('CrewSync coordination not SoT', /CrewSync=coordination plane[^\n]*not Project\/Git SoT/);
 requirePattern('Crew CURRENT callability gate', /CURRENT schema alone proves callability/);
+requirePattern('Crew via VPS Terminal target', /No separate Crew Action:[^\n]*VPS Terminal `ai-crew-sync`[^\n]*runtime=`crew-sync`/);
+requirePattern('Crew CLI stable session argv', /\['ai-crew-sync','client','--session',SESSION,\.\.\.\]/);
+requirePattern('Crew CLI discovery before gap', /before CAPABILITY_GAP[^\n]*tools --json/);
+requirePattern('Crew heartbeat statuses', /`beat`:active\|idle\|busy\|blocked/);
+requirePattern('Crew CLI helpers', /CLI digest\/wait\/ask if exposed/);
 requirePattern('stable Crew session', /one stable Crew session\/work session/);
 requirePattern('exact JIT project claim', /Exact project-prefixed JIT claim/);
 requirePattern('single claimed work task', /one claimed task/);
