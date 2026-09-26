@@ -48,10 +48,14 @@ requirePattern('source-bound exact workspace', /Source-bound\/multi-file→exact
 requirePattern('CrewSync coordination not SoT', /CrewSync=coordination plane[^\n]*not Project\/Git SoT/);
 requirePattern('Crew CURRENT callability gate', /CURRENT schema alone proves callability/);
 requirePattern('Crew via VPS Terminal target', /No separate Crew Action:[^\n]*VPS Terminal `ai-crew-sync`[^\n]*runtime=`crew-sync`/);
-requirePattern('Crew CLI stable session argv', /\['ai-crew-sync','client','--session',SESSION,\.\.\.\]/);
+requirePattern('Crew CLI stable session argv', /exec `ai-crew-sync client --session SESSION \.\.\.`/);
 requirePattern('Crew CLI discovery before gap', /before CAPABILITY_GAP[^\n]*tools --json/);
-requirePattern('Crew heartbeat statuses', /`beat`:active\|idle\|busy\|blocked/);
-requirePattern('Crew CLI helpers', /CLI digest\/wait\/ask if exposed/);
+requirePattern('Crew CLI state commands', /CLI:[^\n]*`whoami`[^\n]*`sessions --project P`[^\n]*`tasks --status claimed`/);
+requirePattern('Crew heartbeat command/statuses', /`beat --status active\|idle\|busy\|blocked --project P`/);
+requirePattern('Crew task lifecycle', /task claim K --lease-seconds 900[^\n]*task renew K --lease-seconds 900[^\n]*task release K[^\n]*task done K --result E/);
+requirePattern('Crew lock lifecycle', /lock list[^\n]*lock acquire R --ttl-seconds 900 --purpose X[^\n]*lock release R/);
+requirePattern('Crew communication commands', /ask S Q[^\n]*wait --kinds message,task,lock,note[^\n]*digest --hours 24/);
+requirePattern('Crew no task next', /never `task next`\/global `claim_next_task` multi-project/);
 requirePattern('stable Crew session', /one stable Crew session\/work session/);
 requirePattern('exact JIT project claim', /Exact project-prefixed JIT claim/);
 requirePattern('single claimed work task', /one claimed task/);
@@ -63,7 +67,6 @@ requirePattern('coordinator authority evidence', /Coordinator authority requires
 requirePattern('controlled handoff', /Controlled handoff: freeze writer/);
 requirePattern('fresh reread after handoff', /fresh-rereads HEAD\/files\/SourceLoop\/runtime\/tasks\/locks/);
 requirePattern('single writer integration lock', /takes narrow integration lock/);
-requirePattern('no global claim next task', /never global `claim_next_task` on multi-project bus/);
 requirePattern('Crew complete is not Project DONE', /Crew complete != Project DONE/);
 
 if (/<priority>/.test(text)) failures.push('legacy global <priority> block present');
